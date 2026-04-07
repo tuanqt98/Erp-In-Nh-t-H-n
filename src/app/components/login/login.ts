@@ -37,7 +37,7 @@ import { AuthService } from '../../services/auth.service';
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
             <mat-form-field appearance="outline">
               <mat-label>Tên đăng nhập</mat-label>
-              <input matInput formControlName="username" placeholder="admin hoặc staff">
+              <input matInput formControlName="username">
               <mat-icon matSuffix>person</mat-icon>
             </mat-form-field>
 
@@ -49,10 +49,6 @@ import { AuthService } from '../../services/auth.service';
               </button>
             </mat-form-field>
 
-            <div class="hint">
-              <p>Thử: admin / admin123 (Admin)</p>
-              <p>Thử: staff / staff123 (Công nhân)</p>
-            </div>
 
             <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="login-button">
               Đăng Nhập
@@ -121,12 +117,6 @@ import { AuthService } from '../../services/auth.service';
     .login-button:hover {
       box-shadow: 0 0 20px var(--ag-neon-glow) !important;
     }
-    .hint {
-      font-size: 0.8rem;
-      color: var(--ag-text-secondary);
-      text-align: center;
-    }
-    .hint p { margin: 4px 0; }
     :host ::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
     :host ::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
     :host ::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
