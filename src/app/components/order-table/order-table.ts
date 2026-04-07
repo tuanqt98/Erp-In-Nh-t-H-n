@@ -309,20 +309,30 @@ import { AuthService } from '../../services/auth.service';
       padding: 32px;
       max-width: 1000px;
       width: 95%;
-      max-height: 85vh;
+      height: 85vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      box-sizing: border-box;
     }
-    .preview-header { flex-shrink: 0; margin-bottom: 20px; }
-    .preview-summary { flex-shrink: 0; margin-bottom: 20px; }
-    .preview-actions { flex-shrink: 0; margin-top: 20px; display: flex; gap: 12px; justify-content: flex-end; }
+    .preview-header { flex: 0 0 auto; margin-bottom: 20px; }
+    .preview-summary { flex: 0 0 auto; margin-bottom: 20px; }
     .preview-table-wrap { 
-      flex: 1; 
-      overflow-y: auto; 
+      flex: 1 1 auto; 
+      overflow: auto; 
       border-radius: 10px; 
       border: 1px solid var(--ag-border); 
+      background: rgba(0,0,0,0.05);
       margin-bottom: 0;
+    }
+    .preview-actions { 
+      flex: 0 0 auto; 
+      margin-top: 24px; 
+      padding-top: 16px;
+      border-top: 1px solid var(--ag-border);
+      display: flex; 
+      justify-content: flex-end;
+      gap: 12px; 
     }
     .preview-table { width:100%; border-collapse:collapse; font-size:.85rem; }
     .preview-table thead tr { background:rgba(255,255,255,.04); position: sticky; top: 0; z-index: 10; }
