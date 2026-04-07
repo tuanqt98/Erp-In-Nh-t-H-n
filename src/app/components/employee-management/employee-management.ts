@@ -625,8 +625,20 @@ interface ImportRow {
       padding: 32px;
       max-width: 860px;
       width: 95%;
-      max-height: 88vh;
-      overflow-y: auto;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .import-card h3 { flex-shrink: 0; }
+    .import-summary { flex-shrink: 0; }
+    .form-actions { flex-shrink: 0; margin-top: 20px; }
+    .import-table-wrap { 
+      flex: 1; 
+      overflow-y: auto; 
+      margin-bottom: 0; 
+      border-radius: 10px; 
+      border: 1px solid var(--ag-border); 
     }
     .import-summary {
       display: flex;

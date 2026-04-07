@@ -319,10 +319,13 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, NHAN_VIEN_OPTIONS } from '../../models/
     .btn-cancel {
       color: var(--ag-text-secondary) !important;
     }
-    @media (max-width: 600px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .datetime-group { flex-direction: column; gap: 0; }
+      .duration-display { width: 100%; justify-content: center; margin-bottom: 8px; }
+      .actions { flex-direction: column; gap: 12px; width: 100%; }
+      .actions button { width: 100%; padding: 12px !important; height: 48px; }
+      .form-title { font-size: 1.2rem; justify-content: center; }
     }
 
     .stage-container { display: flex; align-items: center; gap: 4px; min-height: 80px; }

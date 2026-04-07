@@ -245,6 +245,8 @@ import { SupportTimeService } from '../../services/support-time.service';
       border-bottom: 1px solid var(--ag-border) !important;
       border-radius: 0 0 16px 16px !important;
       box-sizing: border-box;
+      background: rgba(13, 17, 23, 0.8) !important;
+      backdrop-filter: blur(20px) !important;
     }
     .app-logo {
       height: 48px;
@@ -330,7 +332,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     .content {
       flex: 1;
-      padding: 92px 0 0; /* Header 72px + distance */
+      padding: 92px 16px 0; /* Header 72px + distance and horizontal padding */
       max-width: 1400px;
       margin: 0 auto;
       width: 100%;
@@ -517,17 +519,24 @@ import { SupportTimeService } from '../../services/support-time.service';
     
     @media (max-width: 992px) {
       .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 0 16px; }
+    }
+    @media (max-width: 768px) {
+      .content { padding: 88px 8px 8px; }
+      .header { padding: 0 16px; height: 64px; }
+      .app-title { font-size: 0.9rem; }
+      .stats-grid { gap: 12px; }
+      .stat-card { padding: 15px; }
+      .stat-card .value { font-size: 1.3rem; }
+      .app-logo { height: 40px; width: 40px; }
+      :host ::ng-deep .mat-mdc-tab-link { min-width: 80px !important; padding: 0 12px !important; }
     }
     @media (max-width: 576px) {
       .footer-grid { grid-template-columns: 1fr; text-align: center; }
       .footer-logo, .status-badge { justify-content: center; }
       .brand-desc { margin: 0 auto 16px; }
-    }
-    
-    @media (max-width: 768px) {
-      .content { padding: 88px 8px 8px; }
-      .header { padding: 0 16px; height: 64px; }
-      .app-title { font-size: 0.9rem; }
+      .app-title { display: none; } /* Hide title on very small screens, logo is enough */
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
   `]
 })

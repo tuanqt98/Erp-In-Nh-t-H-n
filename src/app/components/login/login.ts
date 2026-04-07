@@ -146,6 +146,11 @@ import { AuthService } from '../../services/auth.service';
     :host ::ng-deep .mat-mdc-icon-button {
       color: var(--ag-neon) !important;
     }
+    @media (max-width: 480px) {
+      .login-container { padding: 16px; height: auto; min-min-height: 100vh; }
+      .login-card { padding: 32px 20px; border-radius: 16px !important; }
+      :host ::ng-deep .mat-mdc-card-title { font-size: 1.2rem !important; }
+    }
   `]
 })
 export class LoginComponent {

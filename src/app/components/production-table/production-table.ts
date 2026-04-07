@@ -418,21 +418,25 @@ import * as XLSX from 'xlsx';
       gap: 16px;
     }
     @media (max-width: 560px) { .edit-grid { grid-template-columns: 1fr; } }
-    .edit-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .btn-save-edit {
-      background: linear-gradient(135deg, var(--ag-neon), #0369a1) !important;
-      color: white !important;
-      font-weight: 600 !important;
+    @media (max-width: 768px) {
+      .table-container { padding: 16px; border-radius: 0 !important; }
+      .table-header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .search-field { max-width: none; }
+      .table-actions { flex-direction: column; align-items: stretch; }
+      .table-title { font-size: 1.2rem; justify-content: center; }
+      .confirm-card, .edit-card { width: 95% !important; padding: 24px 20px !important; }
+      .edit-grid { grid-template-columns: 1fr !important; }
+      .action-btns { justify-content: center; }
     }
 
     @media (max-width: 800px) {
       .table-header { flex-direction: column; align-items: flex-start; }
       .table-actions { width: 100%; justify-content: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .login-card { padding: 32px 20px; border-radius: 16px !important; width: 95%; }
+      :host ::ng-deep .mat-mdc-card-title { font-size: 1.2rem !important; }
+      .login-container { padding: 16px; height: auto; min-min-height: 100vh; }
     }
   `]
 })
