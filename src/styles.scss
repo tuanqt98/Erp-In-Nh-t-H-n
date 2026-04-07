@@ -1,0 +1,324 @@
+@import "@angular/material/prebuilt-themes/azure-blue.css";
+
+/* Antigravity Design System - Snow Edition */
+:root {
+  /* Dark Mode - Antigravity Snow Edition (Default) */
+  --ag-bg-base: #020617;
+  --ag-bg-accent: #0f172a;
+  --ag-neon: #0ea5e9;
+  --ag-neon-glow: rgba(14, 165, 233, 0.3);
+  --ag-glass: rgba(15, 23, 42, 0.85);
+  --ag-border: rgba(255, 255, 255, 0.12);
+  --ag-text-primary: #ffffff;
+  --ag-text-secondary: #94a3b8;
+  --ag-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  --ag-snow-color: rgba(255, 255, 255, 0.6);
+  --ag-snow-bg: radial-gradient(circle at top right, #082f49, #020617 75%);
+}
+
+body.light-mode {
+  /* Light Mode - Antigravity Crystal Edition */
+  --ag-bg-base: #f8fafc;
+  --ag-bg-accent: #ffffff;
+  --ag-neon: #0284c7;
+  --ag-neon-glow: rgba(2, 132, 199, 0.1);
+  --ag-glass: rgba(255, 255, 255, 0.85);
+  --ag-border: rgba(15, 23, 42, 0.12);
+  --ag-text-primary: #0f172a;
+  --ag-text-secondary: #475569;
+  --ag-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.15);
+  --ag-snow-color: rgba(2, 132, 199, 0.3);
+  --ag-snow-bg: radial-gradient(circle at top right, #f0f9ff, #f8fafc 75%);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--ag-bg-base) !important;
+  color: var(--ag-text-primary);
+  font-family: 'Inter', 'Outfit', 'Roboto', sans-serif;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Fix for Material Icons rendering as text */
+.material-icons, mat-icon {
+  font-family: 'Material Icons' !important;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+/* --- SNOW BACKGROUND --- */
+.snow-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: var(--ag-snow-bg);
+  overflow: hidden;
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  background: var(--ag-snow-color);
+  border-radius: 50%;
+  opacity: 0.7;
+  filter: blur(1.5px);
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-10vh) translateX(0); }
+  100% { transform: translateY(110vh) translateX(40px); }
+}
+
+/* Material Overrides for Antigravity Look */
+.mat-elevation-z2 {
+  box-shadow: var(--ag-shadow) !important;
+}
+
+/* Global Table Background Fix - prevent Material white backgrounds */
+.mat-mdc-table {
+  background: transparent !important;
+}
+.mat-mdc-header-row {
+  background: transparent !important;
+}
+.mat-mdc-row {
+  background: transparent !important;
+}
+.mat-mdc-cell {
+  color: var(--ag-text-primary) !important;
+  background: transparent !important;
+}
+.mat-mdc-header-cell {
+  color: var(--ag-text-secondary) !important;
+  background: transparent !important;
+}
+.mat-mdc-no-data-row .mat-mdc-cell {
+  color: var(--ag-text-secondary) !important;
+}
+
+/* Global Glass Class */
+.glass-panel {
+  background: var(--ag-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--ag-border) !important;
+  border-radius: 20px !important;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--ag-bg-base); }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ag-neon); }
+
+/* Form Field Styling */
+.mat-mdc-form-field {
+  --mdc-outlined-idle-outline-color: var(--ag-border);
+  --mdc-outlined-hover-outline-color: var(--ag-neon);
+  --mdc-outlined-active-outline-color: var(--ag-neon);
+  --mdc-filled-text-field-input-text-color: var(--ag-text-primary);
+  --mat-form-field-label-text-color: var(--ag-text-secondary);
+}
+
+.mat-mdc-text-field-wrapper {
+  background-color: transparent !important;
+}
+
+.mat-mdc-form-field-label,
+.mdc-floating-label,
+.mat-mdc-floating-label {
+  color: var(--ag-text-secondary) !important;
+}
+
+input.mat-mdc-input-element, 
+textarea.mat-mdc-input-element,
+.mat-mdc-input-element {
+  color: var(--ag-text-primary) !important;
+  caret-color: var(--ag-neon) !important;
+}
+
+/* Select dropdown text */
+.mat-mdc-select-value,
+.mat-mdc-select-value-text {
+  color: var(--ag-text-primary) !important;
+}
+
+.mat-mdc-select-arrow {
+  color: var(--ag-text-secondary) !important;
+}
+
+.mat-mdc-option {
+  color: var(--ag-text-primary) !important;
+}
+
+/* Autocomplete panel */
+.mat-mdc-autocomplete-panel {
+  background: var(--ag-glass) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.mat-mdc-tab-header {
+  border-bottom: 1px solid var(--ag-border) !important;
+  background: transparent !important;
+}
+
+.mat-mdc-tab-label-container {
+  background: transparent !important;
+}
+
+/* Force Ink Bar (Tab Underline) to be Neon */
+.mat-mdc-tab-group.mat-primary .mat-mdc-tab-header .mat-mdc-tab-labels .mdc-tab--active .mdc-tab-indicator__content--underline {
+  border-color: var(--ag-neon) !important;
+  box-shadow: 0 0 10px var(--ag-neon-glow);
+}
+
+.mat-mdc-tab-body-wrapper {
+  overflow: visible !important;
+}
+
+/* Global Dialog Glassmorphism */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--ag-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--ag-border) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--ag-shadow) !important;
+}
+
+.mat-mdc-dialog-title {
+  color: var(--ag-text-primary) !important;
+}
+
+.mat-mdc-dialog-content {
+  color: var(--ag-text-primary) !important;
+}
+
+/* Paginator - transparent background and themed text */
+.mat-mdc-paginator {
+  background: transparent !important;
+  color: var(--ag-text-secondary) !important;
+}
+
+.mat-mdc-paginator-range-label,
+.mat-mdc-paginator-page-size-label {
+  color: var(--ag-text-secondary) !important;
+}
+
+/* Select panel background */
+.mat-mdc-select-panel {
+  background: var(--ag-glass) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Autofill override - prevent browser yellow/white autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--ag-bg-accent) inset !important;
+  -webkit-text-fill-color: var(--ag-text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* mat-card styles for light mode */
+.mat-mdc-card {
+  background: var(--ag-glass) !important;
+  color: var(--ag-text-primary) !important;
+}
+
+/* --- MATERIAL TIMEPICKER & DATEPICKER DARK MODE FIXES --- */
+
+/* Timepicker Panel */
+.mat-timepicker-content, 
+.mat-timepicker-panel,
+.mat-mdc-timepicker-content {
+  background-color: var(--ag-bg-accent) !important;
+  color: var(--ag-text-primary) !important;
+  border: 1px solid var(--ag-border) !important;
+}
+
+/* Digital Display */
+.mat-timepicker-digital-display {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--ag-text-primary) !important;
+}
+
+/* Active/Selected Cells & Period Buttons */
+.mat-timepicker-clock-cell-selected,
+.mat-timepicker-period-button-selected,
+.mat-primary .mat-timepicker-clock-cell-selected {
+  background-color: var(--ag-neon) !important;
+  color: #ffffff !important;
+}
+
+/* Clock Hand */
+.mat-timepicker-clock-hand,
+.mat-primary .mat-timepicker-clock-hand {
+  background-color: var(--ag-neon) !important;
+}
+
+.mat-timepicker-clock-hand-leaf,
+.mat-primary .mat-timepicker-clock-hand-leaf {
+  border-color: var(--ag-neon) !important;
+  background-color: var(--ag-neon) !important;
+}
+
+/* Clock Face Numbers */
+.mat-timepicker-clock-cell {
+  color: var(--ag-text-secondary) !important;
+}
+
+.mat-timepicker-clock-cell:hover {
+  background-color: var(--ag-neon-glow) !important;
+  color: var(--ag-neon) !important;
+}
+
+/* Period Toggle (AM/PM) */
+.mat-timepicker-period {
+  border-color: var(--ag-border) !important;
+}
+
+.mat-timepicker-period-button {
+  color: var(--ag-text-secondary) !important;
+}
+
+/* Datepicker Overrides */
+.mat-datepicker-content,
+.mat-mdc-datepicker-content {
+  background-color: var(--ag-bg-accent) !important;
+  color: var(--ag-text-primary) !important;
+  border: 1px solid var(--ag-border) !important;
+}
+
+.mat-calendar-body-label,
+.mat-calendar-body-cell-content {
+  color: var(--ag-text-primary) !important;
+}
+
+.mat-calendar-table-header,
+.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  border-color: var(--ag-neon) !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--ag-neon) !important;
+  color: #fff !important;
+}
