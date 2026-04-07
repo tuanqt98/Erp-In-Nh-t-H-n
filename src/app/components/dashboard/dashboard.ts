@@ -210,8 +210,8 @@ import { SupportTimeService } from '../../services/support-time.service';
               <span>System Online</span>
             </div>
             <div class="version-info">
-              <p>Phiên bản: v1.0.7-SOLVED-FINAL</p>
-              <p>Build: 2026.04.08.2</p>
+              <p>Phiên bản: v1.0.8-ULTIMATE-STABLE</p>
+              <p>Build: 2026.04.08.3</p>
             </div>
           </div>
         </div>

@@ -299,25 +299,28 @@ import { AuthService } from '../../services/auth.service';
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8) !important;
+      background: rgba(0,0,0,0.85) !important;
       z-index: 9999;
       display: flex;
       justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(10px);
+      align-items: flex-start; /* Safe for wide/tall fullscreen */
+      padding: 40px 10px;
+      overflow-y: auto;
+      backdrop-filter: blur(5px);
     }
     
     /* Preview dialog */
     :host ::ng-deep .preview-card {
       padding: 32px !important;
-      max-width: 1000px !important;
+      max-width: 1100px !important;
       width: 95% !important;
-      max-height: 90vh !important;
+      max-height: 85vh !important;
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
       position: relative !important;
+      margin-top: 20px;
     }
     :host ::ng-deep .preview-table-wrap { 
       flex: 1 !important;
