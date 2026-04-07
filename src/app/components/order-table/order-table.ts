@@ -306,30 +306,28 @@ import { AuthService } from '../../services/auth.service';
 
     /* Preview dialog */
     .preview-card {
-      padding: 32px;
+      padding: 24px;
       max-width: 1000px;
       width: 95%;
-      height: 80vh !important; /* Safer height limit */
-      display: flex !important;
-      flex-direction: column !important;
+      height: calc(100vh - 120px) !important;
+      display: grid !important;
+      grid-template-rows: auto auto 1fr auto !important; /* Header, Summary, Table (Scrolls), Actions */
       overflow: hidden !important;
       box-sizing: border-box;
+      gap: 0;
     }
-    .preview-header { flex: 0 0 auto !important; margin-bottom: 20px; }
-    .preview-summary { flex: 0 0 auto !important; margin-bottom: 20px; }
+    .preview-header { margin-bottom: 16px !important; }
+    .preview-summary { margin-bottom: 16px !important; }
     .preview-table-wrap { 
-      flex: 1 1 auto !important; 
-      min-height: 0 !important; /* CRITICAL: Allows flex child to shrink below content size */
+      min-height: 0 !important;
       overflow: auto !important; 
-      border-radius: 10px; 
+      border-radius: 8px; 
       border: 1px solid var(--ag-border); 
       background: rgba(0,0,0,0.05);
-      margin-bottom: 0;
     }
     .preview-actions { 
-      flex: 0 0 auto !important; 
-      margin-top: 24px; 
-      padding-top: 16px;
+      padding-top: 20px;
+      margin-top: 10px;
       border-top: 1px solid var(--ag-border);
       display: flex; 
       justify-content: flex-end;
