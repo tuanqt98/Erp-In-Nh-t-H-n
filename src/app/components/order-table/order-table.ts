@@ -305,33 +305,34 @@ import { AuthService } from '../../services/auth.service';
     .btn-confirm-del { background:linear-gradient(135deg,#ef4444,#b91c1c)!important; color:white!important; font-weight:600!important; }
 
     /* Preview dialog */
-    .preview-card {
-      padding: 24px;
-      max-width: 1000px;
-      width: 95%;
-      height: calc(100vh - 120px) !important;
+    :host ::ng-deep .preview-card {
+      padding: 24px !important;
+      max-width: 1000px !important;
+      width: 95% !important;
+      height: calc(100vh - 150px) !important;
       display: grid !important;
-      grid-template-rows: auto auto 1fr auto !important; /* Header, Summary, Table (Scrolls), Actions */
+      grid-template-rows: auto auto 1fr auto !important;
       overflow: hidden !important;
-      box-sizing: border-box;
-      gap: 0;
+      box-sizing: border-box !important;
+      gap: 0 !important;
     }
-    .preview-header { margin-bottom: 16px !important; }
-    .preview-summary { margin-bottom: 16px !important; }
-    .preview-table-wrap { 
+    :host ::ng-deep .preview-header { margin-bottom: 16px !important; flex: none !important; }
+    :host ::ng-deep .preview-summary { margin-bottom: 16px !important; flex: none !important; }
+    :host ::ng-deep .preview-table-wrap { 
       min-height: 0 !important;
       overflow: auto !important; 
-      border-radius: 8px; 
-      border: 1px solid var(--ag-border); 
-      background: rgba(0,0,0,0.05);
+      border-radius: 8px !important; 
+      border: 1px solid var(--ag-border) !important; 
+      background: rgba(0,0,0,0.05) !important;
     }
-    .preview-actions { 
-      padding-top: 20px;
-      margin-top: 10px;
-      border-top: 1px solid var(--ag-border);
-      display: flex; 
-      justify-content: flex-end;
-      gap: 12px; 
+    :host ::ng-deep .preview-actions { 
+      padding-top: 20px !important;
+      margin-top: 10px !important;
+      border-top: 1px solid var(--ag-border) !important;
+      display: flex !important; 
+      justify-content: flex-end !important;
+      gap: 12px !important; 
+      flex: none !important;
     }
     .preview-table { width:100%; border-collapse:collapse; font-size:.85rem; }
     .preview-table thead tr { background:rgba(255,255,255,.04); position: sticky; top: 0; z-index: 10; }

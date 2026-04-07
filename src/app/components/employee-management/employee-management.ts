@@ -621,33 +621,34 @@ interface ImportRow {
     }
 
     /* Import preview */
-    .import-card {
-      padding: 24px;
-      max-width: 860px;
-      width: 95%;
-      height: calc(100vh - 120px) !important;
+    :host ::ng-deep .import-card {
+      padding: 24px !important;
+      max-width: 860px !important;
+      width: 95% !important;
+      height: calc(100vh - 150px) !important;
       display: grid !important;
-      grid-template-rows: auto auto 1fr auto !important; /* Title, Summary, Table (Scrolls), Actions */
+      grid-template-rows: auto auto 1fr auto !important;
       overflow: hidden !important;
-      box-sizing: border-box;
-      gap: 0;
+      box-sizing: border-box !important;
+      gap: 0 !important;
     }
-    .import-card h3 { margin: 0 0 16px !important; }
-    .import-summary { margin-bottom: 16px !important; }
-    .import-table-wrap { 
+    :host ::ng-deep .import-card h3 { margin: 0 0 16px !important; flex: none !important; }
+    :host ::ng-deep .import-summary { margin-bottom: 16px !important; flex: none !important; }
+    :host ::ng-deep .import-table-wrap { 
       min-height: 0 !important;
       overflow: auto !important; 
-      border-radius: 8px; 
-      border: 1px solid var(--ag-border); 
-      background: rgba(0,0,0,0.1);
+      border-radius: 8px !important; 
+      border: 1px solid var(--ag-border) !important; 
+      background: rgba(0,0,0,0.1) !important;
     }
-    .form-actions { 
-      padding-top: 20px;
-      margin-top: 10px;
-      border-top: 1px solid var(--ag-border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
+    :host ::ng-deep .form-actions { 
+      padding-top: 20px !important;
+      margin-top: 10px !important;
+      border-top: 1px solid var(--ag-border) !important;
+      display: flex !important;
+      justify-content: flex-end !important;
+      gap: 12px !important;
+      flex: none !important;
     }
     .import-summary {
       display: flex;
