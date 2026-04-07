@@ -625,23 +625,24 @@ interface ImportRow {
       padding: 32px;
       max-width: 860px;
       width: 95%;
-      height: 85vh; /* Fixed height for force scroll on inner div */
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      height: 80vh !important; /* Safer height limit */
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
       box-sizing: border-box;
     }
-    .import-card h3 { flex: 0 0 auto; margin-bottom: 20px; }
-    .import-summary { flex: 0 0 auto; margin-bottom: 20px; }
+    .import-card h3 { flex: 0 0 auto !important; margin-bottom: 20px; }
+    .import-summary { flex: 0 0 auto !important; margin-bottom: 20px; }
     .import-table-wrap { 
-      flex: 1 1 auto; 
-      overflow: auto; 
+      flex: 1 1 auto !important; 
+      min-height: 0 !important; /* CRITICAL: Allows flex child to shrink below content size */
+      overflow: auto !important; 
       border-radius: 10px; 
       border: 1px solid var(--ag-border); 
       background: rgba(0,0,0,0.2);
     }
     .form-actions { 
-      flex: 0 0 auto; 
+      flex: 0 0 auto !important; 
       margin-top: 24px; 
       padding-top: 16px;
       border-top: 1px solid var(--ag-border);
