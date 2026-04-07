@@ -623,27 +623,27 @@ interface ImportRow {
     /* Import preview */
     :host ::ng-deep .import-card {
       padding: 24px !important;
-      max-width: 860px !important;
+      max-width: 900px !important;
       width: 95% !important;
-      height: calc(100vh - 150px) !important;
-      display: grid !important;
-      grid-template-rows: auto auto 1fr auto !important;
+      max-height: 85vh !important;
+      display: flex !important;
+      flex-direction: column !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      gap: 0 !important;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5) !important;
+      background: var(--ag-card-bg) !important;
+      border: 1px solid var(--ag-border) !important;
     }
-    :host ::ng-deep .import-card h3 { margin: 0 0 16px !important; flex: none !important; }
-    :host ::ng-deep .import-summary { margin-bottom: 16px !important; flex: none !important; }
     :host ::ng-deep .import-table-wrap { 
+      flex: 1 !important;
       min-height: 0 !important;
       overflow: auto !important; 
+      margin: 16px 0 !important;
       border-radius: 8px !important; 
       border: 1px solid var(--ag-border) !important; 
-      background: rgba(0,0,0,0.1) !important;
     }
     :host ::ng-deep .form-actions { 
-      padding-top: 20px !important;
-      margin-top: 10px !important;
+      padding-top: 16px !important;
       border-top: 1px solid var(--ag-border) !important;
       display: flex !important;
       justify-content: flex-end !important;

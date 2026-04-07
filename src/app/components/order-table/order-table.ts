@@ -296,38 +296,43 @@ import { AuthService } from '../../services/auth.service';
     .no-data { text-align:center; padding:40px 0!important; display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ag-text-secondary); }
 
     /* Overlays */
-    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:9999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
-    .confirm-card { padding:36px 40px; max-width:420px; width:90%; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
-    .confirm-icon { font-size:48px; width:48px; height:48px; color:#ef4444; }
-    .confirm-card h3 { font-size:1.25rem; font-weight:800; color:var(--ag-text-primary); margin:0; }
-    .confirm-card p { color:var(--ag-text-secondary); margin:0; }
-    .confirm-btns { display:flex; gap:12px; margin-top:8px; }
-    .btn-confirm-del { background:linear-gradient(135deg,#ef4444,#b91c1c)!important; color:white!important; font-weight:600!important; }
-
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Prevent cutoffs */
+      padding: 40px 10px;
+      backdrop-filter: blur(8px);
+    }
+    
     /* Preview dialog */
     :host ::ng-deep .preview-card {
       padding: 24px !important;
       max-width: 1000px !important;
       width: 95% !important;
-      height: calc(100vh - 150px) !important;
-      display: grid !important;
-      grid-template-rows: auto auto 1fr auto !important;
+      max-height: 85vh !important;
+      display: flex !important;
+      flex-direction: column !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      gap: 0 !important;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5) !important;
+      background: var(--ag-card-bg) !important;
+      border: 1px solid var(--ag-border) !important;
     }
-    :host ::ng-deep .preview-header { margin-bottom: 16px !important; flex: none !important; }
-    :host ::ng-deep .preview-summary { margin-bottom: 16px !important; flex: none !important; }
     :host ::ng-deep .preview-table-wrap { 
+      flex: 1 !important;
       min-height: 0 !important;
       overflow: auto !important; 
+      margin: 16px 0 !important;
       border-radius: 8px !important; 
       border: 1px solid var(--ag-border) !important; 
       background: rgba(0,0,0,0.05) !important;
     }
     :host ::ng-deep .preview-actions { 
-      padding-top: 20px !important;
-      margin-top: 10px !important;
+      padding-top: 16px !important;
       border-top: 1px solid var(--ag-border) !important;
       display: flex !important; 
       justify-content: flex-end !important;
