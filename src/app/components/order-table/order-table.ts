@@ -201,7 +201,7 @@ import { AuthService } from '../../services/auth.service';
 
     <!-- ── IMPORT PREVIEW DIALOG ── -->
     <div class="overlay" *ngIf="showPreview" (click)="closePreview()">
-      <div class="preview-card glass-panel" (click)="$event.stopPropagation()">
+      <div class="preview-card ag-modal-solid" (click)="$event.stopPropagation()">
         <div class="preview-header">
           <h3><mat-icon>upload_file</mat-icon> Xem Trước Import Đơn Hàng</h3>
           <button mat-icon-button (click)="closePreview()"><mat-icon>close</mat-icon></button>
@@ -299,35 +299,32 @@ import { AuthService } from '../../services/auth.service';
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8) !important;
       z-index: 9999;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Prevent cutoffs */
-      padding: 40px 10px;
-      backdrop-filter: blur(8px);
+      align-items: center;
+      backdrop-filter: blur(10px);
     }
     
     /* Preview dialog */
     :host ::ng-deep .preview-card {
-      padding: 24px !important;
+      padding: 32px !important;
       max-width: 1000px !important;
       width: 95% !important;
-      max-height: 85vh !important;
+      max-height: 90vh !important;
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.5) !important;
-      background: var(--ag-card-bg) !important;
-      border: 1px solid var(--ag-border) !important;
+      position: relative !important;
     }
     :host ::ng-deep .preview-table-wrap { 
       flex: 1 !important;
       min-height: 0 !important;
-      overflow: auto !important; 
-      margin: 16px 0 !important;
-      border-radius: 8px !important; 
+      overflow-y: auto !important; 
+      margin: 20px 0 !important;
+      border-radius: 12px !important; 
       border: 1px solid var(--ag-border) !important; 
       background: rgba(0,0,0,0.05) !important;
     }
