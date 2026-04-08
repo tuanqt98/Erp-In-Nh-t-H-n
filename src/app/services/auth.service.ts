@@ -37,8 +37,12 @@ export class AuthService {
 
   private loadSession(): void {
     const session = localStorage.getItem(AUTH_KEY);
-    if (session) {
-      this._currentUser$.next(JSON.parse(session));
+    if (session && session !== 'undefined') {
+      try {
+        this._currentUser$.next(JSON.parse(session));
+      } catch {
+        localStorage.removeItem(AUTH_KEY);
+      }
     }
   }
 
