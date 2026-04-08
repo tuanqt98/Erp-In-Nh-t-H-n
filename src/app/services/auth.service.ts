@@ -13,7 +13,7 @@ const AUTH_KEY = 'auth_session';
 const EMPLOYEE_ACCOUNTS_KEY = 'employee_accounts';
 
 const BUILT_IN_ACCOUNTS: { username: string; password: string; user: User }[] = [
-  { username: 'admin',   password: 'admin123',   user: { username: 'admin',   role: 'admin',   displayName: 'Quản Trị Viên' } },
+  { username: 'admin',   password: '1',          user: { username: 'admin',   role: 'admin',   displayName: 'Quản Trị Viên' } },
   { username: 'qlsx',    password: '1',          user: { username: 'qlsx',    role: 'manager', displayName: 'Quản Lý Sản Xuất' } },
   { username: 'staff',   password: '1',          user: { username: 'staff',   role: 'staff',   displayName: 'Nhân Viên In' } },
 ];
