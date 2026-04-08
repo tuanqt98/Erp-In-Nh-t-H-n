@@ -58,6 +58,12 @@ import { AuthService } from '../../services/auth.service';
             Import Excel
           </button>
 
+          <button mat-stroked-button class="btn-goto-last" (click)="goToLastPage()" matTooltip="Nhảy đến trang cuối"
+                  *ngIf="dataSource.data.length > 0">
+            <mat-icon>last_page</mat-icon>
+            Trang cuối ({{ dataSource.data.length }} dòng)
+          </button>
+
           <button mat-button class="btn-clear" (click)="showClearConfirm = true"
                   *ngIf="dataSource.data.length > 0 && authService.isAdmin()">
             <mat-icon>delete_forever</mat-icon>
@@ -292,6 +298,8 @@ import { AuthService } from '../../services/auth.service';
     .btn-import { color: #22c55e!important; border-color: rgba(34,197,94,.4)!important; white-space:nowrap; }
     .btn-import:hover { background: rgba(34,197,94,.08)!important; }
     .btn-clear { color:#ef4444!important; white-space:nowrap; }
+    .btn-goto-last { color: var(--ag-neon)!important; border-color: rgba(14,165,233,.3)!important; white-space:nowrap; font-size: 0.85rem; }
+    .btn-goto-last:hover { background: rgba(14,165,233,.08)!important; }
     .btn-delete { color:#ef4444!important; }
     .no-data { text-align:center; padding:40px 0!important; display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ag-text-secondary); }
 
@@ -406,8 +414,18 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
   addOrder() {
     this.dialog.open(OrderFormComponent, { width: '700px', disableClose: true })
       .afterClosed().subscribe(result => {
-        if (result) this.snackBar.open('Đã thêm đơn hàng mới!', 'Đóng', { duration: 3000 });
+        if (result) {
+          this.snackBar.open('Đã thêm đơn hàng mới!', 'Đóng', { duration: 3000 });
+          // Auto jump to last page to see the new record
+          setTimeout(() => this.goToLastPage(), 300);
+        }
       });
+  }
+
+  goToLastPage() {
+    if (this.paginator) {
+      this.paginator.lastPage();
+    }
   }
 
   // ── Import flow ────────────────────────────────────────────────────────────

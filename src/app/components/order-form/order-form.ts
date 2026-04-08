@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -30,6 +30,12 @@ import { OrderService } from '../../services/order.service';
     <mat-dialog-content>
       <form [formGroup]="orderForm" class="order-form">
         <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Lệnh sản xuất</mat-label>
+            <input matInput formControlName="lenhSanXuat" placeholder="Tự động tăng">
+            <mat-icon matSuffix style="color: var(--ag-neon)">tag</mat-icon>
+            <mat-hint>Tự động tăng từ dòng cuối</mat-hint>
+          </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Ngày xuống</mat-label>
             <input matInput [matDatepicker]="px" formControlName="ngayXuong">
@@ -150,13 +156,14 @@ import { OrderService } from '../../services/order.service';
     }
   `]
 })
-export class OrderFormComponent {
+export class OrderFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private orderService = inject(OrderService);
   dialogRef = inject(MatDialogRef<OrderFormComponent>);
 
   orderForm: FormGroup = this.fb.group({
-    stt: [''], // Will be calculated if needed or left blank
+    lenhSanXuat: [''],
+    stt: [''],
     ngayXuong: [new Date(), Validators.required],
     ngayGiao: [new Date(), Validators.required],
     maHang: ['', Validators.required],
@@ -171,6 +178,34 @@ export class OrderFormComponent {
     khoGiay: [''],
     haoPhi: ['']
   });
+
+  ngOnInit() {
+    // Auto-generate next Lệnh SX number
+    const orders = this.orderService.orders;
+    let maxNum = 0;
+    for (const o of orders) {
+      const lsx = o.lenhSanXuat || '';
+      // Extract number from end of string (e.g., "LSX-9000" → 9000, "9000" → 9000)
+      const match = lsx.match(/(\d+)\s*$/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (n > maxNum) maxNum = n;
+      }
+    }
+    const nextNum = maxNum + 1;
+    // Preserve prefix if exists (e.g., "LSX-"), otherwise just number
+    let prefix = '';
+    if (orders.length > 0) {
+      const lastLsx = orders[orders.length - 1]?.lenhSanXuat || '';
+      const prefixMatch = lastLsx.match(/^(.*?)(\d+)\s*$/);
+      if (prefixMatch && prefixMatch[1]) {
+        prefix = prefixMatch[1];
+      }
+    }
+    this.orderForm.patchValue({
+      lenhSanXuat: prefix + String(nextNum)
+    });
+  }
 
   onSubmit() {
     if (this.orderForm.valid) {
