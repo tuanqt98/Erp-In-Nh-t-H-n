@@ -1,25 +1,21 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 
 export interface User {
   username: string;
   role: 'admin' | 'staff' | 'manager';
   displayName: string;
-  employeeId?: string;  // Set when logged in as employee
+  employeeId?: string;
 }
 
-const AUTH_KEY = 'auth_session';
-const EMPLOYEE_ACCOUNTS_KEY = 'employee_accounts';
-
-const BUILT_IN_ACCOUNTS: { username: string; password: string; user: User }[] = [
-  { username: 'admin',   password: '1',          user: { username: 'admin',   role: 'admin',   displayName: 'Quản Trị Viên' } },
-  { username: 'qlsx',    password: '1',          user: { username: 'qlsx',    role: 'manager', displayName: 'Quản Lý Sản Xuất' } },
-  { username: 'staff',   password: '1',          user: { username: 'staff',   role: 'staff',   displayName: 'Nhân Viên In' } },
-];
+const TOKEN_KEY = 'jwt_token';
+const USER_KEY = 'auth_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private http = inject(HttpClient);
   private router = inject(Router);
   private _currentUser$ = new BehaviorSubject<User | null>(null);
 
@@ -36,62 +32,45 @@ export class AuthService {
   }
 
   private loadSession(): void {
-    const session = localStorage.getItem(AUTH_KEY);
-    if (!session || session === 'undefined' || session === 'null') {
-      localStorage.removeItem(AUTH_KEY);
+    const token = localStorage.getItem(TOKEN_KEY);
+    const userJson = localStorage.getItem(USER_KEY);
+    if (!token || !userJson || userJson === 'undefined' || userJson === 'null') {
+      this.clearStorage();
       return;
     }
     try {
-      this._currentUser$.next(JSON.parse(session));
+      this._currentUser$.next(JSON.parse(userJson));
     } catch {
-      localStorage.removeItem(AUTH_KEY);
+      this.clearStorage();
     }
   }
 
-  login(username: string, password: string): boolean {
-    // 1. Check built-in accounts
-    const builtIn = BUILT_IN_ACCOUNTS.find(a => a.username === username && a.password === password);
-    if (builtIn) {
-      const savedName = localStorage.getItem(`displayName_${username}`);
-      const user: User = { ...builtIn.user, displayName: savedName ?? builtIn.user.displayName };
-      this._doLogin(user);
-      return true;
-    }
+  private clearStorage(): void {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  }
 
-    // 2. Check employee accounts (stored in localStorage by EmployeeService)
-    const empAccounts: { username: string; password: string; employeeId: string; role?: string }[] =
-      JSON.parse(localStorage.getItem(EMPLOYEE_ACCOUNTS_KEY) ?? '[]');
-    const empAccount = empAccounts.find(a => a.username === username && a.password === password);
-
-    if (empAccount) {
-      // Get employee details
-      const employees: any[] = JSON.parse(localStorage.getItem('employees_data') ?? '[]');
-      const emp = employees.find((e: any) => e.id === empAccount.employeeId && e.trangThai === 'active');
-      if (emp) {
-        const savedName = localStorage.getItem(`displayName_${username}`);
-        const user: User = {
-          username: emp.maNhanVien,
-          role: (empAccount.role ?? 'staff') as 'admin' | 'manager' | 'staff',
-          displayName: savedName ?? emp.tenNhanVien,
-          employeeId: emp.id
-        };
-        this._doLogin(user);
+  async login(username: string, password: string): Promise<boolean> {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.post('/api/auth', { username, password })
+      );
+      if (response?.token && response?.user) {
+        localStorage.setItem(TOKEN_KEY, response.token);
+        localStorage.setItem(USER_KEY, JSON.stringify(response.user));
+        this._currentUser$.next(response.user as User);
+        this.router.navigate(['/dashboard']);
         return true;
       }
+      return false;
+    } catch {
+      return false;
     }
-
-    return false;
-  }
-
-  private _doLogin(user: User): void {
-    this._currentUser$.next(user);
-    localStorage.setItem(AUTH_KEY, JSON.stringify(user));
-    this.router.navigate(['/dashboard']);
   }
 
   logout(): void {
     this._currentUser$.next(null);
-    localStorage.removeItem(AUTH_KEY);
+    this.clearStorage();
     this.router.navigate(['/login']);
   }
 
@@ -109,7 +88,35 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    const session = localStorage.getItem(AUTH_KEY);
-    return session ? 'dummy-session-token' : null;
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  async changePassword(username: string, currentPassword: string, newPassword: string): Promise<boolean> {
+    try {
+      await firstValueFrom(
+        this.http.post('/api/auth', { action: 'changePassword', username, password: currentPassword, newPassword })
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async changeDisplayName(username: string, newDisplayName: string): Promise<boolean> {
+    try {
+      await firstValueFrom(
+        this.http.post('/api/auth', { action: 'changeDisplayName', username, newDisplayName })
+      );
+      // Update local copy
+      const user = this.currentUser;
+      if (user) {
+        user.displayName = newDisplayName;
+        this._currentUser$.next({ ...user });
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

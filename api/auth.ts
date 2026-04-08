@@ -1,24 +1,44 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './lib/prisma';
 import { signToken, comparePassword, hashPassword } from './lib/auth';
+import { setCors } from './lib/cors';
+
+// Built-in accounts to seed when database is empty
+const SEED_USERS = [
+  { username: 'admin', password: '1', displayName: 'Quản Trị Viên', role: 'admin' },
+  { username: 'qlsx',  password: '1', displayName: 'Quản Lý Sản Xuất', role: 'manager' },
+  { username: 'staff', password: '1', displayName: 'Nhân Viên In', role: 'staff' },
+];
+
+async function bootstrapUsers() {
+  const count = await prisma.user.count();
+  if (count === 0) {
+    for (const u of SEED_USERS) {
+      const hashed = await hashPassword(u.password);
+      await prisma.user.create({
+        data: { username: u.username, password: hashed, displayName: u.displayName, role: u.role }
+      });
+    }
+    // Seed default production stages
+    const stages = ['In', 'Cán Màng', 'Bế', 'Xén', 'Chia', 'Phủ cào', 'Chặt tờ'];
+    for (const name of stages) {
+      await prisma.productionStage.upsert({
+        where: { name },
+        update: {},
+        create: { name }
+      });
+    }
+    return true;
+  }
+  return false;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
-  );
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  setCors(res);
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    // 1. HEALTH CHECK & BOOTSTRAP (GET)
+    // GET: Health check
     if (req.method === 'GET') {
       const userCount = await prisma.user.count();
       return res.status(200).json({ 
@@ -29,40 +49,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // 2. LOGIN (POST)
+    // POST: Login or actions
     if (req.method === 'POST') {
-      const { username, password } = req.body;
+      const { action, username, password, newPassword, newDisplayName } = req.body || {};
 
-      // Bootstrap logic: Create admin if no users exist
-      const userCount = await prisma.user.count();
-      if (userCount === 0 && username === 'admin' && password === '1') {
-        const hashedPassword = await hashPassword('1');
-        const admin = await prisma.user.create({
-          data: {
-            username: 'admin',
-            password: hashedPassword,
-            displayName: 'Quản trị viên',
-            role: 'admin'
-          }
-        });
-        
-        const token = signToken({
-          userId: admin.id,
-          username: admin.username,
-          role: admin.role
-        });
+      // Bootstrap: seed users if DB is empty
+      const seeded = await bootstrapUsers();
+      if (seeded) {
+        console.log('Bootstrapped 3 default users + stages');
+      }
 
-        return res.status(200).json({
-          token,
-          user: {
-            username: admin.username,
-            role: admin.role,
-            displayName: admin.displayName
-          }
-        });
+      // Action: Change password
+      if (action === 'changePassword') {
+        const user = await prisma.user.findUnique({ where: { username } });
+        if (!user || !(await comparePassword(password, user.password))) {
+          return res.status(401).json({ message: 'Mật khẩu hiện tại không đúng' });
+        }
+        const hashed = await hashPassword(newPassword);
+        await prisma.user.update({ where: { username }, data: { password: hashed } });
+        return res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+      }
+
+      // Action: Change display name
+      if (action === 'changeDisplayName') {
+        await prisma.user.update({ where: { username }, data: { displayName: newDisplayName } });
+        return res.status(200).json({ message: 'Đổi tên hiển thị thành công' });
       }
 
       // Standard Login
+      if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password required' });
+      }
+
       const user = await prisma.user.findUnique({
         where: { username },
         include: { employee: true },
@@ -86,7 +104,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
         });
       }
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng' });
     }
 
     return res.status(405).json({ message: 'Method not allowed' });
@@ -95,7 +113,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ 
       status: 'CRASH',
       message: error.message,
-      hint: 'Check Prisma binaries and connection string.' 
     });
   }
 }

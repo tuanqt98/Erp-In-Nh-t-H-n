@@ -1,11 +1,18 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "npm run build",
+  "buildCommand": "npx prisma generate && npx ng build --configuration production",
   "outputDirectory": "dist/san-luong-app/browser",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/auth", "destination": "/api/auth" },
+    { "source": "/api/employees", "destination": "/api/employees" },
+    { "source": "/api/orders", "destination": "/api/orders" },
+    { "source": "/api/production", "destination": "/api/production" },
+    { "source": "/api/stages", "destination": "/api/stages" },
+    { "source": "/api/support-time", "destination": "/api/support-time" },
+    { "source": "/api/health", "destination": "/api/health" },
+    { "source": "/api/hello", "destination": "/api/hello" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

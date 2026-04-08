@@ -1,15 +1,11 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { ProductionRecord } from '../models/production.model';
-
-const STORAGE_KEY = 'san_luong_records';
-const STAGES_KEY = 'san_luong_stages';
-import { CONG_DOAN_OPTIONS } from '../models/production.model';
-
-// Empty initial data
 
 @Injectable({ providedIn: 'root' })
 export class ProductionService {
+  private http = inject(HttpClient);
   private _records$ = new BehaviorSubject<ProductionRecord[]>([]);
   private _stages$ = new BehaviorSubject<string[]>([]);
 
@@ -26,94 +22,87 @@ export class ProductionService {
   }
 
   constructor() {
-    this.loadFromStorage();
-    this.loadStages();
+    this.refresh();
   }
 
-  private loadStages(): void {
-    const raw = localStorage.getItem(STAGES_KEY);
-    if (raw) {
-      try {
-        this._stages$.next(JSON.parse(raw));
-      } catch {
-        this._stages$.next([...CONG_DOAN_OPTIONS]);
-      }
-    } else {
-      this._stages$.next([...CONG_DOAN_OPTIONS]);
-      this.saveStages();
+  async refresh(): Promise<void> {
+    await Promise.all([this.loadRecords(), this.loadStages()]);
+  }
+
+  private async loadRecords(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<any[]>('/api/production'));
+      const records: ProductionRecord[] = (data || []).map(r => ({
+        id: r.id,
+        ngaySanXuat: r.ngaySanXuat,
+        tenNhanVien: r.employee?.tenNhanVien || r.employee?.maNhanVien || '',
+        lenhSanXuat: r.lenhSanXuat,
+        maHang: r.maHang,
+        tenHang: r.tenHang,
+        nguyenVatLieu: r.nguyenVatLieu || '',
+        congDoan: r.congDoan,
+        tenMay: r.tenMay,
+        sanLuongOK: r.sanLuongOK,
+        sanLuongLoi: r.sanLuongLoi,
+        thoiGianBatDau: r.thoiGianBatDau || undefined,
+        thoiGianKetThuc: r.thoiGianKetThuc || undefined,
+        thoiGianSanXuat: r.thoiGianSanXuat,
+        ghiChu: r.ghiChu || '',
+        createdAt: new Date(r.createdAt).getTime(),
+        // Keep employeeId for API calls
+        employeeId: r.employeeId,
+      }));
+      this._records$.next(records);
+    } catch (err) {
+      console.error('Failed to load production records:', err);
     }
   }
 
-  private saveStages(): void {
-    localStorage.setItem(STAGES_KEY, JSON.stringify(this._stages$.getValue()));
+  private async loadStages(): Promise<void> {
+    try {
+      const stages = await firstValueFrom(this.http.get<string[]>('/api/stages'));
+      this._stages$.next(stages || []);
+    } catch (err) {
+      console.error('Failed to load stages:', err);
+    }
   }
 
-  addStage(name: string): void {
+  async addStage(name: string): Promise<void> {
     const current = this._stages$.getValue();
     if (!current.includes(name)) {
-      const updated = [...current, name];
-      this._stages$.next(updated);
-      this.saveStages();
+      await firstValueFrom(this.http.post('/api/stages', { name }));
+      this._stages$.next([...current, name]);
     }
   }
 
-  private loadFromStorage(): void {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as ProductionRecord[];
-        this._records$.next(parsed);
-      } else {
-        // Initialize with empty data
-        this._records$.next([]);
-        this.saveToStorage();
-      }
-    } catch {
-      this._records$.next([]);
-    }
-  }
-
-  clearAll(): void {
+  async clearAll(): Promise<void> {
+    await firstValueFrom(this.http.post('/api/production', { action: 'clearAll' }));
     this._records$.next([]);
-    this.saveToStorage();
   }
 
-  private saveToStorage(): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this._records$.getValue()));
+  async addRecord(record: Omit<ProductionRecord, 'id' | 'createdAt'>): Promise<void> {
+    // Map tenNhanVien to employeeId for the API
+    const data: any = { ...record };
+    // employeeId should be provided by the form
+    await firstValueFrom(this.http.post('/api/production', data));
+    await this.loadRecords();
   }
 
-  addRecord(record: Omit<ProductionRecord, 'id' | 'createdAt'>): void {
-    const newRecord: ProductionRecord = {
-      ...record,
-      id: crypto.randomUUID(),
-      createdAt: Date.now(),
-    };
-    const updated = [newRecord, ...this._records$.getValue()];
-    this._records$.next(updated);
-    this.saveToStorage();
-  }
-
-  updateRecord(recordOrId: ProductionRecord | string, changes?: Partial<ProductionRecord>): void {
-    let updated: ProductionRecord[];
+  async updateRecord(recordOrId: ProductionRecord | string, changes?: Partial<ProductionRecord>): Promise<void> {
+    let updateData: any;
     if (typeof recordOrId === 'string') {
-      // Legacy: updateRecord(id, changes)
-      updated = this._records$.getValue().map(r =>
-        r.id === recordOrId ? { ...r, ...changes } : r
-      );
+      updateData = { id: recordOrId, ...changes };
     } else {
-      // New: updateRecord(fullRecord)
-      updated = this._records$.getValue().map(r =>
-        r.id === recordOrId.id ? { ...r, ...recordOrId } : r
-      );
+      const { id, ...rest } = recordOrId;
+      updateData = { id, ...rest };
     }
-    this._records$.next(updated);
-    this.saveToStorage();
+    await firstValueFrom(this.http.put('/api/production', updateData));
+    await this.loadRecords();
   }
 
-  deleteRecord(id: string): void {
-    const updated = this._records$.getValue().filter(r => r.id !== id);
-    this._records$.next(updated);
-    this.saveToStorage();
+  async deleteRecord(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`/api/production?id=${id}`));
+    await this.loadRecords();
   }
 
   getTotalOK(): number {
@@ -127,10 +116,5 @@ export class ProductionService {
   getTodayCount(): number {
     const today = new Date().toISOString().split('T')[0];
     return this._records$.getValue().filter(r => r.ngaySanXuat === today).length;
-  }
-
-  refresh(): void {
-    this.loadFromStorage();
-    this.loadStages();
   }
 }

@@ -50,8 +50,8 @@ import { AuthService } from '../../services/auth.service';
             </mat-form-field>
 
 
-            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="login-button">
-              Đăng Nhập
+            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading" class="login-button">
+              {{ loading ? 'Đang đăng nhập...' : 'Đăng Nhập' }}
             </button>
           </form>
         </mat-card-content>
@@ -154,11 +154,14 @@ export class LoginComponent {
   });
 
   hide = true;
+  loading = false;
 
-  onSubmit() {
-    if (this.loginForm.valid) {
+  async onSubmit() {
+    if (this.loginForm.valid && !this.loading) {
+      this.loading = true;
       const { username, password } = this.loginForm.value;
-      const success = this.authService.login(username, password);
+      const success = await this.authService.login(username, password);
+      this.loading = false;
 
       if (!success) {
         this.snackBar.open('Tên đăng nhập hoặc mật khẩu không đúng!', 'Đóng', {
@@ -169,3 +172,4 @@ export class LoginComponent {
     }
   }
 }
+

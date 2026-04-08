@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { OrderRecord } from '../models/order.model';
 import * as XLSX from 'xlsx';
-
-const STORAGE_KEY = 'order_records';
 
 export interface OrderImportPreviewRow {
   data: Omit<OrderRecord, 'id'>;
@@ -12,6 +11,7 @@ export interface OrderImportPreviewRow {
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
+  private http = inject(HttpClient);
   private _orders$ = new BehaviorSubject<OrderRecord[]>([]);
 
   get orders$(): Observable<OrderRecord[]> {
@@ -23,34 +23,24 @@ export class OrderService {
   }
 
   constructor() {
-    this.loadFromStorage();
+    this.refresh();
   }
 
-  private loadFromStorage(): void {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        this._orders$.next(JSON.parse(saved));
-      } catch {
-        this._orders$.next([]);
-      }
+  async refresh(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<OrderRecord[]>('/api/orders'));
+      this._orders$.next(data || []);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
     }
   }
 
-  private saveToStorage(records: OrderRecord[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-    this._orders$.next(records);
-  }
-
-  importFromExcel(file: File): Promise<{ count: number; skipped: number }> {
-    return new Promise((resolve, reject) => {
-      this.parseExcel(file).then(rows => {
-        const newOnes = rows.filter(r => r.status === 'new').map(r => r.data);
-        const skipped = rows.length - newOnes.length;
-        this.appendRecords(newOnes);
-        resolve({ count: newOnes.length, skipped });
-      }).catch(reject);
-    });
+  async importFromExcel(file: File): Promise<{ count: number; skipped: number }> {
+    const rows = await this.parseExcel(file);
+    const newOnes = rows.filter(r => r.status === 'new').map(r => r.data);
+    const skipped = rows.length - newOnes.length;
+    await this.appendRecords(newOnes);
+    return { count: newOnes.length, skipped };
   }
 
   /** Robust Excel parser with multi-sheet scanning and positional fallback */
@@ -65,7 +55,6 @@ export class OrderService {
           let bestRaw: any[][] = [];
           let maxRows = 0;
 
-          // Find sheet with most data
           for (const sName of wb.SheetNames) {
             const ws = wb.Sheets[sName];
             const raw: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
@@ -181,27 +170,31 @@ export class OrderService {
     });
   }
 
-  appendRecords(rows: Omit<OrderRecord, 'id'>[]): void {
-    const newRecords: OrderRecord[] = rows.map(r => ({ ...r, id: crypto.randomUUID() }));
-    this.saveToStorage([...this.orders, ...newRecords]);
+  async appendRecords(rows: Omit<OrderRecord, 'id'>[]): Promise<void> {
+    if (rows.length === 0) return;
+    await firstValueFrom(
+      this.http.post('/api/orders', { action: 'batch', items: rows })
+    );
+    await this.refresh();
   }
 
-  clearAll(): void {
-    this.saveToStorage([]);
+  async clearAll(): Promise<void> {
+    await firstValueFrom(
+      this.http.post('/api/orders', { action: 'clearAll' })
+    );
+    this._orders$.next([]);
   }
 
-  addOrder(record: Omit<OrderRecord, 'id'>): void {
-    const newRec: OrderRecord = { ...record, id: crypto.randomUUID() };
-    this.saveToStorage([newRec, ...this.orders]);
+  async addOrder(record: Omit<OrderRecord, 'id'>): Promise<void> {
+    await firstValueFrom(this.http.post('/api/orders', record));
+    await this.refresh();
   }
 
-  deleteOrder(index: number): void {
-    const current = [...this.orders];
-    current.splice(index, 1);
-    this.saveToStorage(current);
-  }
-
-  refresh(): void {
-    this.loadFromStorage();
+  async deleteOrder(index: number): Promise<void> {
+    const order = this.orders[index];
+    if (order?.id) {
+      await firstValueFrom(this.http.delete(`/api/orders?id=${order.id}`));
+      await this.refresh();
+    }
   }
 }

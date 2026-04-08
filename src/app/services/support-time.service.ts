@@ -1,8 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { SupportTimeRecord } from '../models/support-time.model';
 
-const STORAGE_KEY = 'support_time_records';
 const NOTIFICATIONS_KEY = 'support_notifications';
 
 export interface Notification {
@@ -16,7 +16,8 @@ export interface Notification {
 
 @Injectable({ providedIn: 'root' })
 export class SupportTimeService {
-  private _records$ = new BehaviorSubject<SupportTimeRecord[]>(this.load());
+  private http = inject(HttpClient);
+  private _records$ = new BehaviorSubject<SupportTimeRecord[]>([]);
   private _notifications$ = new BehaviorSubject<Notification[]>(this.loadNotifications());
 
   records$ = this._records$.asObservable();
@@ -34,16 +35,11 @@ export class SupportTimeService {
     return this._notifications$.getValue().filter(n => !n.isRead).length;
   }
 
-  private load(): SupportTimeRecord[] {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+  constructor() {
+    this.refresh();
   }
 
-  private save(records: SupportTimeRecord[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-    this._records$.next(records);
-  }
-
+  // Notifications stay in localStorage for now (per-device, real-time push would need WebSockets)
   private loadNotifications(): Notification[] {
     const data = localStorage.getItem(NOTIFICATIONS_KEY);
     return data ? JSON.parse(data) : [];
@@ -54,52 +50,54 @@ export class SupportTimeService {
     this._notifications$.next(notifications);
   }
 
-  addRecord(partial: Omit<SupportTimeRecord, 'id' | 'createdAt' | 'status'>): SupportTimeRecord {
-    const newRecord: SupportTimeRecord = {
-      ...partial,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      status: 'pending'
-    };
-    const updated = [newRecord, ...this.records];
-    this.save(updated);
+  async refresh(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<SupportTimeRecord[]>('/api/support-time'));
+      this._records$.next(data || []);
+    } catch (err) {
+      console.error('Failed to load support time records:', err);
+    }
+  }
 
-    // Add notification for manager
+  async addRecord(partial: Omit<SupportTimeRecord, 'id' | 'createdAt' | 'status'>): Promise<SupportTimeRecord> {
+    const record = await firstValueFrom(
+      this.http.post<SupportTimeRecord>('/api/support-time', partial)
+    );
+    await this.refresh();
+
+    // Add local notification for manager
     const notification: Notification = {
       id: Date.now().toString() + '_notif',
       message: `${partial.userName} đã đăng ký hỗ trợ từ ${partial.startDate} đến ${partial.endDate}`,
-      recordId: newRecord.id,
+      recordId: record.id,
       isRead: false,
       createdAt: new Date().toISOString(),
       forRole: 'manager'
     };
     this.saveNotifications([notification, ...this.notifications]);
 
-    return newRecord;
+    return record;
   }
 
-  approve(id: string, reviewerName: string): void {
-    const updated = this.records.map(r =>
-      r.id === id
-        ? { ...r, status: 'approved' as const, reviewedAt: new Date().toISOString(), reviewedBy: reviewerName }
-        : r
+  async approve(id: string, reviewerName: string): Promise<void> {
+    await firstValueFrom(
+      this.http.put('/api/support-time', { id, action: 'approve', reviewedBy: reviewerName })
     );
-    this.save(updated);
+    await this.refresh();
     this.markNotificationRead(id);
   }
 
-  reject(id: string, reviewerName: string, rejectReason: string): void {
-    const updated = this.records.map(r =>
-      r.id === id
-        ? { ...r, status: 'rejected' as const, reviewedAt: new Date().toISOString(), reviewedBy: reviewerName, rejectReason }
-        : r
+  async reject(id: string, reviewerName: string, rejectReason: string): Promise<void> {
+    await firstValueFrom(
+      this.http.put('/api/support-time', { id, action: 'reject', reviewedBy: reviewerName, rejectReason })
     );
-    this.save(updated);
+    await this.refresh();
     this.markNotificationRead(id);
   }
 
-  delete(id: string): void {
-    this.save(this.records.filter(r => r.id !== id));
+  async delete(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`/api/support-time?id=${id}`));
+    await this.refresh();
   }
 
   markNotificationRead(recordId: string): void {
@@ -120,10 +118,5 @@ export class SupportTimeService {
 
   getUnreadCount(): number {
     return this.notifications.filter(n => n.forRole === 'manager' && !n.isRead).length;
-  }
-
-  refresh(): void {
-    this._records$.next(this.load());
-    this._notifications$.next(this.loadNotifications());
   }
 }

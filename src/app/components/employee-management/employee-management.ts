@@ -746,35 +746,15 @@ export class EmployeeManagementComponent implements OnInit, AfterViewInit {
   isAdmin() { return this.authService.isAdmin(); }
 
   ngOnInit(): void {
-    // Load role map ONCE before subscribing so dropdowns have correct initial values
-    this.loadRoleMap();
-
     this.empService.employees$.subscribe(emps => {
       this.dataSource.data = emps;
-      // Merge only NEW employees into roleMap — never overwrite existing entries
-      // This prevents the (change) event from firing on all rows during re-render
-      const accounts = this.empService.loadAccounts();
-      emps.forEach(e => {
+      // Build roleMap from API response (employee includes user.role)
+      emps.forEach((e: any) => {
         if (!(e.id in this.roleMap)) {
-          const acc = accounts.find(a => a.employeeId === e.id);
-          this.roleMap[e.id] = acc?.role ?? 'staff';
+          this.roleMap[e.id] = e.user?.role ?? 'staff';
         }
       });
       this.applyFilter();
-    });
-  }
-
-  private loadRoleMap(): void {
-    const accounts = this.empService.loadAccounts();
-    // Build a new map but do NOT replace the entire object reference
-    // to avoid triggering Angular CD on all rows simultaneously
-    const newMap: Record<string, string> = {};
-    accounts.forEach(a => { newMap[a.employeeId] = a.role ?? 'staff'; });
-    // Only update entries that changed
-    this.empService.employees.forEach(e => {
-      if (!this.roleMap[e.id]) {
-        this.roleMap[e.id] = newMap[e.id] ?? 'staff';
-      }
     });
   }
 

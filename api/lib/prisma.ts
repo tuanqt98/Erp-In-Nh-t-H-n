@@ -5,9 +5,11 @@ import { PrismaClient } from '@prisma/client';
 // Fix for Decimal/BigInt types in pg
 types.setTypeParser(1700, (val) => parseFloat(val));
 
-const connectionString = `${process.env['DATABASE_URL']}`;
+// Remove channel_binding from connection string as pg Pool doesn't support it
+const rawUrl = process.env['DATABASE_URL'] || '';
+const connectionString = rawUrl.replace(/[&?]channel_binding=require/g, '');
 
-const pool = new Pool({ connectionString });
+const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
 const adapter = new PrismaPg(pool);
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };

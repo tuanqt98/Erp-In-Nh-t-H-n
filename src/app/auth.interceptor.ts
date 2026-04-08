@@ -6,8 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  // Clone the request and add the Bearer token if it exists
-  if (token) {
+  if (token && !req.url.includes('/api/auth')) {
     const authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`

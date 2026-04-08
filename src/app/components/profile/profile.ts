@@ -307,15 +307,16 @@ export class ProfileComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  saveProfile(): void {
+  async saveProfile(): Promise<void> {
     if (!this.displayName.trim()) return;
-    localStorage.setItem(`displayName_${this.user?.username}`, this.displayName);
-    // Update current session
-    if (this.user) {
-      const updated = { ...this.user, displayName: this.displayName };
-      localStorage.setItem('auth_session', JSON.stringify(updated));
+    if (this.user?.username) {
+      const ok = await this.authService.changeDisplayName(this.user.username, this.displayName);
+      if (ok) {
+        this.snackBar.open('✅ Đã lưu thông tin!', 'Đóng', { duration: 2000 });
+      } else {
+        this.snackBar.open('❌ Không thể lưu. Thử lại sau.', 'Đóng', { duration: 3000 });
+      }
     }
-    this.snackBar.open('✅ Đã lưu thông tin!', 'Đóng', { duration: 2000 });
   }
 
   logout(): void {
