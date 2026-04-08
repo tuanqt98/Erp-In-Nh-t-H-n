@@ -42,7 +42,7 @@ import { AuthService } from '../../services/auth.service';
         <div class="table-actions">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Tìm kiếm đơn hàng...</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Mã hàng, Khách hàng..." #input>
+            <input matInput (keyup)="onSearchChange($event)" placeholder="Mã hàng, Khách hàng..." #searchInput>
             <mat-icon matSuffix class="neon-icon">search</mat-icon>
           </mat-form-field>
 
@@ -59,17 +59,21 @@ import { AuthService } from '../../services/auth.service';
           </button>
 
           <button mat-stroked-button class="btn-goto-last" (click)="goToLastPage()" matTooltip="Nhảy đến trang cuối"
-                  *ngIf="dataSource.data.length > 0">
+                  *ngIf="totalOrders > 0">
             <mat-icon>last_page</mat-icon>
-            Trang cuối ({{ dataSource.data.length }} dòng)
+            Trang cuối ({{ totalOrders | number }} dòng)
           </button>
 
           <button mat-button class="btn-clear" (click)="showClearConfirm = true"
-                  *ngIf="dataSource.data.length > 0 && authService.isAdmin()">
+                  *ngIf="totalOrders > 0 && authService.isAdmin()">
             <mat-icon>delete_forever</mat-icon>
             Xóa hết
           </button>
         </div>
+      </div>
+
+      <div class="loading-overlay" *ngIf="isLoading">
+        <div class="loader"></div>
       </div>
 
       <div class="table-responsive">
@@ -172,7 +176,14 @@ import { AuthService } from '../../services/auth.service';
         </table>
       </div>
 
-      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" aria-label="Chọn trang"></mat-paginator>
+      <mat-paginator 
+        [length]="totalOrders"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[10, 25, 50, 100, 500]" 
+        (page)="onPageChange($event)"
+        aria-label="Chọn trang">
+      </mat-paginator>
     </div>
 
     <!-- ── CONFIRM DELETE SINGLE ── -->
@@ -303,6 +314,27 @@ import { AuthService } from '../../services/auth.service';
     .btn-delete { color:#ef4444!important; }
     .no-data { text-align:center; padding:40px 0!important; display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ag-text-secondary); }
 
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(13,17,23,0.5);
+      backdrop-filter: blur(2px);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--ag-border);
+      border-top-color: var(--ag-neon);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* Overlays */
     .overlay {
       position: fixed;
@@ -384,6 +416,13 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  // Pagination state
+  totalOrders = 0;
+  pageSize = 50;
+  pageIndex = 0;
+  searchTerm = '';
+  isLoading = false;
+
   // Confirm dialogs
   showDeleteConfirm = false;
   showClearConfirm = false;
@@ -396,19 +435,52 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
   get dupCount() { return this.previewRows.filter(r => r.status === 'duplicate').length; }
 
   ngOnInit() {
+    this.isLoading = true;
+
     this.orderService.orders$.subscribe(data => {
       this.dataSource.data = data;
+      this.isLoading = false;
     });
+
+    this.orderService.totalOrders$.subscribe(total => {
+      this.totalOrders = total;
+    });
+
+    // Initial load
+    this.loadData();
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.sort.sortChange.subscribe(() => {
+      this.pageIndex = 0;
+      this.loadData();
+    });
+  }
+
+  loadData() {
+    this.isLoading = true;
+    this.orderService.refresh(this.pageIndex, this.pageSize, this.searchTerm);
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadData();
+  }
+
+  private searchTimeout: any;
+  onSearchChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      this.searchTerm = value;
+      this.pageIndex = 0;
+      this.loadData();
+    }, 400);
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.onSearchChange(event);
   }
 
   addOrder() {
@@ -423,8 +495,9 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
   }
 
   goToLastPage() {
-    if (this.paginator) {
-      this.paginator.lastPage();
+    if (this.totalOrders > 0) {
+      this.pageIndex = Math.floor((this.totalOrders - 1) / this.pageSize);
+      this.loadData();
     }
   }
 

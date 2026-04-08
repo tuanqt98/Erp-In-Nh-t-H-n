@@ -7,10 +7,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    // GET: List all orders
+    // GET: List orders with pagination and search
     if (req.method === 'GET') {
-      const orders = await prisma.order.findMany({ orderBy: { createdAt: 'desc' } });
-      return res.status(200).json(orders);
+      const page = Number(req.query['page']) || 0;
+      const pageSize = Number(req.query['pageSize']) || 100;
+      const search = (req.query['search'] as string || '').trim().toLowerCase();
+
+      const where: any = {};
+      if (search) {
+        where.OR = [
+          { lenhSanXuat: { contains: search, mode: 'insensitive' } },
+          { maHang: { contains: search, mode: 'insensitive' } },
+          { tenHang: { contains: search, mode: 'insensitive' } },
+          { khachHang: { contains: search, mode: 'insensitive' } },
+          { nguyenVatLieu: { contains: search, mode: 'insensitive' } },
+        ];
+      }
+
+      const [orders, total] = await Promise.all([
+        prisma.order.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip: page * pageSize,
+          take: pageSize,
+        }),
+        prisma.order.count({ where })
+      ]);
+
+      return res.status(200).json({ orders, total });
     }
 
     // POST: Create order(s)

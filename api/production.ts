@@ -7,13 +7,57 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    // GET: List all production records
+    // GET: List production records with pagination and search
     if (req.method === 'GET') {
-      const records = await prisma.productionRecord.findMany({
-        orderBy: { createdAt: 'desc' },
-        include: { employee: { select: { tenNhanVien: true, maNhanVien: true } } }
+      const page = Number(req.query['page']) || 0;
+      const pageSize = Number(req.query['pageSize']) || 100; // Default to 100 to not break old UI too much
+      const search = (req.query['search'] as string || '').trim().toLowerCase();
+
+      const where: any = {};
+      if (search) {
+        where.OR = [
+          { tenNhanVien: { contains: search, mode: 'insensitive' } },
+          { lenhSanXuat: { contains: search, mode: 'insensitive' } },
+          { maHang: { contains: search, mode: 'insensitive' } },
+          { tenHang: { contains: search, mode: 'insensitive' } },
+          { congDoan: { contains: search, mode: 'insensitive' } },
+          { tenMay: { contains: search, mode: 'insensitive' } },
+        ];
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const [records, total, stats] = await Promise.all([
+        prisma.productionRecord.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip: page * pageSize,
+          take: pageSize,
+          include: { employee: { select: { tenNhanVien: true, maNhanVien: true } } }
+        }),
+        prisma.productionRecord.count({ where }),
+        // Calculate global stats for the dashboard (not affected by search/pagination)
+        prisma.productionRecord.aggregate({
+          _sum: {
+            sanLuongOK: true,
+            sanLuongLoi: true
+          }
+        }),
+      ]);
+
+      const todayCount = await prisma.productionRecord.count({
+        where: { ngaySanXuat: today }
       });
-      return res.status(200).json(records);
+
+      return res.status(200).json({ 
+        records, 
+        total,
+        stats: {
+          totalOK: stats._sum.sanLuongOK || 0,
+          totalLoi: stats._sum.sanLuongLoi || 0,
+          todayCount
+        }
+      });
     }
 
     // POST: Create or batch actions

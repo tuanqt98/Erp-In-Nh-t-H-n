@@ -13,9 +13,14 @@ export interface OrderImportPreviewRow {
 export class OrderService {
   private http = inject(HttpClient);
   private _orders$ = new BehaviorSubject<OrderRecord[]>([]);
+  private _totalOrders$ = new BehaviorSubject<number>(0);
 
   get orders$(): Observable<OrderRecord[]> {
     return this._orders$.asObservable();
+  }
+
+  get totalOrders$(): Observable<number> {
+    return this._totalOrders$.asObservable();
   }
 
   get orders(): OrderRecord[] {
@@ -26,10 +31,13 @@ export class OrderService {
     this.refresh();
   }
 
-  async refresh(): Promise<void> {
+  async refresh(page = 0, pageSize = 25, search = ''): Promise<void> {
     try {
-      const data = await firstValueFrom(this.http.get<OrderRecord[]>('/api/orders'));
-      this._orders$.next(data || []);
+      const url = `/api/orders?page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search)}`;
+      const res = await firstValueFrom(this.http.get<any>(url));
+      
+      this._orders$.next(res.orders || []);
+      this._totalOrders$.next(res.total || 0);
     } catch (err) {
       console.error('Failed to load orders:', err);
     }

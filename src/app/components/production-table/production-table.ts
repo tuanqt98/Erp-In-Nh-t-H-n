@@ -44,7 +44,7 @@ import * as XLSX from 'xlsx';
         <div class="table-actions">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Tìm kiếm...</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Nhân viên, Lệnh SX, Mã hàng..." #input>
+            <input matInput (keyup)="onSearchChange($event)" placeholder="Nhân viên, Lệnh SX, Mã hàng..." #searchInput>
             <mat-icon matSuffix class="neon-icon">search</mat-icon>
           </mat-form-field>
 
@@ -59,6 +59,10 @@ import * as XLSX from 'xlsx';
             Xuất Excel
           </button>
         </div>
+      </div>
+
+      <div class="loading-overlay" *ngIf="isLoading">
+        <div class="loader"></div>
       </div>
 
       <div class="table-responsive">
@@ -152,13 +156,20 @@ import * as XLSX from 'xlsx';
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell no-data-cell" colspan="14">
               <mat-icon>search_off</mat-icon>
-              Không tìm thấy dữ liệu với "{{input.value}}"
+              Không tìm thấy dữ liệu với "{{searchInput.value}}"
             </td>
           </tr>
         </table>
       </div>
 
-      <mat-paginator [pageSizeOptions]="[10, 25, 100]" aria-label="Chọn trang"></mat-paginator>
+      <mat-paginator 
+        [length]="totalRecords"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[10, 25, 50, 100]" 
+        (page)="onPageChange($event)"
+        aria-label="Chọn trang">
+      </mat-paginator>
     </div>
 
     <!-- ─── CONFIRM DELETE SINGLE ─── -->
@@ -347,13 +358,30 @@ import * as XLSX from 'xlsx';
     .btn-delete { color: #ef4444 !important; }
     .no-access { color: var(--ag-text-secondary); }
     .no-data-cell {
-      text-align: center;
-      padding: 40px 0 !important;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 8px;
     }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(13,17,23,0.5);
+      backdrop-filter: blur(2px);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--ag-border);
+      border-top-color: var(--ag-neon);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Overlay / Confirm / Edit dialogs */
     .overlay {
@@ -456,6 +484,13 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  // Pagination state
+  totalRecords = 0;
+  pageSize = 25;
+  pageIndex = 0;
+  searchTerm = '';
+  isLoading = false;
+
   // Options
   congDoanOptions = CONG_DOAN_OPTIONS;
   nhanVienOptions = NHAN_VIEN_OPTIONS;
@@ -469,24 +504,58 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
   editRecord: ProductionRecord | null = null;
 
   canManage(): boolean {
-    return this.authService.isManager();  // true for both manager and admin
+    return this.authService.isManager();
   }
 
   ngOnInit() {
+    this.isLoading = true;
+    
     this.prodService.records$.subscribe(data => {
       this.dataSource.data = data;
+      this.isLoading = false;
     });
+
+    this.prodService.totalRecords$.subscribe(total => {
+      this.totalRecords = total;
+    });
+
+    // Initial load
+    this.loadData();
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    // We handle sorting and pagination manually via API
+    this.sort.sortChange.subscribe(() => {
+      this.pageIndex = 0;
+      this.loadData();
+    });
+  }
+
+  loadData() {
+    this.isLoading = true;
+    this.prodService.loadRecords(this.pageIndex, this.pageSize, this.searchTerm);
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadData();
+  }
+
+  private searchTimeout: any;
+  onSearchChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      this.searchTerm = value;
+      this.pageIndex = 0;
+      this.loadData();
+    }, 400);
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+    // Compatibility with existing calls, though onSearchChange is preferred
+    this.onSearchChange(event);
   }
 
   // ─── Confirm dialogs (no native confirm()) ───────────────────────────────────

@@ -7,10 +7,18 @@ import { ProductionRecord } from '../models/production.model';
 export class ProductionService {
   private http = inject(HttpClient);
   private _records$ = new BehaviorSubject<ProductionRecord[]>([]);
+  private _totalRecords$ = new BehaviorSubject<number>(0);
   private _stages$ = new BehaviorSubject<string[]>([]);
+  private _stats$ = new BehaviorSubject<{totalOK: number, totalLoi: number, todayCount: number}>({
+    totalOK: 0, totalLoi: 0, todayCount: 0
+  });
 
   get records$(): Observable<ProductionRecord[]> {
     return this._records$.asObservable();
+  }
+
+  get totalRecords$(): Observable<number> {
+    return this._totalRecords$.asObservable();
   }
 
   get stages$(): Observable<string[]> {
@@ -25,14 +33,19 @@ export class ProductionService {
     this.refresh();
   }
 
-  async refresh(): Promise<void> {
-    await Promise.all([this.loadRecords(), this.loadStages()]);
+  async refresh(page = 0, pageSize = 25, search = ''): Promise<void> {
+    await Promise.all([this.loadRecords(page, pageSize, search), this.loadStages()]);
   }
 
-  private async loadRecords(): Promise<void> {
+  async loadRecords(page = 0, pageSize = 25, search = ''): Promise<void> {
     try {
-      const data = await firstValueFrom(this.http.get<any[]>('/api/production'));
-      const records: ProductionRecord[] = (data || []).map(r => ({
+      const url = `/api/production?page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search)}`;
+      const res = await firstValueFrom(this.http.get<any>(url));
+      
+      const data = res.records || [];
+      const total = res.total || 0;
+
+      const records: ProductionRecord[] = data.map((r: any) => ({
         id: r.id,
         ngaySanXuat: r.ngaySanXuat,
         tenNhanVien: r.tenNhanVien || r.employee?.tenNhanVien || r.employee?.maNhanVien || '',
@@ -49,10 +62,14 @@ export class ProductionService {
         thoiGianSanXuat: r.thoiGianSanXuat,
         ghiChu: r.ghiChu || '',
         createdAt: new Date(r.createdAt).getTime(),
-        // Keep employeeId for API calls
         employeeId: r.employeeId,
       }));
+      
       this._records$.next(records);
+      this._totalRecords$.next(total);
+      if (res.stats) {
+        this._stats$.next(res.stats);
+      }
     } catch (err) {
       console.error('Failed to load production records:', err);
     }
@@ -106,15 +123,14 @@ export class ProductionService {
   }
 
   getTotalOK(): number {
-    return this._records$.getValue().reduce((sum, r) => sum + r.sanLuongOK, 0);
+    return this._stats$.getValue().totalOK;
   }
 
   getTotalLoi(): number {
-    return this._records$.getValue().reduce((sum, r) => sum + r.sanLuongLoi, 0);
+    return this._stats$.getValue().totalLoi;
   }
 
   getTodayCount(): number {
-    const today = new Date().toISOString().split('T')[0];
-    return this._records$.getValue().filter(r => r.ngaySanXuat === today).length;
+    return this._stats$.getValue().todayCount;
   }
 }
