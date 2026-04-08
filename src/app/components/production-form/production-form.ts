@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, map, startWith } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductionService } from '../../services/production.service';
 import { OrderService } from '../../services/order.service';
-import { CONG_DOAN_OPTIONS, MAY_OPTIONS, NHAN_VIEN_OPTIONS } from '../../models/production.model';
+import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
 
 @Component({
   selector: 'app-production-form',
@@ -49,20 +50,14 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, NHAN_VIEN_OPTIONS } from '../../models/
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
 
-          <!-- Tên nhân viên with Autocomplete -->
-          <mat-form-field appearance="outline">
-            <mat-label>Tên nhân viên</mat-label>
-            <input type="text"
-                   placeholder="Mã NV hoặc Tên NV..."
-                   matInput
-                   formControlName="tenNhanVien"
-                   [matAutocomplete]="autoNV">
-            <mat-autocomplete #autoNV="matAutocomplete">
-              <mat-option *ngFor="let name of filteredNhanVienOptions | async" [value]="name">
-                {{name}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+          <!-- Tên nhân viên (auto from login) -->
+          <div class="logged-user-display">
+            <mat-icon>person</mat-icon>
+            <div class="user-info">
+              <span class="label">Nhân viên</span>
+              <span class="value">{{ authService.currentUser?.displayName || authService.currentUser?.username }}</span>
+            </div>
+          </div>
 
           <!-- Lệnh sản xuất with Autocomplete from Orders -->
           <mat-form-field appearance="outline">
@@ -230,7 +225,7 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, NHAN_VIEN_OPTIONS } from '../../models/
         <mat-icon class="confirm-icon neon-text">help_outline</mat-icon>
         <h3>Xác nhận lưu dữ liệu?</h3>
         <p>Bạn đang lưu sản lượng cho:<br>
-          <strong>{{ prodForm.get('tenNhanVien')?.value }}</strong><br>
+          <strong>{{ authService.currentUser?.displayName || authService.currentUser?.username }}</strong><br>
           Ngày: <strong>{{ prodForm.get('ngaySanXuat')?.value | date:'dd/MM/yyyy' }}</strong>
         </p>
         <div class="confirm-btns">
@@ -336,6 +331,23 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, NHAN_VIEN_OPTIONS } from '../../models/
     .btn-cancel-small { color: #ef4444 !important; }
     .btn-toggle-add:hover, .btn-check:hover, .btn-cancel-small:hover { background: rgba(255,255,255,0.05) !important; }
 
+    /* Logged user display */
+    .logged-user-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(14,165,233,0.02));
+      border: 1px solid rgba(14,165,233,0.3);
+      border-radius: 12px;
+      height: 56px;
+      box-sizing: border-box;
+    }
+    .logged-user-display mat-icon { color: var(--ag-neon); font-size: 24px; width: 24px; height: 24px; }
+    .logged-user-display .user-info { display: flex; flex-direction: column; }
+    .logged-user-display .label { font-size: 0.7rem; color: var(--ag-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .logged-user-display .value { font-weight: 700; color: var(--ag-neon); font-size: 1rem; }
+
     /* CONFIRMATION OVERLAY (reused from table) */
     .overlay {
       position: fixed;
@@ -374,22 +386,21 @@ export class ProductionFormComponent implements OnInit {
   public prodService = inject(ProductionService);
   private snackBar = inject(MatSnackBar);
   public orderService = inject(OrderService);
+  public authService = inject(AuthService);
 
   @ViewChild('firstInput') firstInput!: ElementRef;
 
-  nhanVienOptions = NHAN_VIEN_OPTIONS;
   mayOptions = MAY_OPTIONS;
   showSaveConfirm = false;
   showAddStageInput = false;
   newStageName = '';
   filteredMayOptions!: Observable<string[]>;
-  filteredNhanVienOptions!: Observable<string[]>;
   filteredMaHangOptions!: Observable<string[]>;
   filteredLsxOptions!: Observable<string[]>;
 
   prodForm: FormGroup = this.fb.group({
     ngaySanXuat: [new Date(), Validators.required],
-    tenNhanVien: ['', Validators.required],
+
     lenhSanXuat: ['', Validators.required],
     maHang: ['', Validators.required],
     tenHang: [''],
@@ -412,10 +423,7 @@ export class ProductionFormComponent implements OnInit {
       map(value => this._filterMay(value || '')),
     );
 
-    this.filteredNhanVienOptions = this.prodForm.get('tenNhanVien')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterNV(value || '')),
-    );
+
 
     this.filteredMaHangOptions = this.prodForm.get('maHang')!.valueChanges.pipe(
       startWith(''),
@@ -482,10 +490,7 @@ export class ProductionFormComponent implements OnInit {
     return this.mayOptions.filter(m => m.toLowerCase().includes(filterValue));
   }
 
-  private _filterNV(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.nhanVienOptions.filter(nv => nv.toLowerCase().includes(filterValue));
-  }
+
 
   onSubmit() {
     if (this.prodForm.valid) {
@@ -506,6 +511,7 @@ export class ProductionFormComponent implements OnInit {
 
     this.prodService.addRecord({
       ...formValue,
+      tenNhanVien: this.authService.currentUser?.displayName || this.authService.currentUser?.username || '',
       ngaySanXuat: dateStr,
       thoiGianBatDau: start.toISOString(),
       thoiGianKetThuc: end.toISOString()
