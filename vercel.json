@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npx prisma generate && npx ng build --configuration production",
+  "framework": null,
+  "buildCommand": "npm run build",
   "outputDirectory": "dist/san-luong-app/browser",
   "cleanUrls": true,
   "rewrites": [
