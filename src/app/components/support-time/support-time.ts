@@ -424,7 +424,7 @@ export class SupportTimeComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.supportForm.valid) {
       const val = this.supportForm.value;
       const user = this.authService.currentUser!;
@@ -434,23 +434,30 @@ export class SupportTimeComponent implements OnInit {
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       };
 
-      this.supportTimeService.addRecord({
-        userId: user.username,
-        userName: user.displayName,
-        startDate: formatDate(val.startDate),
-        startTime: val.startTime,
-        endDate: formatDate(val.endDate),
-        endTime: val.endTime,
-        reason: val.reason
-      });
+      try {
+        await this.supportTimeService.addRecord({
+          userId: user.username,
+          userName: user.displayName || user.username,
+          startDate: formatDate(val.startDate),
+          startTime: val.startTime,
+          endDate: formatDate(val.endDate),
+          endTime: val.endTime,
+          reason: val.reason
+        });
 
-      this.snackBar.open('✅ Đăng ký đã gửi! Đang chờ quản lý phê duyệt.', 'Đóng', {
-        duration: 4000, horizontalPosition: 'end', verticalPosition: 'top'
-      });
-      this.supportForm.reset({
-        startDate: new Date(), startTime: '08:00',
-        endDate: new Date(), endTime: '17:00', reason: ''
-      });
+        this.snackBar.open('✅ Đăng ký đã gửi! Đang chờ quản lý phê duyệt.', 'Đóng', {
+          duration: 4000, horizontalPosition: 'end', verticalPosition: 'top'
+        });
+        this.supportForm.reset({
+          startDate: new Date(), startTime: '08:00',
+          endDate: new Date(), endTime: '17:00', reason: ''
+        });
+      } catch (err: any) {
+        console.error('Support time error:', err);
+        this.snackBar.open('❌ Lỗi gửi đăng ký: ' + (err?.error?.message || err?.message || 'Thử lại'), 'Đóng', {
+          duration: 5000
+        });
+      }
     }
   }
 

@@ -52,8 +52,23 @@ export class SupportTimeService {
 
   async refresh(): Promise<void> {
     try {
-      const data = await firstValueFrom(this.http.get<SupportTimeRecord[]>('/api/support-time'));
-      this._records$.next(data || []);
+      const data = await firstValueFrom(this.http.get<any[]>('/api/support-time'));
+      const records: SupportTimeRecord[] = (data || []).map(r => ({
+        id: r.id,
+        userId: r.userId,
+        userName: r.userName,
+        startDate: r.startDate,
+        endDate: r.endDate,
+        startTime: r.startTime,
+        endTime: r.endTime,
+        reason: r.reason,
+        status: r.status,
+        createdAt: r.createdAt,
+        reviewedBy: r.reviewedBy || undefined,
+        reviewedAt: r.reviewedAt || undefined,
+        rejectReason: r.rejectReason || undefined,
+      }));
+      this._records$.next(records);
     } catch (err) {
       console.error('Failed to load support time records:', err);
     }
