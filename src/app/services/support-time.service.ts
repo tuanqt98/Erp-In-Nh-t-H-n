@@ -121,4 +121,9 @@ export class SupportTimeService {
   getUnreadCount(): number {
     return this.notifications.filter(n => n.forRole === 'manager' && !n.isRead).length;
   }
+
+  refresh(): void {
+    this._records$.next(this.load());
+    this._notifications$.next(this.loadNotifications());
+  }
 }

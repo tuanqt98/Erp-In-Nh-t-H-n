@@ -200,4 +200,8 @@ export class OrderService {
     current.splice(index, 1);
     this.saveToStorage(current);
   }
+
+  refresh(): void {
+    this.loadFromStorage();
+  }
 }

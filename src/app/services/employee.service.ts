@@ -179,4 +179,8 @@ export class EmployeeService {
   isDuplicateCode(maNhanVien: string, excludeId?: string): boolean {
     return this.employees.some(e => e.maNhanVien === maNhanVien && e.id !== excludeId);
   }
+
+  refresh(): void {
+    this._employees$.next(this.load());
+  }
 }

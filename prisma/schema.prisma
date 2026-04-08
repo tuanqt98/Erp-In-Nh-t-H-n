@@ -1,0 +1,99 @@
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x"]
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  password     String
+  displayName  String
+  role         String   @default("staff") // admin, manager, staff
+  employeeId   String?  @unique
+  employee     Employee? @relation(fields: [employeeId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Employee {
+  id           String   @id @default(uuid())
+  maNhanVien   String   @unique
+  tenNhanVien  String
+  phongBan     String
+  chucVu       String
+  ngayVaoLam   DateTime?
+  trangThai    String   @default("active")
+  email        String?
+  soDienThoai  String?
+  user         User?
+  productionRecords ProductionRecord[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  lenhSanXuat   String
+  ngayXuong     String?
+  ngayGiao      String?
+  maHang        String
+  khachHang     String?
+  tenHang       String
+  dvt           String?
+  nguyenVatLieu String?
+  rong          String?
+  dai           String?
+  kc            String?
+  soLuong       Float    @default(0)
+  khoGiay       String?
+  haoPhi        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ProductionRecord {
+  id              String   @id @default(uuid())
+  ngaySanXuat     String
+  employeeId      String
+  employee        Employee @relation(fields: [employeeId], references: [id])
+  lenhSanXuat     String
+  maHang          String
+  tenHang          String
+  nguyenVatLieu   String?
+  congDoan        String
+  tenMay          String
+  sanLuongOK      Float    @default(0)
+  sanLuongLoi     Float    @default(0)
+  thoiGianBatDau  String?
+  thoiGianKetThuc String?
+  thoiGianSanXuat Float    @default(0)
+  ghiChu          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProductionStage {
+  id   String @id @default(uuid())
+  name String @unique
+}
+
+model SupportTime {
+  id            String   @id @default(uuid())
+  userId        String
+  userName      String
+  startDate     String
+  endDate       String
+  startTime     String
+  endTime       String
+  reason        String
+  status        String   @default("pending")
+  reviewedBy    String?
+  reviewedAt    String?
+  rejectReason  String?
+  createdAt     DateTime @default(now())
+}

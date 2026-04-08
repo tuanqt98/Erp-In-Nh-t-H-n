@@ -128,4 +128,9 @@ export class ProductionService {
     const today = new Date().toISOString().split('T')[0];
     return this._records$.getValue().filter(r => r.ngaySanXuat === today).length;
   }
+
+  refresh(): void {
+    this.loadFromStorage();
+    this.loadStages();
+  }
 }

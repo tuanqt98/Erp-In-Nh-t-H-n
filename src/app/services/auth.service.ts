@@ -14,8 +14,8 @@ const EMPLOYEE_ACCOUNTS_KEY = 'employee_accounts';
 
 const BUILT_IN_ACCOUNTS: { username: string; password: string; user: User }[] = [
   { username: 'admin',   password: 'admin123',   user: { username: 'admin',   role: 'admin',   displayName: 'Quản Trị Viên' } },
-  { username: 'manager', password: 'manager123', user: { username: 'manager', role: 'manager', displayName: 'Quản Lý SX' } },
-  { username: 'staff',   password: 'staff123',   user: { username: 'staff',   role: 'staff',   displayName: 'Nhân Viên In' } },
+  { username: 'qlsx',    password: '1',          user: { username: 'qlsx',    role: 'manager', displayName: 'Quản Lý Sản Xuất' } },
+  { username: 'staff',   password: '1',          user: { username: 'staff',   role: 'staff',   displayName: 'Nhân Viên In' } },
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -100,5 +100,10 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.currentUser;
+  }
+
+  getToken(): string | null {
+    const session = localStorage.getItem(AUTH_KEY);
+    return session ? 'dummy-session-token' : null;
   }
 }
