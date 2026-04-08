@@ -29,31 +29,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Single create
       const data = req.body;
       
-      // Look up employeeId from tenNhanVien if not provided
-      let employeeId = data.employeeId;
+      // Try to look up employeeId from tenNhanVien (optional - not required)
+      let employeeId = data.employeeId || null;
       if (!employeeId && data.tenNhanVien) {
         // tenNhanVien format: "NV00628 - Nguyễn Quốc Tuấn" — extract maNhanVien
         const maNV = data.tenNhanVien.split(' - ')[0]?.trim();
         if (maNV) {
-          const emp = await prisma.employee.findUnique({ where: { maNhanVien: maNV } });
-          employeeId = emp?.id;
+          const emp = await prisma.employee.findUnique({ where: { maNhanVien: maNV } }).catch(() => null);
+          employeeId = emp?.id || null;
         }
-        // If still no match, try by name
-        if (!employeeId) {
-          const emp = await prisma.employee.findFirst({ 
-            where: { tenNhanVien: { contains: data.tenNhanVien.split(' - ').pop()?.trim() || '' } } 
-          });
-          employeeId = emp?.id;
-        }
-      }
-      
-      if (!employeeId) {
-        return res.status(400).json({ message: 'Không tìm thấy nhân viên. Vui lòng chọn đúng tên nhân viên.' });
       }
 
       const record = await prisma.productionRecord.create({
         data: {
           ngaySanXuat: data.ngaySanXuat,
+          tenNhanVien: data.tenNhanVien || '',
           employeeId: employeeId,
           lenhSanXuat: data.lenhSanXuat || '',
           maHang: data.maHang || '',
@@ -76,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'PUT') {
       const { id, ...changes } = req.body;
       const updateData: any = {};
-      const fields = ['ngaySanXuat', 'employeeId', 'lenhSanXuat', 'maHang', 'tenHang',
+      const fields = ['ngaySanXuat', 'tenNhanVien', 'employeeId', 'lenhSanXuat', 'maHang', 'tenHang',
         'nguyenVatLieu', 'congDoan', 'tenMay', 'ghiChu', 'thoiGianBatDau', 'thoiGianKetThuc'];
       const numFields = ['sanLuongOK', 'sanLuongLoi', 'thoiGianSanXuat'];
 

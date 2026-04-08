@@ -35,7 +35,7 @@ export class ProductionService {
       const records: ProductionRecord[] = (data || []).map(r => ({
         id: r.id,
         ngaySanXuat: r.ngaySanXuat,
-        tenNhanVien: r.employee?.tenNhanVien || r.employee?.maNhanVien || '',
+        tenNhanVien: r.tenNhanVien || r.employee?.tenNhanVien || r.employee?.maNhanVien || '',
         lenhSanXuat: r.lenhSanXuat,
         maHang: r.maHang,
         tenHang: r.tenHang,

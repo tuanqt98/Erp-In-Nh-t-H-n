@@ -59,8 +59,9 @@ model Order {
 model ProductionRecord {
   id              String   @id @default(uuid())
   ngaySanXuat     String
-  employeeId      String
-  employee        Employee @relation(fields: [employeeId], references: [id])
+  tenNhanVien     String   @default("")
+  employeeId      String?
+  employee        Employee? @relation(fields: [employeeId], references: [id])
   lenhSanXuat     String
   maHang          String
   tenHang          String
