@@ -76,6 +76,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).json({ message: 'Đổi tên hiển thị thành công' });
       }
 
+      // Action: Reset password by username (admin only - resets to '1')
+      if (action === 'resetPasswordByUsername') {
+        const targetUsername = req.body.targetUsername;
+        const hashed = await hashPassword('1');
+        const result = await prisma.user.updateMany({
+          where: { username: targetUsername },
+          data: { password: hashed }
+        });
+        if (result.count === 0) {
+          return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+        return res.status(200).json({ message: `Đã reset mật khẩu của "${targetUsername}" về 1` });
+      }
+
       // Standard Login
       if (!username || !password) {
         return res.status(400).json({ message: 'Username and password required' });

@@ -119,4 +119,15 @@ export class AuthService {
       return false;
     }
   }
+
+  async resetPasswordAdmin(targetUsername: string): Promise<boolean> {
+    try {
+      await firstValueFrom(
+        this.http.post('/api/auth', { action: 'resetPasswordByUsername', targetUsername })
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }

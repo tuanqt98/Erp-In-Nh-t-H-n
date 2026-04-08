@@ -110,6 +110,50 @@ import { AuthService } from '../../services/auth.service';
           </div>
         </div>
       </div>
+
+      <!-- Change Password Section -->
+      <div class="profile-security glass-panel">
+        <h3 class="section-title"><mat-icon>lock</mat-icon> Bảo Mật & Đổi Mật Khẩu</h3>
+        
+        <div class="password-form">
+          <div class="password-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Mật khẩu hiện tại</mat-label>
+              <input matInput [type]="hideCurrent ? 'password' : 'text'" [(ngModel)]="currentPassword">
+              <button mat-icon-button matSuffix (click)="hideCurrent = !hideCurrent">
+                <mat-icon>{{hideCurrent ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Mật khẩu mới</mat-label>
+              <input matInput [type]="hideNew ? 'password' : 'text'" [(ngModel)]="newPassword">
+              <button mat-icon-button matSuffix (click)="hideNew = !hideNew">
+                <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Xác nhận mật khẩu mới</mat-label>
+              <input matInput [type]="hideConfirm ? 'password' : 'text'" [(ngModel)]="confirmPassword">
+              <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm">
+                <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button class="btn-change-pw" 
+                  [disabled]="!currentPassword || !newPassword || newPassword !== confirmPassword"
+                  (click)="changePassword()">
+            <mat-icon>key</mat-icon>
+            Cập Nhật Mật Khẩu
+          </button>
+          
+          <p class="pw-hint" *ngIf="newPassword && confirmPassword && newPassword !== confirmPassword">
+            ❌ Mật khẩu xác nhận không khớp
+          </p>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
@@ -268,6 +312,20 @@ import { AuthService } from '../../services/auth.service';
     .stat-val { font-weight: 700; font-size: 1rem; color: var(--ag-text-primary); }
     .stat-lbl { font-size: 0.75rem; color: var(--ag-text-secondary); text-transform: uppercase; }
     .neon-text { color: var(--ag-neon) !important; }
+
+    /* Security */
+    .profile-security { padding: 28px; }
+    .password-form { margin-top: 16px; max-width: 500px; }
+    .password-grid { display: grid; gap: 8px; }
+    .btn-change-pw { 
+      margin-top: 12px;
+      background: rgba(14, 165, 233, 0.1) !important;
+      color: var(--ag-neon) !important;
+      border: 1px solid var(--ag-neon) !important;
+      font-weight: 600 !important;
+    }
+    .btn-change-pw:hover:not(:disabled) { background: var(--ag-neon-glow) !important; }
+    .pw-hint { font-size: 0.8rem; color: #ef4444; margin-top: 8px; }
   `]
 })
 export class ProfileComponent implements OnInit {
@@ -279,6 +337,14 @@ export class ProfileComponent implements OnInit {
   displayName = this.user?.displayName ?? '';
   avatarUrl: string | null = null;
   loginTime = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+  // Password fields
+  currentPassword = '';
+  newPassword = '';
+  confirmPassword = '';
+  hideCurrent = true;
+  hideNew = true;
+  hideConfirm = true;
 
   get initials(): string {
     return this.displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -315,6 +381,35 @@ export class ProfileComponent implements OnInit {
         this.snackBar.open('✅ Đã lưu thông tin!', 'Đóng', { duration: 2000 });
       } else {
         this.snackBar.open('❌ Không thể lưu. Thử lại sau.', 'Đóng', { duration: 3000 });
+      }
+    }
+  }
+
+  async changePassword(): Promise<void> {
+    if (!this.currentPassword || !this.newPassword) return;
+    if (this.newPassword !== this.confirmPassword) return;
+
+    if (this.user?.username) {
+      const ok = await this.authService.changePassword(
+        this.user.username, 
+        this.currentPassword, 
+        this.newPassword
+      );
+
+      if (ok) {
+        this.snackBar.open('✅ Đổi mật khẩu thành công!', 'Đóng', { 
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+        // Clear fields
+        this.currentPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+      } else {
+        this.snackBar.open('❌ Mật khẩu hiện tại không đúng hoặc có lỗi xảy ra.', 'Đóng', { 
+          duration: 4000 
+        });
       }
     }
   }
