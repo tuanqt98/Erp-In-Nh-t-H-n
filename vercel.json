@@ -1,9 +1,5 @@
 {
   "version": 2,
-  "framework": null,
-  "buildCommand": "npx prisma generate && npx ng build --configuration production",
-  "outputDirectory": "dist/san-luong-app/browser",
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
