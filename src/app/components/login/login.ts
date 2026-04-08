@@ -30,7 +30,7 @@ import { AuthService } from '../../services/auth.service';
             <mat-icon>lock</mat-icon>
           </div>
           <mat-card-title>Đăng Nhập Hệ Thống</mat-card-title>
-          <mat-card-subtitle>Quản lý sản lượng thợ in</mat-card-subtitle>
+          <mat-card-subtitle>Công Ty TNHH In Nhật Hàn</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
@@ -163,7 +163,13 @@ export class LoginComponent {
       const success = await this.authService.login(username, password);
       this.loading = false;
 
-      if (!success) {
+      if (success) {
+        this.snackBar.open('✅ Đăng nhập thành công! Chào mừng bạn.', 'Đóng', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+      } else {
         this.snackBar.open('Tên đăng nhập hoặc mật khẩu không đúng!', 'Đóng', {
           duration: 3000,
           panelClass: ['error-snackbar']

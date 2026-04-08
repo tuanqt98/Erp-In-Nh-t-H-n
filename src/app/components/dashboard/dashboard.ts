@@ -39,8 +39,13 @@ import { SupportTimeService } from '../../services/support-time.service';
   template: `
     <div class="dashboard-layout">
       <mat-toolbar class="header glass-panel">
+        <!-- Mobile hamburger -->
+        <button mat-icon-button class="mobile-menu-btn" (click)="mobileMenuOpen = !mobileMenuOpen">
+          <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
+
         <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="app-logo">
-        <span class="app-title">Phần Mềm Quản Lý Sản Lượng Thợ In</span>
+        <span class="app-title">Công Ty TNHH In Nhật Hàn</span>
         <span class="spacer"></span>
         <!-- Notification Bell (Manager/Admin) -->
         <button mat-icon-button matTooltip="Thông báo phê duyệt"
@@ -55,13 +60,55 @@ import { SupportTimeService } from '../../services/support-time.service';
           <div *ngIf="!getUserAvatar(user.username)" class="avatar-initials">{{ getInitials(user.displayName) }}</div>
           <span class="neon-text">{{ user.displayName }}</span>
         </div>
-        <button mat-icon-button (click)="toggleTheme()" matTooltip="Chuyển chế độ Sáng/Tối" class="neon-icon ml-2">
+        <button mat-icon-button (click)="toggleTheme()" matTooltip="Chuyển chế độ Sáng/Tối" class="neon-icon ml-2 desktop-only">
           <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
         </button>
-        <button mat-icon-button (click)="authService.logout()" matTooltip="Đăng xuất" class="neon-icon">
+        <button mat-icon-button (click)="authService.logout()" matTooltip="Đăng xuất" class="neon-icon desktop-only">
           <mat-icon>logout</mat-icon>
         </button>
       </mat-toolbar>
+
+      <!-- Mobile Menu Overlay -->
+      <div class="mobile-menu-backdrop" *ngIf="mobileMenuOpen" (click)="mobileMenuOpen = false"></div>
+      <div class="mobile-menu" [class.open]="mobileMenuOpen">
+        <div class="mobile-menu-header">
+          <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="mobile-menu-logo">
+          <span>In Nhật Hàn</span>
+        </div>
+        <nav class="mobile-nav">
+          <button (click)="activeTab = 0; mobileMenuOpen = false" [class.active]="activeTab === 0">
+            <mat-icon>analytics</mat-icon>
+            <span>Quản Lý Sản Lượng</span>
+          </button>
+          <button (click)="activeTab = 1; mobileMenuOpen = false" [class.active]="activeTab === 1">
+            <mat-icon>inventory_2</mat-icon>
+            <span>Dữ Liệu Đơn Hàng</span>
+          </button>
+          <button (click)="activeTab = 2; mobileMenuOpen = false" [class.active]="activeTab === 2">
+            <mat-icon>schedule</mat-icon>
+            <span>Đăng Ký Hỗ Trợ</span>
+            <span class="mobile-notif" *ngIf="notifCount > 0">{{ notifCount }}</span>
+          </button>
+          <button (click)="showProfile = true; activeTab = 3; mobileMenuOpen = false">
+            <mat-icon>manage_accounts</mat-icon>
+            <span>Trang Cá Nhân</span>
+          </button>
+          <button *ngIf="isAdmin()" (click)="activeTab = 4; mobileMenuOpen = false" [class.active]="activeTab === 4">
+            <mat-icon>people</mat-icon>
+            <span>Quản Lý Nhân Sự</span>
+          </button>
+        </nav>
+        <div class="mobile-menu-footer">
+          <button (click)="toggleTheme(); mobileMenuOpen = false">
+            <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+            <span>{{ isDarkMode ? 'Chế độ Sáng' : 'Chế độ Tối' }}</span>
+          </button>
+          <button class="logout-btn" (click)="authService.logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Đăng Xuất</span>
+          </button>
+        </div>
+      </div>
 
       <main class="content">
         <!-- Stats Row -->
@@ -535,8 +582,160 @@ import { SupportTimeService } from '../../services/support-time.service';
       .footer-grid { grid-template-columns: 1fr; text-align: center; }
       .footer-logo, .status-badge { justify-content: center; }
       .brand-desc { margin: 0 auto 16px; }
-      .app-title { display: none; } /* Hide title on very small screens, logo is enough */
+      .app-title { display: none; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ─── MOBILE HAMBURGER MENU ─── */
+    .mobile-menu-btn { display: none; color: var(--ag-neon) !important; }
+    .desktop-only { display: inline-flex; }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: inline-flex !important; }
+      .desktop-only { display: none !important; }
+      .user-profile span { display: none; }
+      .user-profile { margin-left: 4px; padding: 4px 8px; }
+    }
+
+    .mobile-menu-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9998;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100vh;
+      z-index: 9999;
+      background: var(--ag-glass, rgba(13,17,23,0.97));
+      border-right: 1px solid var(--ag-border);
+      display: flex;
+      flex-direction: column;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 5px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-menu.open {
+      left: 0;
+    }
+
+    .mobile-menu-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--ag-border);
+    }
+    .mobile-menu-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      padding: 3px;
+      border: 2px solid var(--ag-neon);
+    }
+    .mobile-menu-header span {
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--ag-text-primary), var(--ag-neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .mobile-menu-logo { box-shadow: 0 0 12px var(--ag-neon-glow); }
+
+    .mobile-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+    .mobile-nav button {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 24px;
+      background: none;
+      border: none;
+      color: var(--ag-text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      position: relative;
+    }
+    .mobile-nav button:hover,
+    .mobile-nav button.active {
+      background: rgba(14,165,233,0.08);
+      color: var(--ag-neon);
+    }
+    .mobile-nav button.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 60%;
+      background: var(--ag-neon);
+      border-radius: 0 3px 3px 0;
+    }
+    .mobile-nav button mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+    .mobile-notif {
+      background: #ef4444;
+      color: white;
+      border-radius: 10px;
+      padding: 1px 7px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-left: auto;
+    }
+
+    .mobile-menu-footer {
+      border-top: 1px solid var(--ag-border);
+      padding: 12px 0;
+    }
+    .mobile-menu-footer button {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 24px;
+      background: none;
+      border: none;
+      color: var(--ag-text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mobile-menu-footer button:hover {
+      background: rgba(14,165,233,0.08);
+      color: var(--ag-neon);
+    }
+    .mobile-menu-footer .logout-btn:hover {
+      background: rgba(239,68,68,0.08);
+      color: #ef4444;
+    }
+    .mobile-menu-footer button mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   `]
 })
@@ -551,6 +750,7 @@ export class DashboardComponent implements OnInit {
   activeTab = 0;
   showProfile = false;
   notifCount = 0;
+  mobileMenuOpen = false;
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
