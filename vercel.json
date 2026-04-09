@@ -1,11 +1,7 @@
 {
   "version": 2,
   "framework": "angular",
-  "outputDirectory": "dist/san-luong-app/browser",
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!api/|.*\\.).*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }
