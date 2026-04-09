@@ -251,65 +251,65 @@ import { SupportTimeService } from '../../services/support-time.service';
               </div>
             </mat-tab>
           </mat-tab-group>
+
+          <footer class="footer glass-panel">
+            <div class="footer-grid">
+              <!-- Column 1: Brand -->
+              <div class="footer-col brand">
+                <div class="footer-logo">
+                  <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="footer-logo-img">
+                  <span class="neon-text">NHẬT HÀN ERP</span>
+                </div>
+                <p class="brand-desc">Hệ thống quản lý sản lượng in ấn thông minh. Tối ưu quy trình, nâng cao hiệu suất.</p>
+                <div class="social-icons">
+                  <button mat-icon-button class="neon-icon-dim"><mat-icon>facebook</mat-icon></button>
+                  <button mat-icon-button class="neon-icon-dim"><mat-icon>language</mat-icon></button>
+                  <button mat-icon-button class="neon-icon-dim"><mat-icon>email</mat-icon></button>
+                </div>
+              </div>
+
+              <!-- Column 2: Quick Links -->
+              <div class="footer-col">
+                <h4>Điều hướng</h4>
+                <ul>
+                  <li><a (click)="activeTab = 0">Sản Lượng</a></li>
+                  <li><a (click)="activeTab = 1">Đơn Hàng</a></li>
+                  <li><a (click)="activeTab = 2">Thời Gian Hỗ Trợ</a></li>
+                  <li *ngIf="isAdmin()"><a (click)="activeTab = 4">Quản Lý Nhân Sự</a></li>
+                </ul>
+              </div>
+
+              <!-- Column 3: Support -->
+              <div class="footer-col">
+                <h4>Hỗ trợ</h4>
+                <ul>
+                  <li><a href="#">Hướng dẫn sử dụng</a></li>
+                  <li><a href="#">Báo lỗi hệ thống</a></li>
+                  <li><a href="#">Góp ý tính năng</a></li>
+                  <li><a href="#">Liên hệ kỹ thuật</a></li>
+                </ul>
+              </div>
+
+              <!-- Column 4: Status -->
+              <div class="footer-col">
+                <h4>Hệ thống</h4>
+                <div class="status-badge">
+                  <span class="pulse-dot"></span>
+                  <span>System Online</span>
+                </div>
+                <div class="version-info">
+                  <p>Phiên bản: v1.0.8-ULTIMATE-STABLE</p>
+                  <p>Build: 2026.04.08.3</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="footer-bottom">
+              <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">Lê Dương</span></p>
+            </div>
+          </footer>
         </main>
       </div>
-
-      <footer class="footer glass-panel">
-        <div class="footer-grid">
-          <!-- Column 1: Brand -->
-          <div class="footer-col brand">
-            <div class="footer-logo">
-              <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="footer-logo-img">
-              <span class="neon-text">NHẬT HÀN ERP</span>
-            </div>
-            <p class="brand-desc">Hệ thống quản lý sản lượng in ấn thông minh. Tối ưu quy trình, nâng cao hiệu suất.</p>
-            <div class="social-icons">
-              <button mat-icon-button class="neon-icon-dim"><mat-icon>facebook</mat-icon></button>
-              <button mat-icon-button class="neon-icon-dim"><mat-icon>language</mat-icon></button>
-              <button mat-icon-button class="neon-icon-dim"><mat-icon>email</mat-icon></button>
-            </div>
-          </div>
-
-          <!-- Column 2: Quick Links -->
-          <div class="footer-col">
-            <h4>Điều hướng</h4>
-            <ul>
-              <li><a (click)="activeTab = 0">Sản Lượng</a></li>
-              <li><a (click)="activeTab = 1">Đơn Hàng</a></li>
-              <li><a (click)="activeTab = 2">Thời Gian Hỗ Trợ</a></li>
-              <li *ngIf="isAdmin()"><a (click)="activeTab = 4">Quản Lý Nhân Sự</a></li>
-            </ul>
-          </div>
-
-          <!-- Column 3: Support -->
-          <div class="footer-col">
-            <h4>Hỗ trợ</h4>
-            <ul>
-              <li><a href="#">Hướng dẫn sử dụng</a></li>
-              <li><a href="#">Báo lỗi hệ thống</a></li>
-              <li><a href="#">Góp ý tính năng</a></li>
-              <li><a href="#">Liên hệ kỹ thuật</a></li>
-            </ul>
-          </div>
-
-          <!-- Column 4: Status -->
-          <div class="footer-col">
-            <h4>Hệ thống</h4>
-            <div class="status-badge">
-              <span class="pulse-dot"></span>
-              <span>System Online</span>
-            </div>
-            <div class="version-info">
-              <p>Phiên bản: v1.0.8-ULTIMATE-STABLE</p>
-              <p>Build: 2026.04.08.3</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="footer-bottom">
-          <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">Lê Dương</span></p>
-        </div>
-      </footer>
     </div>
   `,
   styles: [`
@@ -368,12 +368,26 @@ import { SupportTimeService } from '../../services/support-time.service';
     .sidebar-profile {
       margin: 0 16px 20px;
       padding: 16px;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.08); /* Increased contrast */
       border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 12px;
       border: 1px solid var(--ag-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Ensure profile menu has high contrast */
+    ::ng-deep .mat-mdc-menu-panel.glass-panel {
+      background: #0f172a !important; /* Solid background for profile menu */
+      border: 1px solid var(--ag-neon) !important;
+      min-width: 200px !important;
+    }
+    ::ng-deep .mat-mdc-menu-item {
+      color: #ffffff !important;
+    }
+    ::ng-deep .mat-mdc-menu-item .mat-icon {
+      color: var(--ag-neon) !important;
     }
     .profile-avatar-wrap {
       position: relative;
@@ -415,14 +429,17 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     .p-name {
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 1rem; /* Slightly larger */
+      color: #ffffff !important;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .p-role {
-      font-size: 0.75rem;
-      color: var(--ag-text-secondary);
+      font-size: 0.8rem;
+      color: var(--ag-neon) !important; /* Stand out font */
+      font-weight: 500;
     }
     .p-options { color: var(--ag-text-secondary); }
 
