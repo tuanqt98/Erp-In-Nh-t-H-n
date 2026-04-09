@@ -8,6 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ProductionFormComponent } from '../production-form/production-form';
 import { ProductionTableComponent } from '../production-table/production-table';
 import { OrderTableComponent } from '../order-table/order-table';
@@ -29,6 +33,10 @@ import { SupportTimeService } from '../../services/support-time.service';
     MatTabsModule,
     MatTooltipModule,
     MatBadgeModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
     ProductionFormComponent,
     ProductionTableComponent,
     OrderTableComponent,
@@ -37,179 +45,214 @@ import { SupportTimeService } from '../../services/support-time.service';
     EmployeeManagementComponent
   ],
   template: `
-    <div class="dashboard-layout">
-      <mat-toolbar class="header glass-panel">
-        <!-- Mobile hamburger -->
-        <button mat-icon-button class="mobile-menu-btn" (click)="mobileMenuOpen = !mobileMenuOpen">
-          <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
-        </button>
-
-        <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="app-logo">
-        <span class="app-title">Công Ty TNHH In Nhật Hàn</span>
-        <span class="spacer"></span>
-        <!-- Notification Bell (Manager/Admin) -->
-        <button mat-icon-button matTooltip="Thông báo phê duyệt"
-                class="neon-icon"
-                [matBadge]="notifCount > 0 ? notifCount : null"
-                matBadgeColor="warn"
-                (click)="activeTab = 2">
-          <mat-icon>notifications</mat-icon>
-        </button>
-        <div class="user-profile" (click)="showProfile = !showProfile" style="cursor:pointer" *ngIf="authService.currentUser$ | async as user">
-          <img *ngIf="getUserAvatar(user.username)" [src]="getUserAvatar(user.username)" alt="Avatar" class="avatar-img">
-          <div *ngIf="!getUserAvatar(user.username)" class="avatar-initials">{{ getInitials(user.displayName) }}</div>
-          <span class="neon-text">{{ user.displayName }}</span>
+    <div class="dashboard-wrapper">
+      <!-- ─── SIDEBAR (Desktop) ─── -->
+      <aside class="sidebar glass-panel" [class.open]="sidebarOpen">
+        <div class="sidebar-header">
+           <div class="brand">
+             <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="sidebar-logo">
+             <span class="brand-name">NHẬT HÀN ERP</span>
+           </div>
+           <button mat-icon-button class="mobile-close-btn" (click)="sidebarOpen = false">
+             <mat-icon>close</mat-icon>
+           </button>
         </div>
-        <button mat-icon-button (click)="toggleTheme()" matTooltip="Chuyển chế độ Sáng/Tối" class="neon-icon ml-2 desktop-only">
-          <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
-        </button>
-        <button mat-icon-button (click)="authService.logout()" matTooltip="Đăng xuất" class="neon-icon desktop-only">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </mat-toolbar>
 
-      <!-- Mobile Menu Overlay -->
-      <div class="mobile-menu-backdrop" *ngIf="mobileMenuOpen" (click)="mobileMenuOpen = false"></div>
-      <div class="mobile-menu" [class.open]="mobileMenuOpen">
-        <div class="mobile-menu-header">
-          <img src="https://innhathan.com/wp-content/uploads/2023/04/cropped-Logo-NH.gif" alt="Logo" class="mobile-menu-logo">
-          <span>In Nhật Hàn</span>
+        <!-- User Profile inside Sidebar -->
+        <div class="sidebar-profile" *ngIf="authService.currentUser$ | async as user">
+          <div class="profile-avatar-wrap">
+            <img *ngIf="getUserAvatar(user.username)" [src]="getUserAvatar(user.username)" alt="Avatar" class="profile-avatar">
+            <div *ngIf="!getUserAvatar(user.username)" class="profile-initials">{{ getInitials(user.displayName) }}</div>
+            <div class="status-indicator"></div>
+          </div>
+          <div class="profile-info">
+            <span class="p-name">{{ user.displayName }}</span>
+            <span class="p-role">{{ isAdmin() ? 'Quản Trị Viên' : 'Thợ In' }}</span>
+          </div>
+          <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="p-options">
+            <mat-icon>expand_more</mat-icon>
+          </button>
+          <mat-menu #profileMenu="matMenu" class="glass-panel">
+            <button mat-menu-item (click)="activeTab = 3; sidebarOpen = false">
+              <mat-icon>person</mat-icon>
+              <span>Hồ sơ cá nhân</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="authService.logout()">
+              <mat-icon class="text-red">logout</mat-icon>
+              <span class="text-red">Đăng xuất</span>
+            </button>
+          </mat-menu>
         </div>
-        <nav class="mobile-nav">
-          <button (click)="activeTab = 0; mobileMenuOpen = false" [class.active]="activeTab === 0">
+
+        <!-- Sidebar Search -->
+        <div class="sidebar-search">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Tìm kiếm chức năng..." (keyup)="filterMenu($event)">
+          </mat-form-field>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="menu-group">DANH MỤC CHÍNH</div>
+          
+          <button class="nav-item" [class.active]="activeTab === 0" (click)="activeTab = 0; sidebarOpen = false">
             <mat-icon>analytics</mat-icon>
             <span>Quản Lý Sản Lượng</span>
           </button>
-          <button (click)="activeTab = 1; mobileMenuOpen = false" [class.active]="activeTab === 1">
+
+          <button class="nav-item" [class.active]="activeTab === 1" (click)="activeTab = 1; sidebarOpen = false">
             <mat-icon>inventory_2</mat-icon>
             <span>Dữ Liệu Đơn Hàng</span>
           </button>
-          <button (click)="activeTab = 2; mobileMenuOpen = false" [class.active]="activeTab === 2">
-            <mat-icon>schedule</mat-icon>
+
+          <button class="nav-item" [class.active]="activeTab === 2" (click)="activeTab = 2; sidebarOpen = false">
+            <mat-icon [matBadge]="notifCount > 0 ? notifCount : null" matBadgeColor="warn" matBadgeSize="small">schedule</mat-icon>
             <span>Đăng Ký Hỗ Trợ</span>
-            <span class="mobile-notif" *ngIf="notifCount > 0">{{ notifCount }}</span>
           </button>
-          <button (click)="showProfile = true; activeTab = 3; mobileMenuOpen = false">
-            <mat-icon>manage_accounts</mat-icon>
-            <span>Trang Cá Nhân</span>
-          </button>
-          <button *ngIf="isAdmin()" (click)="activeTab = 4; mobileMenuOpen = false" [class.active]="activeTab === 4">
+
+          <div class="menu-group" *ngIf="isAdmin()">HỆ THỐNG</div>
+          
+          <button class="nav-item" *ngIf="isAdmin()" [class.active]="activeTab === 4" (click)="activeTab = 4; sidebarOpen = false">
             <mat-icon>people</mat-icon>
             <span>Quản Lý Nhân Sự</span>
           </button>
-        </nav>
-        <div class="mobile-menu-footer">
-          <button (click)="toggleTheme(); mobileMenuOpen = false">
-            <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
-            <span>{{ isDarkMode ? 'Chế độ Sáng' : 'Chế độ Tối' }}</span>
-          </button>
-          <button class="logout-btn" (click)="authService.logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Đăng Xuất</span>
-          </button>
-        </div>
-      </div>
 
-      <main class="content">
-        <!-- Stats Row -->
-        <div class="stats-grid">
-          <div class="stat-card glass-panel blue">
-            <div class="stat-icon"><mat-icon>check_circle</mat-icon></div>
-            <div class="stat-info">
-              <span class="label">Tổng Sản Lượng OK</span>
-              <span class="value">{{ prodService.getTotalOK() | number }}</span>
-            </div>
-          </div>
-          
-          <div class="stat-card glass-panel red">
-            <div class="stat-icon"><mat-icon>report_problem</mat-icon></div>
-            <div class="stat-info">
-              <span class="label">Tổng Sản Lượng Lỗi</span>
-              <span class="value">{{ prodService.getTotalLoi() | number }}</span>
-            </div>
-          </div>
- 
-          <div class="stat-card glass-panel purple">
-            <div class="stat-icon"><mat-icon>person</mat-icon></div>
-            <div class="stat-info">
-              <span class="label">Nhân Viên Ghi Nhận</span>
-              <span class="value">{{ prodService.getTodayCount() }} hôm nay</span>
-            </div>
-          </div>
- 
-          <div class="stat-card glass-panel orange">
-            <div class="stat-icon"><mat-icon>trending_up</mat-icon></div>
-            <div class="stat-info">
-              <span class="label">Hiệu Suất</span>
-              <span class="value">{{ getYield() | percent:'1.1-1' }}</span>
-            </div>
-          </div>
+          <button class="nav-item" (click)="activeTab = 3; sidebarOpen = false" [class.active]="activeTab === 3">
+            <mat-icon>settings</mat-icon>
+            <span>Cấu Hình</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button mat-button class="theme-toggle" (click)="toggleTheme()">
+            <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+            <span>{{ isDarkMode ? 'Giao diện sáng' : 'Giao diện tối' }}</span>
+          </button>
+          <button mat-button class="logout-btn" (click)="authService.logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Đăng xuất</span>
+          </button>
         </div>
- 
-        <!-- Tabs Section -->
-        <mat-tab-group color="primary" class="dashboard-tabs glass-panel" [(selectedIndex)]="activeTab">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="mr-2 neon-icon">analytics</mat-icon>
-              <span class="neon-text tab-label">Quản Lý Sản Lượng</span>
-            </ng-template>
-            <div class="tab-content">
-               <div class="main-sections">
-                <section class="section-form">
-                  <app-production-form></app-production-form>
-                </section>
- 
-                <section class="section-table">
-                  <app-production-table></app-production-table>
-                </section>
+      </aside>
+
+      <!-- ─── MOBILE HEADER (Visible only on mobile) ─── -->
+      <mat-toolbar class="mobile-header header glass-panel" *ngIf="true">
+        <button mat-icon-button (click)="sidebarOpen = true">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="app-title">Nhật Hàn ERP</span>
+        <span class="spacer"></span>
+        <div class="user-profile-mini" (click)="activeTab = 3">
+           <div class="avatar-mini">{{ getInitials((authService.currentUser$ | async)?.displayName || 'U') }}</div>
+        </div>
+      </mat-toolbar>
+
+      <div class="mobile-menu-backdrop" *ngIf="sidebarOpen" (click)="sidebarOpen = false"></div>
+
+
+      <div class="main-content-area">
+        <main class="content">
+          <!-- Stats Row -->
+          <div class="stats-grid">
+            <div class="stat-card glass-panel blue">
+              <div class="stat-icon"><mat-icon>check_circle</mat-icon></div>
+              <div class="stat-info">
+                <span class="label">Tổng Sản Lượng OK</span>
+                <span class="value">{{ prodService.getTotalOK() | number }}</span>
               </div>
             </div>
-          </mat-tab>
- 
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="mr-2 neon-icon">inventory_2</mat-icon>
-              <span class="neon-text tab-label">Dữ Liệu Đơn Hàng</span>
-            </ng-template>
-            <div class="tab-content">
-               <app-order-table></app-order-table>
+            
+            <div class="stat-card glass-panel red">
+              <div class="stat-icon"><mat-icon>report_problem</mat-icon></div>
+              <div class="stat-info">
+                <span class="label">Tổng Sản Lượng Lỗi</span>
+                <span class="value">{{ prodService.getTotalLoi() | number }}</span>
+              </div>
             </div>
-          </mat-tab>
-
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="mr-2 neon-icon">schedule</mat-icon>
-              <span class="neon-text tab-label">Đăng Ký Thời Gian Hỗ Trợ</span>
-              <span class="notif-dot" *ngIf="notifCount > 0 && activeTab !== 2">
-                {{ notifCount }}
-              </span>
-            </ng-template>
-            <div class="tab-content">
-              <app-support-time></app-support-time>
+   
+            <div class="stat-card glass-panel purple">
+              <div class="stat-icon"><mat-icon>person</mat-icon></div>
+              <div class="stat-info">
+                <span class="label">Nhân Viên Ghi Nhận</span>
+                <span class="value">{{ prodService.getTodayCount() }} hôm nay</span>
+              </div>
             </div>
-          </mat-tab>
-
-          <mat-tab *ngIf="showProfile">
-            <ng-template mat-tab-label>
-              <mat-icon class="mr-2 neon-icon">manage_accounts</mat-icon>
-              <span class="neon-text tab-label">Trang Cá Nhân</span>
-            </ng-template>
-            <div class="tab-content">
-              <app-profile></app-profile>
+   
+            <div class="stat-card glass-panel orange">
+              <div class="stat-icon"><mat-icon>trending_up</mat-icon></div>
+              <div class="stat-info">
+                <span class="label">Hiệu Suất</span>
+                <span class="value">{{ getYield() | percent:'1.1-1' }}</span>
+              </div>
             </div>
-          </mat-tab>
-
-          <mat-tab *ngIf="isAdmin()">
-            <ng-template mat-tab-label>
-              <mat-icon class="mr-2 neon-icon">manage_accounts</mat-icon>
-              <span class="neon-text tab-label">Quản Lý Nhân Sự</span>
-            </ng-template>
-            <div class="tab-content">
-              <app-employee-management></app-employee-management>
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      </main>
+          </div>
+   
+          <!-- Tabs Section -->
+          <mat-tab-group color="primary" class="dashboard-tabs glass-panel" [(selectedIndex)]="activeTab">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-2 neon-icon">analytics</mat-icon>
+                <span class="neon-text tab-label">Quản Lý Sản Lượng</span>
+              </ng-template>
+              <div class="tab-content">
+                 <div class="main-sections">
+                  <section class="section-form">
+                    <app-production-form></app-production-form>
+                  </section>
+   
+                  <section class="section-table">
+                    <app-production-table></app-production-table>
+                  </section>
+                </div>
+              </div>
+            </mat-tab>
+   
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-2 neon-icon">inventory_2</mat-icon>
+                <span class="neon-text tab-label">Dữ Liệu Đơn Hàng</span>
+              </ng-template>
+              <div class="tab-content">
+                 <app-order-table></app-order-table>
+              </div>
+            </mat-tab>
+  
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-2 neon-icon">schedule</mat-icon>
+                <span class="neon-text tab-label">Đăng Ký Thời Gian Hỗ Trợ</span>
+                <span class="notif-dot" *ngIf="notifCount > 0 && activeTab !== 2">
+                  {{ notifCount }}
+                </span>
+              </ng-template>
+              <div class="tab-content">
+                <app-support-time></app-support-time>
+              </div>
+            </mat-tab>
+  
+            <mat-tab *ngIf="showProfile || activeTab === 3">
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-2 neon-icon">manage_accounts</mat-icon>
+                <span class="neon-text tab-label">Trang Cá Nhân</span>
+              </ng-template>
+              <div class="tab-content">
+                <app-profile></app-profile>
+              </div>
+            </mat-tab>
+  
+            <mat-tab *ngIf="isAdmin()">
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-2 neon-icon">manage_accounts</mat-icon>
+                <span class="neon-text tab-label">Quản Lý Nhân Sự</span>
+              </ng-template>
+              <div class="tab-content">
+                <app-employee-management></app-employee-management>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </main>
+      </div>
 
       <footer class="footer glass-panel">
         <div class="footer-grid">
@@ -270,208 +313,271 @@ import { SupportTimeService } from '../../services/support-time.service';
     </div>
   `,
   styles: [`
-    .dashboard-layout {
+    .dashboard-wrapper {
+      display: flex;
       min-height: 100vh;
+      background: var(--ag-snow-bg);
+    }
+
+    /* ─── SIDEBAR STYLES ─── */
+    .sidebar {
+      width: 280px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
       display: flex;
       flex-direction: column;
-      background: transparent;
+      z-index: 1001;
+      border-radius: 0 24px 24px 0 !important;
+      border-left: none !important;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 0;
-      width: 100%;
-      z-index: 1000;
+
+    .sidebar-header {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 0 32px;
-      height: 72px;
-      border: none !important;
-      border-bottom: 1px solid var(--ag-border) !important;
-      border-radius: 0 0 16px 16px !important;
-      box-sizing: border-box;
-      background: rgba(13, 17, 23, 0.8) !important;
-      backdrop-filter: blur(20px) !important;
     }
-    .app-logo {
-      height: 48px;
-      width: 48px;
-      object-fit: contain;
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: white;
-      padding: 4px;
-      margin-right: 12px;
-      border: 2px solid var(--ag-neon);
-      box-shadow: 0 0 15px var(--ag-neon-glow);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 3px;
+      border: 1px solid var(--ag-neon);
+      box-shadow: 0 0 10px var(--ag-neon-glow);
     }
-    .app-logo:hover {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: 0 0 25px var(--ag-neon);
-    }
-    .app-title {
-      font-weight: 700;
+    .brand-name {
+      font-weight: 800;
+      font-size: 1.1rem;
       letter-spacing: 1px;
-      background: linear-gradient(135deg, var(--ag-text-primary) 0%, var(--ag-neon) 100%);
+      background: linear-gradient(135deg, var(--ag-text-primary), var(--ag-neon));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-size: 1.2rem;
     }
-    .neon-text { color: var(--ag-neon); }
-    .neon-icon { color: var(--ag-neon); }
-    .spacer {
-      flex: 1 1 auto;
-    }
-    .ml-2 { margin-left: 8px; }
-    .user-profile {
+    .mobile-close-btn { display: none; }
+
+    /* Profile Section */
+    .sidebar-profile {
+      margin: 0 16px 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-left: 20px;
-      padding: 6px 16px;
-      background: var(--ag-border);
-      border-radius: 24px;
-      font-size: 0.9rem;
       border: 1px solid var(--ag-border);
-      transition: border-color 0.2s;
     }
-    .user-profile:hover { border-color: var(--ag-neon) !important; }
-    .avatar-img {
-      width: 32px;
-      height: 32px;
+    .profile-avatar-wrap {
+      position: relative;
+    }
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      object-fit: cover;
       border: 2px solid var(--ag-neon);
+      object-fit: cover;
     }
-    .avatar-initials {
-      width: 32px;
-      height: 32px;
+    .profile-initials {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--ag-neon), #0369a1);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 0.75rem;
+      font-weight: 800;
+      font-size: 0.9rem;
       color: white;
-      flex-shrink: 0;
     }
-    .notif-dot {
-      background: #ef4444;
-      color: white;
+    .status-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 10px;
+      height: 10px;
+      background: #10b981;
+      border: 2px solid #0d1117;
       border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 6px;
     }
-    .user-profile img {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid var(--ag-neon);
-    }
-    .content {
+    .profile-info {
+      display: flex;
+      flex-direction: column;
       flex: 1;
-      padding: 92px 16px 0; /* Header 72px + distance and horizontal padding */
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      box-sizing: border-box;
-      min-height: 600px;
+      min-width: 0;
     }
+    .p-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .p-role {
+      font-size: 0.75rem;
+      color: var(--ag-text-secondary);
+    }
+    .p-options { color: var(--ag-text-secondary); }
+
+    /* Search */
+    .sidebar-search {
+      margin: 0 16px 24px;
+    }
+    .sidebar-search ::ng-deep .mat-mdc-form-field-flex {
+      background: rgba(255,255,255,0.02) !important;
+      border-radius: 12px !important;
+    }
+    .sidebar-search ::ng-deep .mat-mdc-form-field-infix {
+      padding: 8px 0 !important;
+      min-height: 40px !important;
+    }
+    .sidebar-search mat-icon { font-size: 18px; color: var(--ag-text-secondary); }
+
+    /* Nav Items */
+    .sidebar-nav {
+      flex: 1;
+      padding: 0 16px;
+      overflow-y: auto;
+    }
+    .menu-group {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--ag-text-secondary);
+      letter-spacing: 1.5px;
+      margin: 20px 0 12px 12px;
+      opacity: 0.6;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      color: var(--ag-text-secondary);
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 12px;
+      margin-bottom: 4px;
+      transition: all 0.2s;
+    }
+    .nav-item mat-icon { font-size: 22px; width: 22px; height: 22px; }
+    .nav-item:hover {
+      background: rgba(14,165,233,0.06);
+      color: var(--ag-neon);
+    }
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(14,165,233,0.1) 0%, transparent 100%);
+      color: var(--ag-neon);
+      font-weight: 700;
+      border-left: 3px solid var(--ag-neon);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--ag-border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-footer button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--ag-text-secondary);
+      justify-content: flex-start;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+    }
+    .sidebar-footer button:hover { background: rgba(255,255,255,0.05); color: var(--ag-text-primary); }
+    .logout-btn { color: #ef4444 !important; }
+
+    /* ─── MAIN CONTENT AREA ─── */
+    .main-content-area {
+      flex: 1;
+      margin-left: 280px;
+      transition: margin 0.3s;
+    }
+
+    .content {
+      padding: 32px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Mobile Header */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 0 16px;
+      height: 64px;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0 0 16px 16px !important;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        border-radius: 0 !important;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .mobile-close-btn { display: block; color: var(--ag-text-secondary); }
+      .main-content-area {
+        margin-left: 0;
+      }
+      .mobile-header { display: flex; }
+      .content { padding-top: 80px; }
+    }
+
+    .text-red { color: #ef4444 !important; }
+
+    /* Keep existing sub-styles... */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
-      padding: 24px;
-    }
-    .tab-content {
-      padding: 24px;
-    }
-    .mr-2 { margin-right: 8px; }
-    .tab-label {
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
+      margin-bottom: 32px;
     }
     .dashboard-tabs {
-       margin: 0 24px 24px;
        border: 1px solid var(--ag-border) !important;
-       display: block !important;
        min-height: 500px;
     }
-    /* Material MDC Specific Overrides */
-    :host ::ng-deep .mat-mdc-tab-root {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-    :host ::ng-deep .mat-mdc-tab-body-wrapper {
-      background: transparent !important;
-      min-height: 400px;
-    }
-    :host ::ng-deep .mdc-tab__text-label {
-      color: var(--ag-neon) !important;
-    }
-    :host ::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
-      color: var(--ag-text-primary) !important;
-      text-shadow: 0 0 10px var(--ag-neon-glow);
-    }
-    :host ::ng-deep .mat-mdc-tab-header {
-      background: transparent !important;
-    }
+    .tab-content { padding: 24px; }
     .stat-card {
       padding: 24px;
       display: flex;
       align-items: center;
       gap: 20px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid var(--ag-border) !important;
+      transition: all 0.3s;
     }
-    .stat-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--ag-neon) !important;
-      box-shadow: 0 0 20px var(--ag-neon-glow) !important;
-    }
-    .stat-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-    }
-    .stat-icon mat-icon { font-size: 32px; width: 32px; height: 32px; }
-    
+    .stat-card:hover { transform: translateY(-5px); border-color: var(--ag-neon) !important; }
+    .stat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
     .blue .stat-icon { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
     .red .stat-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
     .purple .stat-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
     .orange .stat-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    
-    .stat-info {
-      display: flex;
-      flex-direction: column;
-    }
-    .stat-info .label {
-      font-size: 0.8rem;
-      color: var(--ag-text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-    .stat-info .value {
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: var(--ag-text-primary);
-    }
+    .stat-info .label { font-size: 0.75rem; color: var(--ag-text-secondary); text-transform: uppercase; font-weight: 700; }
+    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: var(--ag-text-primary); }
     
     .footer {
       margin-top: 40px;
@@ -750,7 +856,8 @@ export class DashboardComponent implements OnInit {
   activeTab = 0;
   showProfile = false;
   notifCount = 0;
-  mobileMenuOpen = false;
+  sidebarOpen = false;
+  menuSearch = '';
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -778,6 +885,10 @@ export class DashboardComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  filterMenu(event: Event) {
+    this.menuSearch = (event.target as HTMLInputElement).value.toLowerCase();
   }
 
   toggleTheme() {
