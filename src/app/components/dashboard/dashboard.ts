@@ -468,12 +468,12 @@ import { SupportTimeService } from '../../services/support-time.service';
       overflow-y: auto;
     }
     .menu-group {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      color: var(--ag-text-secondary);
+      color: rgba(255, 255, 255, 0.5); /* Brighter group label */
       letter-spacing: 1.5px;
       margin: 20px 0 12px 12px;
-      opacity: 0.6;
+      text-transform: uppercase;
     }
     .nav-item {
       display: flex;
@@ -483,27 +483,35 @@ import { SupportTimeService } from '../../services/support-time.service';
       padding: 12px 16px;
       border: none;
       background: none;
-      color: var(--ag-text-secondary);
+      color: rgba(255, 255, 255, 0.7); /* Brighter inactive text */
       font-family: inherit;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.95rem; /* Increased font-size */
       cursor: pointer;
       border-radius: 12px;
       margin-bottom: 4px;
       transition: all 0.2s;
     }
-    .nav-item mat-icon { font-size: 22px; width: 22px; height: 22px; }
-    .nav-item:hover {
-      background: rgba(14,165,233,0.06);
-      color: var(--ag-neon);
+    .nav-item mat-icon { 
+      font-size: 22px; 
+      width: 22px; 
+      height: 22px;
+      color: rgba(255, 255, 255, 0.6); /* Brighter icons */
     }
+    .nav-item:hover {
+      background: rgba(14,165,233,0.15);
+      color: #ffffff;
+    }
+    .nav-item:hover mat-icon { color: var(--ag-neon); }
+    
     .nav-item.active {
-      background: linear-gradient(90deg, rgba(14,165,233,0.1) 0%, transparent 100%);
-      color: var(--ag-neon);
+      background: linear-gradient(90deg, rgba(14,165,233,0.2) 0%, transparent 100%);
+      color: #ffffff;
       font-weight: 700;
       border-left: 3px solid var(--ag-neon);
       border-radius: 0 12px 12px 0;
     }
+    .nav-item.active mat-icon { color: var(--ag-neon) !important; }
 
     .sidebar-footer {
       padding: 16px;
@@ -597,8 +605,21 @@ import { SupportTimeService } from '../../services/support-time.service';
     .red .stat-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
     .purple .stat-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
     .orange .stat-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .stat-info .label { font-size: 0.75rem; color: var(--ag-text-secondary); text-transform: uppercase; font-weight: 700; }
-    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: var(--ag-text-primary); }
+    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: #ffffff; } /* Force bright white */
+
+    /* Correct Table Header Contrast */
+    :host ::ng-deep .mat-mdc-header-cell {
+      color: #e2e8f0 !important; /* Lighter slate - much more visible */
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.02) !important;
+    }
+    
+    :host ::ng-deep .mat-mdc-cell {
+      color: #f8fafc !important; /* Force high contrast for row data */
+    }
     
     .footer {
       margin-top: 40px;
