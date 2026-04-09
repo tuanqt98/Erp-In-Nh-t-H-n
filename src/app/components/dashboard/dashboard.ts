@@ -383,8 +383,12 @@ import { SupportTimeService } from '../../services/support-time.service';
       border: 1px solid var(--ag-neon) !important;
       min-width: 200px !important;
     }
-    ::ng-deep .mat-mdc-menu-item {
+    ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text {
       color: #ffffff !important;
+      font-weight: 500 !important;
+    }
+    ::ng-deep .mat-mdc-menu-item.text-red .mdc-list-item__primary-text {
+      color: #ef4444 !important;
     }
     ::ng-deep .mat-mdc-menu-item .mat-icon {
       color: var(--ag-neon) !important;
