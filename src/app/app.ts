@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, Renderer2 } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -29,9 +29,21 @@ import { RouterModule } from '@angular/router';
   `]
 })
 export class AppComponent implements OnInit {
+  private renderer = inject(Renderer2);
+  private document = inject(DOCUMENT);
   snowflakes: any[] = [];
 
   ngOnInit() {
+    // Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const isDark = savedTheme === 'dark';
+    if (isDark) {
+      this.renderer.removeClass(this.document, 'light-mode'); // Fix: remove from document/body
+      this.renderer.removeClass(this.document.body, 'light-mode');
+    } else {
+      this.renderer.addClass(this.document.body, 'light-mode');
+    }
+
     this.snowflakes = Array.from({ length: 50 }).map(() => ({
       left: Math.random() * 100,
       size: Math.random() * 5 + 2,
