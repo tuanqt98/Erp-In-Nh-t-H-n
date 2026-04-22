@@ -368,30 +368,29 @@ import { SupportTimeService } from '../../services/support-time.service';
     .sidebar-profile {
       margin: 0 16px 20px;
       padding: 16px;
-      background: var(--ag-border); /* Increased contrast */
+      background: var(--ag-bg-accent); /* Increased contrast */
       border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 12px;
       border: 1px solid var(--ag-border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--ag-shadow);
     }
     
     /* Ensure profile menu has high contrast */
     ::ng-deep .mat-mdc-menu-panel.glass-panel {
-      background: var(--ag-bg-accent) !important; /* Solid background for profile menu */
+      background: var(--ag-bg-accent) !important; 
       border: 1px solid var(--ag-neon) !important;
       min-width: 200px !important;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
     }
     ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text {
       color: var(--ag-text-primary) !important;
-      font-weight: 500 !important;
-    }
-    ::ng-deep .mat-mdc-menu-item.text-red .mdc-list-item__primary-text {
-      color: #ef4444 !important;
+      font-weight: 600 !important;
     }
     ::ng-deep .mat-mdc-menu-item .mat-icon {
       color: var(--ag-neon) !important;
+      opacity: 1 !important;
     }
     .profile-avatar-wrap {
       position: relative;
@@ -438,12 +437,11 @@ import { SupportTimeService } from '../../services/support-time.service';
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .p-role {
       font-size: 0.8rem;
       color: var(--ag-neon) !important; /* Stand out font */
-      font-weight: 500;
+      font-weight: 600;
     }
     .p-options { color: var(--ag-text-secondary); }
 
@@ -468,9 +466,10 @@ import { SupportTimeService } from '../../services/support-time.service';
       overflow-y: auto;
     }
     .menu-group {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 800;
-      color: rgba(255, 255, 255, 0.5); /* Brighter group label */
+      color: var(--ag-text-secondary);
+      opacity: 0.6;
       letter-spacing: 1.5px;
       margin: 20px 0 12px 12px;
       text-transform: uppercase;
@@ -483,7 +482,7 @@ import { SupportTimeService } from '../../services/support-time.service';
       padding: 12px 16px;
       border: none;
       background: none;
-      color: rgba(255, 255, 255, 0.7); /* Brighter inactive text */
+      color: var(--ag-text-secondary);
       font-family: inherit;
       font-weight: 500;
       font-size: 0.95rem; /* Increased font-size */
@@ -496,7 +495,8 @@ import { SupportTimeService } from '../../services/support-time.service';
       font-size: 22px; 
       width: 22px; 
       height: 22px;
-      color: rgba(255, 255, 255, 0.6); /* Brighter icons */
+      color: var(--ag-text-secondary);
+      opacity: 0.7;
     }
     .nav-item:hover {
       background: rgba(14,165,233,0.15);
