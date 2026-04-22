@@ -349,7 +349,7 @@ import { SupportTimeService } from '../../services/support-time.service';
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: white;
+      background: var(--ag-bg-base);
       padding: 3px;
       border: 1px solid var(--ag-neon);
       box-shadow: 0 0 10px var(--ag-neon-glow);
@@ -368,7 +368,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     .sidebar-profile {
       margin: 0 16px 20px;
       padding: 16px;
-      background: rgba(255, 255, 255, 0.08); /* Increased contrast */
+      background: var(--ag-border); /* Increased contrast */
       border-radius: 20px;
       display: flex;
       align-items: center;
@@ -379,12 +379,12 @@ import { SupportTimeService } from '../../services/support-time.service';
     
     /* Ensure profile menu has high contrast */
     ::ng-deep .mat-mdc-menu-panel.glass-panel {
-      background: #0f172a !important; /* Solid background for profile menu */
+      background: var(--ag-bg-accent) !important; /* Solid background for profile menu */
       border: 1px solid var(--ag-neon) !important;
       min-width: 200px !important;
     }
     ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text {
-      color: #ffffff !important;
+      color: var(--ag-text-primary) !important;
       font-weight: 500 !important;
     }
     ::ng-deep .mat-mdc-menu-item.text-red .mdc-list-item__primary-text {
@@ -413,7 +413,7 @@ import { SupportTimeService } from '../../services/support-time.service';
       justify-content: center;
       font-weight: 800;
       font-size: 0.9rem;
-      color: white;
+      color: var(--ag-bg-base);
     }
     .status-indicator {
       position: absolute;
@@ -434,7 +434,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     .p-name {
       font-weight: 700;
       font-size: 1rem; /* Slightly larger */
-      color: #ffffff !important;
+      color: var(--ag-text-primary) !important;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -500,13 +500,13 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     .nav-item:hover {
       background: rgba(14,165,233,0.15);
-      color: #ffffff;
+      color: var(--ag-text-primary);
     }
     .nav-item:hover mat-icon { color: var(--ag-neon); }
     
     .nav-item.active {
       background: linear-gradient(90deg, rgba(14,165,233,0.2) 0%, transparent 100%);
-      color: #ffffff;
+      color: var(--ag-text-primary);
       font-weight: 700;
       border-left: 3px solid var(--ag-neon);
       border-radius: 0 12px 12px 0;
@@ -539,12 +539,15 @@ import { SupportTimeService } from '../../services/support-time.service';
       flex: 1;
       margin-left: 280px;
       transition: margin 0.3s;
+      overflow-x: hidden;
+      min-width: 0;
     }
 
     .content {
       padding: 32px;
       max-width: 1600px;
       margin: 0 auto;
+      overflow-x: hidden;
     }
 
     /* Mobile Header */
@@ -583,15 +586,17 @@ import { SupportTimeService } from '../../services/support-time.service';
     /* Keep existing sub-styles... */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
       margin-bottom: 32px;
     }
     .dashboard-tabs {
        border: 1px solid var(--ag-border) !important;
        min-height: 500px;
+       overflow: hidden;
     }
     .tab-content { padding: 24px; }
+    .tab-label { white-space: nowrap; }
     .stat-card {
       padding: 24px;
       display: flex;
@@ -605,7 +610,9 @@ import { SupportTimeService } from '../../services/support-time.service';
     .red .stat-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
     .purple .stat-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
     .orange .stat-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: #ffffff; } /* Force bright white */
+    .stat-info { min-width: 0; overflow: hidden; }
+    .stat-info .label { font-size: 0.8rem; color: var(--ag-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: var(--ag-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* Force bright white */
 
     /* Correct Table Header Contrast */
     :host ::ng-deep .mat-mdc-header-cell {
@@ -618,7 +625,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     
     :host ::ng-deep .mat-mdc-cell {
-      color: #f8fafc !important; /* Force high contrast for row data */
+      color: var(--ag-text-primary) !important; /* Force high contrast for row data */
     }
     
     .footer {
@@ -714,24 +721,41 @@ import { SupportTimeService } from '../../services/support-time.service';
     
     @media (max-width: 992px) {
       .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 0 16px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 0; }
+      .content { padding: 24px 16px; }
+      .tab-content { padding: 16px; }
     }
     @media (max-width: 768px) {
-      .content { padding: 88px 8px 8px; }
+      .content { padding: 80px 10px 10px; }
       .header { padding: 0 16px; height: 64px; }
-      .app-title { font-size: 0.9rem; }
-      .stats-grid { gap: 12px; }
-      .stat-card { padding: 15px; }
-      .stat-card .value { font-size: 1.3rem; }
+      .app-title { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+      .stats-grid { gap: 10px; }
+      .stat-card { padding: 14px 12px; gap: 12px; }
+      .stat-card .value { font-size: 1.1rem; }
+      .stat-icon { width: 44px; height: 44px; min-width: 44px; border-radius: 12px; }
+      .stat-icon mat-icon { font-size: 20px; width: 20px; height: 20px; }
       .app-logo { height: 40px; width: 40px; }
-      :host ::ng-deep .mat-mdc-tab-link { min-width: 80px !important; padding: 0 12px !important; }
+      .tab-label { display: none; }
+      .tab-content { padding: 12px 8px; }
+      :host ::ng-deep .mat-mdc-tab-link { min-width: 60px !important; padding: 0 8px !important; }
+      :host ::ng-deep .mat-mdc-tab { min-width: 60px !important; padding: 0 8px !important; }
+      .footer { padding: 32px 16px 16px; border-radius: 24px 24px 0 0 !important; }
+      .footer-grid { gap: 24px; }
     }
     @media (max-width: 576px) {
       .footer-grid { grid-template-columns: 1fr; text-align: center; }
       .footer-logo, .status-badge { justify-content: center; }
       .brand-desc { margin: 0 auto 16px; }
       .app-title { display: none; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-card { padding: 12px 10px; gap: 10px; }
+      .stat-card .value { font-size: 1rem; }
+      .stat-info .label { font-size: 0.7rem; }
+      .content { padding: 72px 6px 6px; }
+    }
+    @media (max-width: 400px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-card { flex-direction: row; }
     }
 
     /* ─── MOBILE HAMBURGER MENU ─── */

@@ -315,17 +315,17 @@ import * as XLSX from 'xlsx';
       flex-wrap: wrap;
     }
     .search-field { max-width: 360px; width: 100%; }
-    .table-responsive { overflow-x: auto; margin-bottom: 20px; border-radius: 12px; }
-    table { width: 100%; background: transparent !important; }
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; border-radius: 12px; }
+    table { width: 100%; min-width: 800px; background: transparent !important; }
     :host ::ng-deep .mat-mdc-table { background: transparent !important; }
     :host ::ng-deep .mat-mdc-header-row { background: transparent !important; }
     :host ::ng-deep .mat-mdc-row { background: transparent !important; }
     :host ::ng-deep .mat-mdc-cell { color: var(--ag-text-primary) !important; background: transparent !important; }
-    :host ::ng-deep .mat-mdc-header-cell { color: var(--ag-text-secondary) !important; background: rgba(255,255,255,0.03) !important; }
+    :host ::ng-deep .mat-mdc-header-cell { color: var(--ag-text-secondary) !important; background: var(--ag-border) !important; }
     :host ::ng-deep .mat-mdc-no-data-row { color: var(--ag-text-secondary) !important; }
     :host ::ng-deep .mat-mdc-paginator { background: transparent !important; color: var(--ag-text-secondary) !important; }
     th.mat-header-cell {
-      background-color: rgba(255,255,255,0.03) !important;
+      background-color: var(--ag-border) !important;
       font-weight: 700;
       color: var(--ag-text-secondary) !important;
       text-transform: uppercase;
@@ -349,7 +349,7 @@ import * as XLSX from 'xlsx';
     }
     .btn-export {
       background: linear-gradient(135deg, var(--ag-neon) 0%, #0369a1 100%) !important;
-      color: white !important;
+      color: var(--ag-bg-base) !important;
       padding: 0 24px !important;
     }
     .btn-clear { color: #ef4444 !important; }
@@ -365,7 +365,7 @@ import * as XLSX from 'xlsx';
     .loading-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(13,17,23,0.5);
+      background: var(--ag-glass);
       backdrop-filter: blur(2px);
       z-index: 5;
       display: flex;
@@ -387,7 +387,7 @@ import * as XLSX from 'xlsx';
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.6);
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -412,7 +412,7 @@ import * as XLSX from 'xlsx';
     .confirm-btns { display: flex; gap: 12px; margin-top: 8px; }
     .btn-confirm-delete {
       background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
-      color: white !important;
+      color: var(--ag-bg-base) !important;
       font-weight: 600 !important;
     }
 
@@ -447,14 +447,16 @@ import * as XLSX from 'xlsx';
     }
     @media (max-width: 560px) { .edit-grid { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
-      .table-container { padding: 16px; border-radius: 0 !important; }
+      .table-container { padding: 12px; border-radius: 12px !important; }
       .table-header { flex-direction: column; align-items: stretch; gap: 12px; }
       .search-field { max-width: none; }
       .table-actions { flex-direction: column; align-items: stretch; }
-      .table-title { font-size: 1.2rem; justify-content: center; }
-      .confirm-card, .edit-card { width: 95% !important; padding: 24px 20px !important; }
+      .table-title { font-size: 1.1rem; justify-content: center; }
+      .confirm-card, .edit-card { width: 95% !important; padding: 20px 16px !important; }
       .edit-grid { grid-template-columns: 1fr !important; }
       .action-btns { justify-content: center; }
+      .edit-actions { flex-direction: column; gap: 8px; }
+      .edit-actions button { width: 100%; }
     }
 
     @media (max-width: 800px) {
@@ -509,7 +511,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.isLoading = true;
-    
+
     this.prodService.records$.subscribe(data => {
       this.dataSource.data = data;
       this.isLoading = false;
@@ -631,8 +633,8 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
     }));
     const ws = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
-      {wch:12},{wch:22},{wch:15},{wch:15},{wch:25},{wch:25},{wch:15},{wch:22},
-      {wch:14},{wch:14},{wch:16},{wch:16},{wch:10},{wch:30}
+      { wch: 12 }, { wch: 22 }, { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 25 }, { wch: 15 }, { wch: 22 },
+      { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 10 }, { wch: 30 }
     ];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'SanLuong');

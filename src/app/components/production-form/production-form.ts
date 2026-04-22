@@ -270,8 +270,8 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
     }
     .datetime-group {
       display: flex;
@@ -306,7 +306,7 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
     }
     .btn-save {
       background: linear-gradient(135deg, var(--ag-neon) 0%, #0369a1 100%) !important;
-      color: white !important;
+      color: var(--ag-bg-base) !important;
       padding: 0 32px !important;
       font-weight: 600 !important;
       letter-spacing: 0.5px !important;
@@ -315,12 +315,19 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
       color: var(--ag-text-secondary) !important;
     }
     @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
+      .form-container { padding: 16px; border-radius: 14px !important; }
+      .form-grid { grid-template-columns: 1fr; gap: 12px; }
       .datetime-group { flex-direction: column; gap: 0; }
       .duration-display { width: 100%; justify-content: center; margin-bottom: 8px; }
       .actions { flex-direction: column; gap: 12px; width: 100%; }
       .actions button { width: 100%; padding: 12px !important; height: 48px; }
       .form-title { font-size: 1.2rem; justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .form-container { padding: 12px; }
+      .form-title { font-size: 1rem; gap: 8px; }
+      .logged-user-display { padding: 10px 14px; }
+      .logged-user-display .value { font-size: 0.9rem; }
     }
 
     .stage-container { display: flex; align-items: center; gap: 4px; min-height: 80px; }
@@ -347,12 +354,13 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
     .logged-user-display .user-info { display: flex; flex-direction: column; }
     .logged-user-display .label { font-size: 0.7rem; color: var(--ag-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .logged-user-display .value { font-weight: 700; color: var(--ag-neon); font-size: 1rem; }
+    /* Check also these values in light mode */
 
     /* CONFIRMATION OVERLAY (reused from table) */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.6);
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -376,7 +384,7 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
     .confirm-btns { display: flex; gap: 12px; margin-top: 12px; }
     .btn-confirm-save {
       background: linear-gradient(135deg, var(--ag-neon), #0369a1) !important;
-      color: white !important;
+      color: var(--ag-bg-base) !important;
       font-weight: 600 !important;
     }
   `]
@@ -501,7 +509,7 @@ export class ProductionFormComponent implements OnInit {
   doConfirmSave() {
     this.showSaveConfirm = false;
     const formValue = this.prodForm.value;
-    
+
     // Convert date to string YYYY-MM-DD
     const date = formValue.ngaySanXuat as Date;
     const dateStr = date.toISOString().split('T')[0];
@@ -552,7 +560,7 @@ export class ProductionFormComponent implements OnInit {
       endTime: new Date(),
       thoiGianSanXuat: 0
     });
-    
+
     // Focus back to first input
     setTimeout(() => {
       this.firstInput.nativeElement.focus();

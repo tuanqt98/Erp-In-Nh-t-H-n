@@ -239,7 +239,7 @@ import { SupportTimeRecord } from '../../models/support-time.model';
     .neon-icon { color: var(--ag-neon); }
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
       margin-bottom: 16px;
     }
@@ -378,6 +378,24 @@ import { SupportTimeRecord } from '../../models/support-time.model';
       color: white !important;
       font-weight: 600 !important;
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-container, .table-container { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-title, .table-title { font-size: 1.1rem; }
+      .table-header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .form-actions { flex-direction: column; }
+      .form-actions button { width: 100%; }
+      .reject-card { width: 95%; padding: 24px 16px; }
+      .reject-actions { flex-direction: column; }
+      .reject-actions button { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .form-container, .table-container { padding: 12px; }
+      .form-title, .table-title { font-size: 1rem; gap: 6px; }
+      .pending-badge { font-size: 0.75rem; padding: 4px 10px; }
+    }
   `]
 })
 export class SupportTimeComponent implements OnInit {
@@ -431,7 +449,7 @@ export class SupportTimeComponent implements OnInit {
 
       const formatDate = (d: Date) => {
         if (!(d instanceof Date)) return d;
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       };
 
       try {

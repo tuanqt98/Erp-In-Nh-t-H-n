@@ -697,6 +697,29 @@ interface ImportRow {
     .istatus-new { color: #22c55e; }
     .istatus-duplicate { color: #f59e0b; }
     .istatus-error { color: #ef4444; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hr-header { padding: 16px; }
+      .hr-title-row { flex-direction: column; align-items: flex-start; }
+      .section-title { font-size: 1.1rem; }
+      .toolbar-row { flex-direction: column; align-items: stretch; }
+      .search-field { flex: none; width: 100%; }
+      .filter-field { flex: none; max-width: none; width: 100%; }
+      .btn-add, .btn-import, .btn-template { width: 100%; }
+      .form-card { padding: 20px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column; }
+      .form-actions button { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .hr-header { padding: 12px; }
+      .section-title { font-size: 1rem; }
+      .meta-chip { font-size: 0.75rem; padding: 4px 10px; }
+      .code-badge { font-size: 0.75rem; padding: 2px 8px; }
+      .name { font-size: 0.85rem; }
+      .login-hint { font-size: 0.65rem; }
+    }
   `]
 })
 export class EmployeeManagementComponent implements OnInit, AfterViewInit {
@@ -733,13 +756,13 @@ export class EmployeeManagementComponent implements OnInit, AfterViewInit {
   get totalDepts() { return new Set(this.empService.employees.map(e => e.phongBan)).size; }
 
   empForm: FormGroup = this.fb.group({
-    maNhanVien:  ['', [Validators.required, Validators.pattern(/^[A-Z0-9\-_]+$/)]],
+    maNhanVien: ['', [Validators.required, Validators.pattern(/^[A-Z0-9\-_]+$/)]],
     tenNhanVien: ['', Validators.required],
-    phongBan:    ['', Validators.required],
-    chucVu:      ['', Validators.required],
-    ngayVaoLam:  [new Date()],
-    trangThai:   ['active', Validators.required],
-    email:       [''],
+    phongBan: ['', Validators.required],
+    chucVu: ['', Validators.required],
+    ngayVaoLam: [new Date()],
+    trangThai: ['active', Validators.required],
+    email: [''],
     soDienThoai: [''],
   });
 

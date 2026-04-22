@@ -22,7 +22,7 @@ body.light-mode {
   --ag-bg-accent: #ffffff;
   --ag-neon: #0284c7;
   --ag-neon-glow: rgba(2, 132, 199, 0.1);
-  --ag-glass: rgba(255, 255, 255, 0.85);
+  --ag-glass: rgba(255, 255, 255, 0.95);
   --ag-border: rgba(15, 23, 42, 0.12);
   --ag-text-primary: #0f172a;
   --ag-text-secondary: #475569;
@@ -31,7 +31,15 @@ body.light-mode {
   --ag-snow-bg: radial-gradient(circle at top right, #f0f9ff, #f8fafc 75%);
 }
 
-html, body {
+/* Global Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
   height: 100%;
   margin: 0;
   background: var(--ag-bg-base) !important;
@@ -41,8 +49,22 @@ html, body {
   transition: background 0.4s ease, color 0.4s ease;
 }
 
+/* Responsive Visibility Utilities */
+@media (max-width: 768px) {
+  .desktop-only-global {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only-global {
+    display: none !important;
+  }
+}
+
 /* Fix for Material Icons rendering as text */
-.material-icons, mat-icon {
+.material-icons,
+mat-icon {
   font-family: 'Material Icons' !important;
   font-weight: normal;
   font-style: normal;
@@ -84,8 +106,13 @@ html, body {
 }
 
 @keyframes fall {
-  0% { transform: translateY(-10vh) translateX(0); }
-  100% { transform: translateY(110vh) translateX(40px); }
+  0% {
+    transform: translateY(-10vh) translateX(0);
+  }
+
+  100% {
+    transform: translateY(110vh) translateX(40px);
+  }
 }
 
 /* Material Overrides for Antigravity Look */
@@ -97,20 +124,25 @@ html, body {
 .mat-mdc-table {
   background: transparent !important;
 }
+
 .mat-mdc-header-row {
   background: transparent !important;
 }
+
 .mat-mdc-row {
   background: transparent !important;
 }
+
 .mat-mdc-cell {
   color: var(--ag-text-primary) !important;
   background: transparent !important;
 }
+
 .mat-mdc-header-cell {
   color: var(--ag-text-secondary) !important;
   background: transparent !important;
 }
+
 .mat-mdc-no-data-row .mat-mdc-cell {
   color: var(--ag-text-secondary) !important;
 }
@@ -126,17 +158,29 @@ html, body {
 
 /* Solid Background Modal (for High Contrast) */
 .ag-modal-solid {
-  background: #0f172a !important; /* Non-transparent slate-900 */
+  background: var(--ag-bg-accent) !important;
   border: 1px solid var(--ag-border) !important;
   border-radius: 20px !important;
-  box-shadow: 0 50px 150px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: var(--ag-shadow) !important;
 }
 
 /* Scrollbar Styling */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--ag-bg-base); }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ag-neon); }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ag-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ag-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ag-neon);
+}
 
 /* Form Field Styling */
 .mat-mdc-form-field {
@@ -157,7 +201,7 @@ html, body {
   color: var(--ag-text-secondary) !important;
 }
 
-input.mat-mdc-input-element, 
+input.mat-mdc-input-element,
 textarea.mat-mdc-input-element,
 .mat-mdc-input-element {
   color: var(--ag-text-primary) !important;
@@ -255,7 +299,7 @@ input:-webkit-autofill:focus {
 /* --- MATERIAL TIMEPICKER & DATEPICKER DARK MODE FIXES --- */
 
 /* Timepicker Panel */
-.mat-timepicker-content, 
+.mat-timepicker-content,
 .mat-timepicker-panel,
 .mat-mdc-timepicker-content {
   background-color: var(--ag-bg-accent) !important;
@@ -265,7 +309,7 @@ input:-webkit-autofill:focus {
 
 /* Digital Display */
 .mat-timepicker-digital-display {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: var(--ag-bg-base) !important;
   color: var(--ag-text-primary) !important;
 }
 
@@ -274,7 +318,7 @@ input:-webkit-autofill:focus {
 .mat-timepicker-period-button-selected,
 .mat-primary .mat-timepicker-clock-cell-selected {
   background-color: var(--ag-neon) !important;
-  color: #ffffff !important;
+  color: var(--ag-bg-base) !important;
 }
 
 /* Clock Hand */

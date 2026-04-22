@@ -132,8 +132,7 @@ import { OrderService } from '../../services/order.service';
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      min-width: 600px;
+      gap: 16px;
     }
     .dialog-actions {
       padding: 16px 24px;
@@ -149,6 +148,9 @@ import { OrderService } from '../../services/order.service';
     .btn-cancel { color: var(--ag-text-secondary) !important; }
     @media (max-width: 600px) {
       .form-grid { grid-template-columns: 1fr; min-width: auto; }
+      .dialog-title { font-size: 1.2rem; }
+      .dialog-actions { flex-direction: column; gap: 8px; padding: 12px 16px; }
+      .dialog-actions button { width: 100%; }
     }
     mat-form-field { width: 100%; }
     :host ::ng-deep .mat-datepicker-toggle {
@@ -210,7 +212,7 @@ export class OrderFormComponent implements OnInit {
   onSubmit() {
     if (this.orderForm.valid) {
       const val = this.orderForm.value;
-      
+
       // Format dates to dd/MM/yyyy
       const formatDate = (d: any) => {
         if (!(d instanceof Date)) return d;
