@@ -379,14 +379,18 @@ import { SupportTimeService } from '../../services/support-time.service';
     
     /* Ensure profile menu has high contrast */
     ::ng-deep .mat-mdc-menu-panel.glass-panel {
-      background: var(--ag-bg-accent) !important; 
+      background: var(--ag-bg-base) !important; 
       border: 1px solid var(--ag-neon) !important;
       min-width: 200px !important;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
     }
     ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text {
-      color: var(--ag-text-primary) !important;
-      font-weight: 600 !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    ::ng-deep .mat-mdc-menu-item:hover {
+      background: var(--ag-neon-glow) !important;
     }
     ::ng-deep .mat-mdc-menu-item .mat-icon {
       color: var(--ag-neon) !important;
@@ -586,7 +590,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     /* Keep existing sub-styles... */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
       margin-bottom: 32px;
     }
@@ -606,13 +610,30 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     .stat-card:hover { transform: translateY(-5px); border-color: var(--ag-neon) !important; }
     .stat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
-    .blue .stat-icon { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
-    .red .stat-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .purple .stat-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
-    .orange .stat-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .stat-info { min-width: 0; overflow: hidden; }
-    .stat-info .label { font-size: 0.8rem; color: var(--ag-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .stat-info .value { font-size: 1.5rem; font-weight: 800; color: var(--ag-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* Force bright white */
+    .blue .stat-icon { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+    .red .stat-icon { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .purple .stat-icon { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+    .orange .stat-icon { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .stat-info { flex: 1; min-width: 0; }
+    .stat-info .label { font-size: 0.72rem; color: var(--ag-text-secondary); line-height: 1.2; margin-bottom: 4px; display: block; }
+    .stat-info .value { font-size: 1.25rem; font-weight: 800; color: #ffffff !important; line-height: 1.1; } /* Force ultra bright white */
+
+    /* Force Tab Label Visibility */
+    ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+      color: var(--ag-text-primary) !important;
+      font-weight: 600 !important;
+      opacity: 1 !important;
+    }
+    ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+      color: var(--ag-neon) !important;
+      text-shadow: 0 0 8px var(--ag-neon-glow);
+    }
+    ::ng-deep .mat-mdc-tab .mat-icon {
+      color: var(--ag-text-secondary) !important;
+    }
+    ::ng-deep .mat-mdc-tab.mdc-tab--active .mat-icon {
+      color: var(--ag-neon) !important;
+    }
 
     /* Correct Table Header Contrast */
     :host ::ng-deep .mat-mdc-header-cell {
