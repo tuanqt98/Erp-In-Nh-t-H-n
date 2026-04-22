@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, Renderer2 } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, inject, Renderer2, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -21,27 +21,29 @@ import { RouterModule } from '@angular/router';
   `,
   styles: [`
     :host {
-      display: block;
+      display: flex;
+      flex-direction: column;
       min-height: 100vh;
       position: relative;
-      z-index: 1;
     }
   `]
 })
 export class AppComponent implements OnInit {
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
   snowflakes: any[] = [];
 
   ngOnInit() {
     // Theme Logic
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    const isDark = savedTheme === 'dark';
-    if (isDark) {
-      this.renderer.removeClass(this.document, 'light-mode'); // Fix: remove from document/body
-      this.renderer.removeClass(this.document.body, 'light-mode');
-    } else {
-      this.renderer.addClass(this.document.body, 'light-mode');
+    if (isPlatformBrowser(this.platformId)) {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const isDark = savedTheme === 'dark';
+      if (isDark) {
+        this.renderer.removeClass(this.document.body, 'light-mode');
+      } else {
+        this.renderer.addClass(this.document.body, 'light-mode');
+      }
     }
 
     this.snowflakes = Array.from({ length: 50 }).map(() => ({
