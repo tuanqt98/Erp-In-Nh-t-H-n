@@ -384,10 +384,11 @@ import { SupportTimeService } from '../../services/support-time.service';
       min-width: 200px !important;
       box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
     }
-    ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text {
+    ::ng-deep .mat-mdc-menu-item .mdc-list-item__primary-text,
+    ::ng-deep .mat-mdc-menu-item span {
       color: #ffffff !important;
       font-weight: 700 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
     }
     ::ng-deep .mat-mdc-menu-item:hover {
       background: var(--ag-neon-glow) !important;
