@@ -74,6 +74,13 @@ model ProductionRecord {
   thoiGianKetThuc String?
   thoiGianSanXuat Float    @default(0)
   ghiChu          String?
+  mayHong          Float    @default(0)
+  batThuongChatLuong Float  @default(0)
+  choLieu          Float    @default(0)
+  choBan           Float    @default(0)
+  choDuyetMau      Float    @default(0)
+  khac             Float    @default(0)
+  thoiGianNgoaiTru Float    @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

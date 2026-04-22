@@ -49,8 +49,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         where: { ngaySanXuat: today }
       });
 
-      return res.status(200).json({ 
-        records, 
+      return res.status(200).json({
+        records,
         total,
         stats: {
           totalOK: stats._sum.sanLuongOK || 0,
@@ -72,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Single create
       const data = req.body;
-      
+
       // Try to look up employeeId from tenNhanVien (optional - not required)
       let employeeId = data.employeeId || null;
       if (!employeeId && data.tenNhanVien) {
@@ -100,6 +100,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           thoiGianBatDau: data.thoiGianBatDau || null,
           thoiGianKetThuc: data.thoiGianKetThuc || null,
           thoiGianSanXuat: Number(data.thoiGianSanXuat) || 0,
+          mayHong: Number(data.mayHong) || 0,
+          batThuongChatLuong: Number(data.batThuongChatLuong) || 0,
+          choLieu: Number(data.choLieu) || 0,
+          choBan: Number(data.choBan) || 0,
+          choDuyetMau: Number(data.choDuyetMau) || 0,
+          khac: Number(data.khac) || 0,
+          thoiGianNgoaiTru: Number(data.thoiGianNgoaiTru) || 0,
           ghiChu: data.ghiChu || null,
         }
       });
@@ -112,7 +119,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const updateData: any = {};
       const fields = ['ngaySanXuat', 'tenNhanVien', 'employeeId', 'lenhSanXuat', 'maHang', 'tenHang',
         'nguyenVatLieu', 'congDoan', 'tenMay', 'ghiChu', 'thoiGianBatDau', 'thoiGianKetThuc'];
-      const numFields = ['sanLuongOK', 'sanLuongLoi', 'thoiGianSanXuat'];
+      const numFields = ['sanLuongOK', 'sanLuongLoi', 'thoiGianSanXuat', 'mayHong',
+        'batThuongChatLuong', 'choLieu', 'choBan', 'choDuyetMau', 'khac', 'thoiGianNgoaiTru'];
 
       for (const f of fields) {
         if (changes[f] !== undefined) updateData[f] = changes[f];

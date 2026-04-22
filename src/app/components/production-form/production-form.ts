@@ -203,6 +203,38 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
           </div>
         </div>
 
+        <div class="divider-text">CHI TIẾT THỜI GIAN NGOẠI TRỪ (PHÚT)</div>
+        <div class="form-grid extra-fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Máy hỏng</mat-label>
+            <input matInput type="number" formControlName="mayHong" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bất thường C/L</mat-label>
+            <input matInput type="number" formControlName="batThuongChatLuong" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ liệu</mat-label>
+            <input matInput type="number" formControlName="choLieu" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ bản</mat-label>
+            <input matInput type="number" formControlName="choBan" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ duyệt màu</mat-label>
+            <input matInput type="number" formControlName="choDuyetMau" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Khác</mat-label>
+            <input matInput type="number" formControlName="khac" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>TG ngoại trừ</mat-label>
+            <input matInput type="number" formControlName="thoiGianNgoaiTru" min="0">
+          </mat-form-field>
+        </div>
+
         <!-- Ghi chú -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Ghi chú</mat-label>
@@ -259,7 +291,22 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
     .production-form {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
+    }
+    .divider-text {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--ag-text-secondary);
+      opacity: 0.6;
+      letter-spacing: 1.5px;
+      margin: 16px 0 8px;
+      padding-left: 4px;
+    }
+    .extra-fields {
+      background: rgba(255,255,255,0.02);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--ag-border);
     }
 
     /* Override for Material Icons in form */
@@ -422,6 +469,13 @@ export class ProductionFormComponent implements OnInit {
     endDate: [new Date(), Validators.required],
     endTime: [new Date(), Validators.required],
     thoiGianSanXuat: [0, [Validators.required, Validators.min(0)]],
+    mayHong: [0, [Validators.min(0)]],
+    batThuongChatLuong: [0, [Validators.min(0)]],
+    choLieu: [0, [Validators.min(0)]],
+    choBan: [0, [Validators.min(0)]],
+    choDuyetMau: [0, [Validators.min(0)]],
+    khac: [0, [Validators.min(0)]],
+    thoiGianNgoaiTru: [0, [Validators.min(0)]],
     ghiChu: ['']
   });
 
@@ -558,7 +612,14 @@ export class ProductionFormComponent implements OnInit {
       startTime: new Date(),
       endDate: new Date(),
       endTime: new Date(),
-      thoiGianSanXuat: 0
+      thoiGianSanXuat: 0,
+      mayHong: 0,
+      batThuongChatLuong: 0,
+      choLieu: 0,
+      choBan: 0,
+      choDuyetMau: 0,
+      khac: 0,
+      thoiGianNgoaiTru: 0
     });
 
     // Focus back to first input

@@ -135,6 +135,41 @@ import * as XLSX from 'xlsx';
             <td mat-cell *matCellDef="let row" class="text-right">{{row.thoiGianSanXuat}}</td>
           </ng-container>
 
+          <ng-container matColumnDef="mayHong">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>MH</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.mayHong || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="batThuongChatLuong">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>BTCL</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.batThuongChatLuong || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="choLieu">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CL</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.choLieu || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="choBan">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CB</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.choBan || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="choDuyetMau">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CDM</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.choDuyetMau || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="khac">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Khác</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.khac || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="thoiGianNgoaiTru">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>TGN</th>
+            <td mat-cell *matCellDef="let row" class="text-right font-bold">{{row.thoiGianNgoaiTru || 0}}</td>
+          </ng-container>
+
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Thao tác</th>
             <td mat-cell *matCellDef="let row">
@@ -271,6 +306,35 @@ import * as XLSX from 'xlsx';
           <mat-form-field appearance="outline">
             <mat-label>Ghi Chú</mat-label>
             <input matInput [(ngModel)]="editRecord.ghiChu">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Máy hỏng</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.mayHong" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bất thường C/L</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.batThuongChatLuong" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ liệu</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.choLieu" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ bản</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.choBan" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Chờ màu</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.choDuyetMau" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Khác</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.khac" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>TG ngoại trừ</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.thoiGianNgoaiTru" min="0">
           </mat-form-field>
         </div>
 
@@ -478,7 +542,9 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'ngaySanXuat', 'tenNhanVien', 'lenhSanXuat', 'maHang', 'tenHang', 'nguyenVatLieu',
     'congDoan', 'tenMay', 'sanLuongOK', 'sanLuongLoi', 'thoiGianBatDau',
-    'thoiGianKetThuc', 'thoiGianSanXuat', 'actions'
+    'thoiGianKetThuc', 'thoiGianSanXuat',
+    'mayHong', 'batThuongChatLuong', 'choLieu', 'choBan', 'choDuyetMau', 'khac', 'thoiGianNgoaiTru',
+    'actions'
   ];
 
   dataSource = new MatTableDataSource<ProductionRecord>([]);
@@ -628,13 +694,22 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
       'Sản Lượng Lỗi': r.sanLuongLoi,
       'Bắt Đầu': r.thoiGianBatDau ? new Date(r.thoiGianBatDau).toLocaleString('vi-VN') : '',
       'Kết Thúc': r.thoiGianKetThuc ? new Date(r.thoiGianKetThuc).toLocaleString('vi-VN') : '',
+      'Máy hỏng': r.mayHong || 0,
+      'BTCL': r.batThuongChatLuong || 0,
+      'Chờ liệu': r.choLieu || 0,
+      'Chờ bản': r.choBan || 0,
+      'Chờ màu': r.choDuyetMau || 0,
+      'Khác': r.khac || 0,
+      'TG ngoại trừ': r.thoiGianNgoaiTru || 0,
       'Tổng Phút': r.thoiGianSanXuat,
       'Ghi Chú': r.ghiChu
     }));
     const ws = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
       { wch: 12 }, { wch: 22 }, { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 25 }, { wch: 15 }, { wch: 22 },
-      { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 10 }, { wch: 30 }
+      { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 },
+      { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 12 },
+      { wch: 10 }, { wch: 30 }
     ];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'SanLuong');

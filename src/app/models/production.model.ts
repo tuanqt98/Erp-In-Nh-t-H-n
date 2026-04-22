@@ -14,6 +14,13 @@ export interface ProductionRecord {
   thoiGianKetThuc?: string;   // ISO string or datetime-local string
   thoiGianSanXuat: number;    // total minutes (calculated)
   ghiChu: string;
+  mayHong?: number;
+  batThuongChatLuong?: number;
+  choLieu?: number;
+  choBan?: number;
+  choDuyetMau?: number;
+  khac?: number;
+  thoiGianNgoaiTru?: number;
   createdAt: number;          // timestamp
 }
 

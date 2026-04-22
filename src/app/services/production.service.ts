@@ -9,7 +9,7 @@ export class ProductionService {
   private _records$ = new BehaviorSubject<ProductionRecord[]>([]);
   private _totalRecords$ = new BehaviorSubject<number>(0);
   private _stages$ = new BehaviorSubject<string[]>([]);
-  private _stats$ = new BehaviorSubject<{totalOK: number, totalLoi: number, todayCount: number}>({
+  private _stats$ = new BehaviorSubject<{ totalOK: number, totalLoi: number, todayCount: number }>({
     totalOK: 0, totalLoi: 0, todayCount: 0
   });
 
@@ -41,7 +41,7 @@ export class ProductionService {
     try {
       const url = `/api/production?page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search)}`;
       const res = await firstValueFrom(this.http.get<any>(url));
-      
+
       const data = res.records || [];
       const total = res.total || 0;
 
@@ -60,11 +60,18 @@ export class ProductionService {
         thoiGianBatDau: r.thoiGianBatDau || undefined,
         thoiGianKetThuc: r.thoiGianKetThuc || undefined,
         thoiGianSanXuat: r.thoiGianSanXuat,
+        mayHong: r.mayHong || 0,
+        batThuongChatLuong: r.batThuongChatLuong || 0,
+        choLieu: r.choLieu || 0,
+        choBan: r.choBan || 0,
+        choDuyetMau: r.choDuyetMau || 0,
+        khac: r.khac || 0,
+        thoiGianNgoaiTru: r.thoiGianNgoaiTru || 0,
         ghiChu: r.ghiChu || '',
         createdAt: new Date(r.createdAt).getTime(),
         employeeId: r.employeeId,
       }));
-      
+
       this._records$.next(records);
       this._totalRecords$.next(total);
       if (res.stats) {
