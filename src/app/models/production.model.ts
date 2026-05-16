@@ -21,6 +21,12 @@ export interface ProductionRecord {
   choDuyetMau?: number;
   khac?: number;
   thoiGianNgoaiTru?: number;
+  daoTao?: number;
+  matDien?: number;
+  thienTai?: number;
+  veSinhCuoiNam?: number;
+  theoChiDaoCapTren?: number;
+  dungDoHetHang?: number;
   createdAt: number;          // timestamp
 }
 
@@ -66,5 +72,6 @@ export const MAY_OPTIONS = [
   'DIE-CUT 1', 'DIE-CUT 2', 'DIE-CUT 3', 'DIE-CUT 4', 'DIE-CUT 5', 'DIE-CUT 6', 'DIE-CUT 7',
   'MÁY BẾ DEMI 1', 'MÁY BẾ DEMI 2', 'MÁY BẾ DEMI 3', 'MÁY BẾ DEMI 4', 'MÁY BẾ DEMI 5', 'MÁY BẾ DEMI 6',
   'MÁY CHẶT ĐỘC LẬP 1', 'MÁY XÉN',
-  'MÁY CHIA 00', 'MÁY CHIA 1', 'MÁY CHIA 2', 'MÁY CHIA 3', 'MÁY CHIA 4', 'MÁY CHIA 5', 'MÁY CHIA 6', 'MÁY CHIA 7', 'MÁY CHIA 8'
+  'MÁY CHIA 00', 'MÁY CHIA 1', 'MÁY CHIA 2', 'MÁY CHIA 3', 'MÁY CHIA 4', 'MÁY CHIA 5', 'MÁY CHIA 6', 'MÁY CHIA 7', 'MÁY CHIA 8',
+  'Bàn kiểm tra 1', 'Bàn kiểm tra 2', 'Bàn kiểm tra 3', 'Bàn kiểm tra 4'
 ];

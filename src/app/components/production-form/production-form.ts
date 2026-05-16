@@ -203,7 +203,7 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
           </div>
         </div>
 
-        <div class="divider-text">CHI TIẾT THỜI GIAN NGOẠI TRỪ (PHÚT)</div>
+        <div class="divider-text">THỜI GIAN DỪNG BẤT THƯỜNG (PHÚT)</div>
         <div class="form-grid extra-fields">
           <mat-form-field appearance="outline">
             <mat-label>Máy hỏng</mat-label>
@@ -213,25 +213,37 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
             <mat-label>Bất thường C/L</mat-label>
             <input matInput type="number" formControlName="batThuongChatLuong" min="0">
           </mat-form-field>
+        </div>
+
+        <div class="divider-text">THỜI GIAN DỪNG NGOẠI TRỪ (PHÚT)</div>
+        <div class="form-grid extra-fields">
           <mat-form-field appearance="outline">
-            <mat-label>Chờ liệu</mat-label>
-            <input matInput type="number" formControlName="choLieu" min="0">
+            <mat-label>Đào tạo</mat-label>
+            <input matInput type="number" formControlName="daoTao" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Chờ bản</mat-label>
-            <input matInput type="number" formControlName="choBan" min="0">
+            <mat-label>Mất điện</mat-label>
+            <input matInput type="number" formControlName="matDien" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Chờ duyệt màu</mat-label>
-            <input matInput type="number" formControlName="choDuyetMau" min="0">
+            <mat-label>Thiên tai</mat-label>
+            <input matInput type="number" formControlName="thienTai" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Vệ sinh cuối năm</mat-label>
+            <input matInput type="number" formControlName="veSinhCuoiNam" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Theo chỉ đạo cấp trên</mat-label>
+            <input matInput type="number" formControlName="theoChiDaoCapTren" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Dừng do hết hàng</mat-label>
+            <input matInput type="number" formControlName="dungDoHetHang" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Khác</mat-label>
             <input matInput type="number" formControlName="khac" min="0">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>TG ngoại trừ</mat-label>
-            <input matInput type="number" formControlName="thoiGianNgoaiTru" min="0">
           </mat-form-field>
         </div>
 
@@ -471,11 +483,13 @@ export class ProductionFormComponent implements OnInit {
     thoiGianSanXuat: [0, [Validators.required, Validators.min(0)]],
     mayHong: [0, [Validators.min(0)]],
     batThuongChatLuong: [0, [Validators.min(0)]],
-    choLieu: [0, [Validators.min(0)]],
-    choBan: [0, [Validators.min(0)]],
-    choDuyetMau: [0, [Validators.min(0)]],
+    daoTao: [0, [Validators.min(0)]],
+    matDien: [0, [Validators.min(0)]],
+    thienTai: [0, [Validators.min(0)]],
+    veSinhCuoiNam: [0, [Validators.min(0)]],
+    theoChiDaoCapTren: [0, [Validators.min(0)]],
+    dungDoHetHang: [0, [Validators.min(0)]],
     khac: [0, [Validators.min(0)]],
-    thoiGianNgoaiTru: [0, [Validators.min(0)]],
     ghiChu: ['']
   });
 
@@ -615,11 +629,13 @@ export class ProductionFormComponent implements OnInit {
       thoiGianSanXuat: 0,
       mayHong: 0,
       batThuongChatLuong: 0,
-      choLieu: 0,
-      choBan: 0,
-      choDuyetMau: 0,
-      khac: 0,
-      thoiGianNgoaiTru: 0
+      daoTao: 0,
+      matDien: 0,
+      thienTai: 0,
+      veSinhCuoiNam: 0,
+      theoChiDaoCapTren: 0,
+      dungDoHetHang: 0,
+      khac: 0
     });
 
     // Focus back to first input

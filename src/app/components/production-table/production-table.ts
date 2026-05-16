@@ -145,29 +145,39 @@ import * as XLSX from 'xlsx';
             <td mat-cell *matCellDef="let row" class="text-right">{{row.batThuongChatLuong || 0}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="choLieu">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>CL</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.choLieu || 0}}</td>
+          <ng-container matColumnDef="daoTao">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ĐT</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.daoTao || 0}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="choBan">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>CB</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.choBan || 0}}</td>
+          <ng-container matColumnDef="matDien">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>MĐ</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.matDien || 0}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="choDuyetMau">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>CDM</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.choDuyetMau || 0}}</td>
+          <ng-container matColumnDef="thienTai">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>TT</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.thienTai || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="veSinhCuoiNam">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>VSCN</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.veSinhCuoiNam || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="theoChiDaoCapTren">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CĐCT</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.theoChiDaoCapTren || 0}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dungDoHetHang">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>HH</th>
+            <td mat-cell *matCellDef="let row" class="text-right">{{row.dungDoHetHang || 0}}</td>
           </ng-container>
 
           <ng-container matColumnDef="khac">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Khác</th>
             <td mat-cell *matCellDef="let row" class="text-right">{{row.khac || 0}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="thoiGianNgoaiTru">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>TGN</th>
-            <td mat-cell *matCellDef="let row" class="text-right font-bold">{{row.thoiGianNgoaiTru || 0}}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -317,24 +327,32 @@ import * as XLSX from 'xlsx';
             <input matInput type="number" [(ngModel)]="editRecord.batThuongChatLuong" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Chờ liệu</mat-label>
-            <input matInput type="number" [(ngModel)]="editRecord.choLieu" min="0">
+            <mat-label>Đào tạo</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.daoTao" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Chờ bản</mat-label>
-            <input matInput type="number" [(ngModel)]="editRecord.choBan" min="0">
+            <mat-label>Mất điện</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.matDien" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Chờ màu</mat-label>
-            <input matInput type="number" [(ngModel)]="editRecord.choDuyetMau" min="0">
+            <mat-label>Thiên tai</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.thienTai" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Vệ sinh cuối năm</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.veSinhCuoiNam" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Theo chỉ đạo cấp trên</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.theoChiDaoCapTren" min="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Dừng do hết hàng</mat-label>
+            <input matInput type="number" [(ngModel)]="editRecord.dungDoHetHang" min="0">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Khác</mat-label>
             <input matInput type="number" [(ngModel)]="editRecord.khac" min="0">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>TG ngoại trừ</mat-label>
-            <input matInput type="number" [(ngModel)]="editRecord.thoiGianNgoaiTru" min="0">
           </mat-form-field>
         </div>
 
@@ -543,7 +561,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
     'ngaySanXuat', 'tenNhanVien', 'lenhSanXuat', 'maHang', 'tenHang', 'nguyenVatLieu',
     'congDoan', 'tenMay', 'sanLuongOK', 'sanLuongLoi', 'thoiGianBatDau',
     'thoiGianKetThuc', 'thoiGianSanXuat',
-    'mayHong', 'batThuongChatLuong', 'choLieu', 'choBan', 'choDuyetMau', 'khac', 'thoiGianNgoaiTru',
+    'mayHong', 'batThuongChatLuong', 'daoTao', 'matDien', 'thienTai', 'veSinhCuoiNam', 'theoChiDaoCapTren', 'dungDoHetHang', 'khac',
     'actions'
   ];
 
@@ -695,12 +713,14 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
       'Bắt Đầu': r.thoiGianBatDau ? new Date(r.thoiGianBatDau).toLocaleString('vi-VN') : '',
       'Kết Thúc': r.thoiGianKetThuc ? new Date(r.thoiGianKetThuc).toLocaleString('vi-VN') : '',
       'Máy hỏng': r.mayHong || 0,
-      'BTCL': r.batThuongChatLuong || 0,
-      'Chờ liệu': r.choLieu || 0,
-      'Chờ bản': r.choBan || 0,
-      'Chờ màu': r.choDuyetMau || 0,
+      'BT C/L': r.batThuongChatLuong || 0,
+      'Đào tạo': r.daoTao || 0,
+      'Mất điện': r.matDien || 0,
+      'Thiên tai': r.thienTai || 0,
+      'VS cuối năm': r.veSinhCuoiNam || 0,
+      'CĐ cấp trên': r.theoChiDaoCapTren || 0,
+      'Hết hàng': r.dungDoHetHang || 0,
       'Khác': r.khac || 0,
-      'TG ngoại trừ': r.thoiGianNgoaiTru || 0,
       'Tổng Phút': r.thoiGianSanXuat,
       'Ghi Chú': r.ghiChu
     }));

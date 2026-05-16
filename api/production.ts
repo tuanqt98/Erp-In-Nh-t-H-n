@@ -107,6 +107,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           choDuyetMau: Number(data.choDuyetMau) || 0,
           khac: Number(data.khac) || 0,
           thoiGianNgoaiTru: Number(data.thoiGianNgoaiTru) || 0,
+          daoTao: Number(data.daoTao) || 0,
+          matDien: Number(data.matDien) || 0,
+          thienTai: Number(data.thienTai) || 0,
+          veSinhCuoiNam: Number(data.veSinhCuoiNam) || 0,
+          theoChiDaoCapTren: Number(data.theoChiDaoCapTren) || 0,
+          dungDoHetHang: Number(data.dungDoHetHang) || 0,
           ghiChu: data.ghiChu || null,
         }
       });
@@ -120,7 +126,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const fields = ['ngaySanXuat', 'tenNhanVien', 'employeeId', 'lenhSanXuat', 'maHang', 'tenHang',
         'nguyenVatLieu', 'congDoan', 'tenMay', 'ghiChu', 'thoiGianBatDau', 'thoiGianKetThuc'];
       const numFields = ['sanLuongOK', 'sanLuongLoi', 'thoiGianSanXuat', 'mayHong',
-        'batThuongChatLuong', 'choLieu', 'choBan', 'choDuyetMau', 'khac', 'thoiGianNgoaiTru'];
+        'batThuongChatLuong', 'choLieu', 'choBan', 'choDuyetMau', 'khac', 'thoiGianNgoaiTru',
+        'daoTao', 'matDien', 'thienTai', 'veSinhCuoiNam', 'theoChiDaoCapTren', 'dungDoHetHang'];
 
       for (const f of fields) {
         if (changes[f] !== undefined) updateData[f] = changes[f];
