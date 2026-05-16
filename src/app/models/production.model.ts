@@ -27,10 +27,12 @@ export interface ProductionRecord {
   veSinhCuoiNam?: number;
   theoChiDaoCapTren?: number;
   dungDoHetHang?: number;
+  capDoHang?: string;
   createdAt: number;          // timestamp
 }
 
 export const CONG_DOAN_OPTIONS = ['In', 'Cán Màng', 'Bế', 'Xén', 'Chia', 'Phủ cào', 'Chặt tờ'];
+export const CAP_DO_HANG_OPTIONS = ['Hàng cấp độ 1', 'Hàng cấp độ 2', 'Hàng cấp độ 3'];
 
 export const NHAN_VIEN_OPTIONS = [
   'NV00626 - Lê Thị Tươi', 'NV00632 - Đàm Duy Thuận', 'NV00679 - Đặng Đình Hùng', 'NV00808 - Phạm Văn Bình',

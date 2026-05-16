@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductionService } from '../../services/production.service';
 import { OrderService } from '../../services/order.service';
-import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
+import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../models/production.model';
 
 @Component({
   selector: 'app-production-form',
@@ -159,6 +159,14 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS } from '../../models/production.model';
           <mat-form-field appearance="outline">
             <mat-label>Sản lượng lỗi</mat-label>
             <input matInput type="number" formControlName="sanLuongLoi">
+          </mat-form-field>
+
+          <!-- Cấp độ hàng -->
+          <mat-form-field appearance="outline">
+            <mat-label>Cấp độ hàng</mat-label>
+            <mat-select formControlName="capDoHang">
+              <mat-option *ngFor="let opt of capDoHangOptions" [value]="opt">{{ opt }}</mat-option>
+            </mat-select>
           </mat-form-field>
 
           <!-- Thời gian Bắt đầu -->
@@ -458,6 +466,7 @@ export class ProductionFormComponent implements OnInit {
   @ViewChild('firstInput') firstInput!: ElementRef;
 
   mayOptions = MAY_OPTIONS;
+  capDoHangOptions = CAP_DO_HANG_OPTIONS;
   showSaveConfirm = false;
   showAddStageInput = false;
   newStageName = '';
@@ -476,6 +485,7 @@ export class ProductionFormComponent implements OnInit {
     tenMay: ['', Validators.required],
     sanLuongOK: [0, [Validators.required, Validators.min(0)]],
     sanLuongLoi: [0, [Validators.required, Validators.min(0)]],
+    capDoHang: [''],
     startDate: [new Date(), Validators.required],
     startTime: [new Date(), Validators.required],
     endDate: [new Date(), Validators.required],
@@ -622,6 +632,7 @@ export class ProductionFormComponent implements OnInit {
       ngaySanXuat: new Date(),
       sanLuongOK: 0,
       sanLuongLoi: 0,
+      capDoHang: '',
       startDate: new Date(),
       startTime: new Date(),
       endDate: new Date(),

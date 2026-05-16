@@ -87,6 +87,7 @@ model ProductionRecord {
   veSinhCuoiNam    Float    @default(0)
   theoChiDaoCapTren Float   @default(0)
   dungDoHetHang    Float    @default(0)
+  capDoHang        String?  @default("")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

@@ -120,6 +120,14 @@ import * as XLSX from 'xlsx';
             <td mat-cell *matCellDef="let row" class="text-right text-danger">{{row.sanLuongLoi | number}}</td>
           </ng-container>
 
+          <ng-container matColumnDef="capDoHang">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cấp độ</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge" *ngIf="row.capDoHang">{{row.capDoHang}}</span>
+              <span *ngIf="!row.capDoHang">—</span>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="thoiGianBatDau">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Bắt đầu</th>
             <td mat-cell *matCellDef="let row">{{row.thoiGianBatDau | date:'HH:mm'}}</td>
@@ -311,6 +319,15 @@ import * as XLSX from 'xlsx';
           <mat-form-field appearance="outline">
             <mat-label>Sản Lượng Lỗi</mat-label>
             <input matInput type="number" [(ngModel)]="editRecord.sanLuongLoi" min="0">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cấp độ hàng</mat-label>
+            <mat-select [(ngModel)]="editRecord.capDoHang">
+              <mat-option value="Hàng cấp độ 1">Hàng cấp độ 1</mat-option>
+              <mat-option value="Hàng cấp độ 2">Hàng cấp độ 2</mat-option>
+              <mat-option value="Hàng cấp độ 3">Hàng cấp độ 3</mat-option>
+            </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -559,7 +576,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = [
     'ngaySanXuat', 'tenNhanVien', 'lenhSanXuat', 'maHang', 'tenHang', 'nguyenVatLieu',
-    'congDoan', 'tenMay', 'sanLuongOK', 'sanLuongLoi', 'thoiGianBatDau',
+    'congDoan', 'tenMay', 'sanLuongOK', 'sanLuongLoi', 'capDoHang', 'thoiGianBatDau',
     'thoiGianKetThuc', 'thoiGianSanXuat',
     'mayHong', 'batThuongChatLuong', 'daoTao', 'matDien', 'thienTai', 'veSinhCuoiNam', 'theoChiDaoCapTren', 'dungDoHetHang', 'khac',
     'actions'
@@ -710,6 +727,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
       'Tên Máy': r.tenMay,
       'Sản Lượng OK': r.sanLuongOK,
       'Sản Lượng Lỗi': r.sanLuongLoi,
+      'Cấp Độ': r.capDoHang || '',
       'Bắt Đầu': r.thoiGianBatDau ? new Date(r.thoiGianBatDau).toLocaleString('vi-VN') : '',
       'Kết Thúc': r.thoiGianKetThuc ? new Date(r.thoiGianKetThuc).toLocaleString('vi-VN') : '',
       'Máy hỏng': r.mayHong || 0,

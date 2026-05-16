@@ -73,6 +73,7 @@ export class ProductionService {
         veSinhCuoiNam: r.veSinhCuoiNam || 0,
         theoChiDaoCapTren: r.theoChiDaoCapTren || 0,
         dungDoHetHang: r.dungDoHetHang || 0,
+        capDoHang: r.capDoHang || '',
         ghiChu: r.ghiChu || '',
         createdAt: new Date(r.createdAt).getTime(),
         employeeId: r.employeeId,
