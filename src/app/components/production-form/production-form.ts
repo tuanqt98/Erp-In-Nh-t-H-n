@@ -74,31 +74,10 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
             </mat-autocomplete>
           </mat-form-field>
 
-          <!-- Mã hàng with Autocomplete from Orders -->
+          <!-- Sản phẩm (Auto-filled) -->
           <mat-form-field appearance="outline">
-            <mat-label>Mã hàng</mat-label>
-            <input type="text"
-                   placeholder="Nhập mã hàng..."
-                   matInput
-                   formControlName="maHang"
-                   [matAutocomplete]="autoMH">
-            <mat-autocomplete #autoMH="matAutocomplete">
-              <mat-option *ngFor="let opt of filteredMaHangOptions | async" [value]="opt">
-                {{opt}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-
-          <!-- Tên hàng (Auto-filled) -->
-          <mat-form-field appearance="outline">
-            <mat-label>Tên hàng</mat-label>
+            <mat-label>Sản phẩm</mat-label>
             <input matInput formControlName="tenHang" placeholder="Tự động điền khi nhập LSX...">
-          </mat-form-field>
-
-          <!-- Nguyên Vật Liệu (Auto-filled) -->
-          <mat-form-field appearance="outline">
-            <mat-label>Nguyên Vật Liệu</mat-label>
-            <input matInput formControlName="nguyenVatLieu" placeholder="Tự động điền khi nhập LSX...">
           </mat-form-field>
 
           <!-- Công đoạn -->
@@ -478,9 +457,8 @@ export class ProductionFormComponent implements OnInit {
     ngaySanXuat: [new Date(), Validators.required],
 
     lenhSanXuat: ['', Validators.required],
-    maHang: ['', Validators.required],
+    maHang: [''],
     tenHang: [''],
-    nguyenVatLieu: [''],
     congDoan: ['', Validators.required],
     tenMay: ['', Validators.required],
     sanLuongOK: [0, [Validators.required, Validators.min(0)]],
@@ -542,9 +520,8 @@ export class ProductionFormComponent implements OnInit {
         const match = this.orderService.orders.find(o => o.lenhSanXuat === lsx);
         if (match) {
           this.prodForm.patchValue({
-            maHang: match.maHang,
-            tenHang: match.tenHang,
-            nguyenVatLieu: match.nguyenVatLieu
+            maHang: match.tenHang,
+            tenHang: match.tenHang
           }, { emitEvent: false });
         }
       }

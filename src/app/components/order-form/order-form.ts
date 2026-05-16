@@ -32,15 +32,8 @@ import { OrderService } from '../../services/order.service';
         <div class="form-grid">
           <mat-form-field appearance="outline">
             <mat-label>Lệnh sản xuất</mat-label>
-            <input matInput formControlName="lenhSanXuat" placeholder="Tự động tăng">
+            <input matInput formControlName="lenhSanXuat" placeholder="Nhập mã lệnh...">
             <mat-icon matSuffix style="color: var(--ag-neon)">tag</mat-icon>
-            <mat-hint>Tự động tăng từ dòng cuối</mat-hint>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Ngày xuống</mat-label>
-            <input matInput [matDatepicker]="px" formControlName="ngayXuong">
-            <mat-datepicker-toggle matIconSuffix [for]="px"></mat-datepicker-toggle>
-            <mat-datepicker #px></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -51,43 +44,8 @@ import { OrderService } from '../../services/order.service';
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Mã hàng</mat-label>
-            <input matInput formControlName="maHang" placeholder="MÃ HÀNG MỚI">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Khách hàng</mat-label>
-            <input matInput formControlName="khachHang">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Tên hàng</mat-label>
-            <input matInput formControlName="tenHang">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>ĐVT</mat-label>
-            <input matInput formControlName="dvt" placeholder="Cái, Cuộn...">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Nguyên vật liệu</mat-label>
-            <input matInput formControlName="nguyenVatLieu">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Rộng</mat-label>
-            <input matInput formControlName="rong">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Dài</mat-label>
-            <input matInput formControlName="dai">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>KC (mm)</mat-label>
-            <input matInput formControlName="kc">
+            <mat-label>Sản phẩm</mat-label>
+            <input matInput formControlName="tenHang" placeholder="Nhập mã và tên sản phẩm...">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -96,13 +54,8 @@ import { OrderService } from '../../services/order.service';
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Khổ giấy</mat-label>
-            <input matInput formControlName="khoGiay">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Hao phí</mat-label>
-            <input matInput formControlName="haoPhi">
+            <mat-label>ĐVT</mat-label>
+            <input matInput formControlName="dvt" placeholder="Cái, Cuộn...">
           </mat-form-field>
         </div>
       </form>
@@ -164,19 +117,19 @@ export class OrderFormComponent implements OnInit {
   dialogRef = inject(MatDialogRef<OrderFormComponent>);
 
   orderForm: FormGroup = this.fb.group({
-    lenhSanXuat: [''],
-    stt: [''],
-    ngayXuong: [new Date(), Validators.required],
+    lenhSanXuat: ['', Validators.required],
     ngayGiao: [new Date(), Validators.required],
     maHang: ['', Validators.required],
-    khachHang: ['', Validators.required],
     tenHang: ['', Validators.required],
+    soLuong: [0, [Validators.required, Validators.min(0)]],
     dvt: ['Cái'],
+    // Hidden defaults
+    ngayXuong: [''],
+    khachHang: [''],
     nguyenVatLieu: [''],
     rong: [''],
     dai: [''],
     kc: [''],
-    soLuong: [0, [Validators.required, Validators.min(0)]],
     khoGiay: [''],
     haoPhi: ['']
   });
@@ -221,9 +174,9 @@ export class OrderFormComponent implements OnInit {
 
       const record = {
         ...val,
-        ngayXuong: formatDate(val.ngayXuong),
+        maHang: val.tenHang,
         ngayGiao: formatDate(val.ngayGiao),
-        stt: val.stt || (this.orderService.orders.length + 1)
+        ngayXuong: formatDate(new Date())
       };
 
       this.orderService.addOrder(record);

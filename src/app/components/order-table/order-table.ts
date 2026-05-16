@@ -36,13 +36,13 @@ import { AuthService } from '../../services/auth.service';
       <div class="table-header">
         <h2 class="table-title neon-text">
           <mat-icon>inventory_2</mat-icon>
-          Dữ Liệu Đơn Hàng
+          Dữ Liệu Đơn Hàng (V3 - Gộp Cột) 📦
         </h2>
 
         <div class="table-actions">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Tìm kiếm đơn hàng...</mat-label>
-            <input matInput (keyup)="onSearchChange($event)" placeholder="Mã hàng, Khách hàng..." #searchInput>
+            <input matInput (keyup)="onSearchChange($event)" placeholder="Tìm sản phẩm, mã lệnh..." #searchInput>
             <mat-icon matSuffix class="neon-icon">search</mat-icon>
           </mat-form-field>
 
@@ -86,71 +86,24 @@ import { AuthService } from '../../services/auth.service';
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="ngayXuong">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ngày xuống</th>
-            <td mat-cell *matCellDef="let row">{{row.ngayXuong}}</td>
-          </ng-container>
-
           <ng-container matColumnDef="ngayGiao">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Ngày giao</th>
             <td mat-cell *matCellDef="let row">{{row.ngayGiao}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="maHang">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Mã Hàng</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="ma-hang neon-text-ma">{{row.maHang}}</span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="khachHang">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Khách Hàng</th>
-            <td mat-cell *matCellDef="let row">{{row.khachHang}}</td>
-          </ng-container>
-
           <ng-container matColumnDef="tenHang">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Tên Hàng</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>📦 Sản phẩm</th>
             <td mat-cell *matCellDef="let row">{{row.tenHang}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="soLuong">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Số lượng</th>
+            <td mat-cell *matCellDef="let row" class="text-right neon-text-sl">{{row.soLuong | number}}</td>
           </ng-container>
 
           <ng-container matColumnDef="dvt">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>ĐVT</th>
             <td mat-cell *matCellDef="let row">{{row.dvt}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="nguyenVatLieu">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nguyên Vật Liệu</th>
-            <td mat-cell *matCellDef="let row">{{row.nguyenVatLieu}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="rong">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rộng</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.rong}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="dai">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Dài</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.dai}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="kc">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>KC (mm)</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.kc}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="soLuong">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Số Lượng</th>
-            <td mat-cell *matCellDef="let row" class="text-right neon-text-sl">{{row.soLuong | number}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="khoGiay">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Khổ Giấy</th>
-            <td mat-cell *matCellDef="let row">{{row.khoGiay}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="haoPhi">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Số Mét Hao Phí</th>
-            <td mat-cell *matCellDef="let row" class="text-right">{{row.haoPhi}}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -242,11 +195,10 @@ import { AuthService } from '../../services/auth.service';
               <tr>
                 <th>#</th>
                 <th>Lệnh SX</th>
-                <th>Mã Hàng</th>
-                <th>Tên Hàng</th>
-                <th>Khách Hàng</th>
-                <th>Số Lượng</th>
                 <th>Ngày Giao</th>
+                <th>📦 Sản phẩm</th>
+                <th>Số Lượng</th>
+                <th>ĐVT</th>
                 <th>Trạng thái</th>
               </tr>
             </thead>
@@ -255,11 +207,10 @@ import { AuthService } from '../../services/auth.service';
                   [class.row-dup]="row.status === 'duplicate'">
                 <td>{{ i + 1 }}</td>
                 <td><span class="badge-lsx neon-bg">{{ row.data.lenhSanXuat || '—' }}</span></td>
-                <td class="neon-text-ma">{{ row.data.maHang }}</td>
-                <td>{{ row.data.tenHang }}</td>
-                <td>{{ row.data.khachHang }}</td>
-                <td class="text-right">{{ row.data.soLuong | number }}</td>
                 <td>{{ row.data.ngayGiao }}</td>
+                <td>{{ row.data.tenHang }}</td>
+                <td class="text-right">{{ row.data.soLuong | number }}</td>
+                <td>{{ row.data.dvt }}</td>
                 <td>
                   <span class="p-status" [class.new]="row.status==='new'" [class.dup]="row.status==='duplicate'">
                     <mat-icon>{{ row.status === 'new' ? 'add_circle' : 'warning' }}</mat-icon>
@@ -407,9 +358,7 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
   authService = inject(AuthService);
 
   displayedColumns: string[] = [
-    'lenhSanXuat', 'ngayXuong', 'ngayGiao', 'maHang', 'khachHang',
-    'tenHang', 'dvt', 'nguyenVatLieu', 'rong', 'dai', 'kc',
-    'soLuong', 'khoGiay', 'haoPhi', 'actions'
+    'lenhSanXuat', 'ngayGiao', 'tenHang', 'soLuong', 'dvt', 'actions'
   ];
   dataSource = new MatTableDataSource<OrderRecord>([]);
 

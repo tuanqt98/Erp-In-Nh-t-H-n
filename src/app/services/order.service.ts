@@ -75,9 +75,7 @@ export class OrderService {
           if (bestRaw.length < 1) { resolve([]); return; }
 
           const fields: (keyof Omit<OrderRecord, 'id'>)[] = [
-            'lenhSanXuat', 'ngayXuong', 'ngayGiao', 'maHang', 'khachHang',
-            'tenHang', 'dvt', 'nguyenVatLieu', 'rong', 'dai', 'kc',
-            'soLuong', 'khoGiay', 'haoPhi'
+            'lenhSanXuat', 'ngayGiao', 'productRaw' as any, 'soLuong', 'dvt'
           ];
 
           const norm = (s: any) => String(s ?? '').toLowerCase()
@@ -104,20 +102,11 @@ export class OrderService {
           };
 
           const patterns: Record<string, RegExp[]> = {
-            lenhSanXuat:   [/^lsx$|^lenh.*sx|^ma.*lenh/],
-            ngayXuong:     [/ngay.*xuong|ngay.*vao|date.*in/],
-            ngayGiao:      [/ngay.*giao|ngay.*xuat|delivery/],
-            maHang:        [/ma.*hang|item.*code|product.*code/],
-            khachHang:     [/khach.*hang|customer/],
-            tenHang:       [/ten.*hang|ten.*sp|product.*name/],
-            dvt:           [/^dvt$|don.*vi.*tinh/],
-            nguyenVatLieu: [/nguyen.*vat.*lieu|nvl|material/],
-            rong:          [/^rong$|^width/],
-            dai:           [/^dai$|^length/],
-            kc:            [/^kc[\s(]|pitch/],
-            soLuong:       [/so.*luong|quantity|qty/],
-            khoGiay:       [/kho.*giay|paper.*size/],
-            haoPhi:        [/hao.*phi|waste/],
+            lenhSanXuat:   [/^lsx$|^lenh.*sx|^ma.*lenh|^ma.*tham.*chieu|^internal.*ref/],
+            ngayGiao:      [/ngay.*giao|ngay.*xuat|delivery|date.*planned/],
+            productRaw:    [/^(?!.*don.*vi).*san.*pham|^product$/], // Exclude 'don vi' from product matching
+            soLuong:       [/so.*luong|quantity|qty|^qty/],
+            dvt:           [/^dvt$|don.*vi.*tinh|don.*vi|uom|unit/],
           };
 
           let headerRowIdx = -1;
@@ -144,29 +133,50 @@ export class OrderService {
             fields.forEach((f, i) => colIdx[f] = i);
           }
 
-          const existingCodes = new Set(this.orders.map(o => o.maHang?.trim()));
+          const existingLSX = new Set(this.orders.map(o => o.lenhSanXuat?.trim()));
           const rows: OrderImportPreviewRow[] = [];
           for (let r = headerRowIdx + 1; r < bestRaw.length; r++) {
             const row = bestRaw[r];
             if (!row.some(c => c !== '' && c !== null && c !== undefined)) continue;
 
-            const rowData: any = {};
-            fields.forEach(f => {
-              const i = colIdx[f];
-              let val = (i !== undefined && i < row.length) ? row[i] : '';
-              if (f === 'ngayXuong' || f === 'ngayGiao') {
-                rowData[f] = fmtDate(val);
-              } else if (f === 'soLuong') {
-                rowData[f] = Number(val) || 0;
-              } else {
-                rowData[f] = String(val ?? '').trim();
-              }
-            });
+            // Skip rows that look like headers (contain "Sản phẩm" or "Lệnh SX")
+            const firstCell = String(row[colIdx['lenhSanXuat']] || '').toLowerCase();
+            if (firstCell.includes('ma tham chieu') || firstCell.includes('san pham') || firstCell.includes('lenh sx')) continue;
 
-            if (!rowData.lenhSanXuat && !rowData.tenHang) continue;
+            const rowData: any = {
+              ngayXuong: '',
+              khachHang: '',
+              nguyenVatLieu: '',
+              rong: '',
+              dai: '',
+              kc: '',
+              khoGiay: '',
+              haoPhi: ''
+            };
+
+            // Map standard fields
+            if (colIdx['lenhSanXuat'] !== undefined) rowData.lenhSanXuat = String(row[colIdx['lenhSanXuat']] ?? '').trim();
+            if (colIdx['ngayGiao'] !== undefined) rowData.ngayGiao = fmtDate(row[colIdx['ngayGiao']]);
+            if (colIdx['soLuong'] !== undefined) rowData.soLuong = Number(row[colIdx['soLuong']]) || 0;
+            if (colIdx['dvt'] !== undefined) rowData.dvt = String(row[colIdx['dvt']] ?? '').trim();
+
+            // Handle Product column: Store entire string in both fields for simple management
+            let prodStr = '';
+            if (colIdx['productRaw'] !== undefined) {
+              prodStr = String(row[colIdx['productRaw']] ?? '').trim();
+            } else if (headerRowIdx === -1 && row[2]) {
+              // Positional fallback for column C if no header found
+              prodStr = String(row[2] ?? '').trim();
+            }
+
+            rowData.maHang = prodStr;
+            rowData.tenHang = prodStr;
+
+            // Final safety check for LSX
+            if (!rowData.lenhSanXuat || rowData.lenhSanXuat === '0' || rowData.lenhSanXuat.toLowerCase() === 'confirmed') continue;
 
             rows.push({
-              status: (rowData.maHang && existingCodes.has(rowData.maHang)) ? 'duplicate' : 'new',
+              status: existingLSX.has(rowData.lenhSanXuat) ? 'duplicate' : 'new',
               data: rowData as Omit<OrderRecord, 'id'>
             });
           }

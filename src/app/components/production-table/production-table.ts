@@ -85,19 +85,9 @@ import * as XLSX from 'xlsx';
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="maHang">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Mã hàng</th>
-            <td mat-cell *matCellDef="let row">{{row.maHang}}</td>
-          </ng-container>
-
           <ng-container matColumnDef="tenHang">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Tên hàng</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Sản phẩm</th>
             <td mat-cell *matCellDef="let row">{{row.tenHang || '—'}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="nguyenVatLieu">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nguyên Vật Liệu</th>
-            <td mat-cell *matCellDef="let row">{{row.nguyenVatLieu || '—'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="congDoan">
@@ -283,18 +273,8 @@ import * as XLSX from 'xlsx';
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Mã Hàng</mat-label>
-            <input matInput [(ngModel)]="editRecord.maHang">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Tên Hàng</mat-label>
+            <mat-label>Sản phẩm</mat-label>
             <input matInput [(ngModel)]="editRecord.tenHang">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Nguyên Vật Liệu</mat-label>
-            <input matInput [(ngModel)]="editRecord.nguyenVatLieu">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -575,7 +555,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
   private snackBar = inject(MatSnackBar);
 
   displayedColumns: string[] = [
-    'ngaySanXuat', 'tenNhanVien', 'lenhSanXuat', 'maHang', 'tenHang', 'nguyenVatLieu',
+    'ngaySanXuat', 'tenNhanVien', 'lenhSanXuat', 'tenHang',
     'congDoan', 'tenMay', 'sanLuongOK', 'sanLuongLoi', 'capDoHang', 'thoiGianBatDau',
     'thoiGianKetThuc', 'thoiGianSanXuat',
     'mayHong', 'batThuongChatLuong', 'daoTao', 'matDien', 'thienTai', 'veSinhCuoiNam', 'theoChiDaoCapTren', 'dungDoHetHang', 'khac',
@@ -720,9 +700,7 @@ export class ProductionTableComponent implements OnInit, AfterViewInit {
       'Ngày': new Date(r.ngaySanXuat).toLocaleDateString('vi-VN'),
       'Nhân Viên': r.tenNhanVien,
       'Lệnh SX': r.lenhSanXuat,
-      'Mã Hàng': r.maHang,
-      'Tên Hàng': r.tenHang || '',
-      'Nguyên Vật Liệu': r.nguyenVatLieu || '',
+      'Sản phẩm': r.tenHang || '',
       'Công Đoạn': r.congDoan,
       'Tên Máy': r.tenMay,
       'Sản Lượng OK': r.sanLuongOK,
