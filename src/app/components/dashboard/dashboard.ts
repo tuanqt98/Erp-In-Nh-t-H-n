@@ -1,4 +1,4 @@
-import { Component, inject, Renderer2, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, Renderer2, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductionFormComponent } from '../production-form/production-form';
 import { ProductionTableComponent } from '../production-table/production-table';
 import { OrderTableComponent } from '../order-table/order-table';
@@ -37,6 +38,7 @@ import { SupportTimeService } from '../../services/support-time.service';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSnackBarModule,
     ProductionFormComponent,
     ProductionTableComponent,
     OrderTableComponent,
@@ -125,6 +127,10 @@ import { SupportTimeService } from '../../services/support-time.service';
         </nav>
 
         <div class="sidebar-footer">
+          <button mat-button *ngIf="showInstallButton" class="install-btn" (click)="installApp()">
+            <mat-icon>download_for_offline</mat-icon>
+            <span class="neon-text">Tải ứng dụng</span>
+          </button>
           <button mat-button class="theme-toggle" (click)="toggleTheme()">
             <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
             <span>{{ isDarkMode ? 'Giao diện sáng' : 'Giao diện tối' }}</span>
@@ -538,6 +544,13 @@ import { SupportTimeService } from '../../services/support-time.service';
     }
     .sidebar-footer button:hover { background: rgba(255,255,255,0.05); color: var(--ag-text-primary); }
     .logout-btn { color: #ef4444 !important; }
+    .install-btn {
+      color: var(--ag-neon) !important;
+      font-weight: 700 !important;
+    }
+    .install-btn mat-icon {
+      color: var(--ag-neon) !important;
+    }
 
     /* ─── MAIN CONTENT AREA ─── */
     .main-content-area {
@@ -939,6 +952,7 @@ export class DashboardComponent implements OnInit {
   private supportTimeService = inject(SupportTimeService);
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
+  private snackBar = inject(MatSnackBar);
 
   isDarkMode = true;
   activeTab = 0;
@@ -946,6 +960,16 @@ export class DashboardComponent implements OnInit {
   notifCount = 0;
   sidebarOpen = false;
   menuSearch = '';
+
+  deferredPrompt: any = null;
+  showInstallButton = false;
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  onBeforeInstallPrompt(e: any) {
+    e.preventDefault();
+    this.deferredPrompt = e;
+    this.showInstallButton = true;
+  }
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -956,6 +980,12 @@ export class DashboardComponent implements OnInit {
     this.supportTimeService.notifications$.subscribe(() => {
       this.notifCount = this.supportTimeService.getUnreadCount();
     });
+
+    // Check if running in standalone mode (installed as PWA)
+    if (typeof window !== 'undefined') {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+      this.showInstallButton = !isStandalone;
+    }
   }
 
   getYield(): number {
@@ -990,6 +1020,28 @@ export class DashboardComponent implements OnInit {
       this.renderer.removeClass(this.document.body, 'light-mode');
     } else {
       this.renderer.addClass(this.document.body, 'light-mode');
+    }
+  }
+
+  installApp() {
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          this.showInstallButton = false;
+        }
+        this.deferredPrompt = null;
+      });
+    } else {
+      this.snackBar.open(
+        'Để tải ứng dụng: Nhấp biểu tượng Chia sẻ (Share) dưới trình duyệt ➔ Chọn "Thêm vào MH chính" (Add to Home Screen)', 
+        'Đóng', 
+        {
+          duration: 8000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        }
+      );
     }
   }
 }
