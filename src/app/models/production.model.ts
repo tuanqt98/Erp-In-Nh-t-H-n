@@ -75,5 +75,5 @@ export const MAY_OPTIONS = [
   'MÁY BẾ DEMI 1', 'MÁY BẾ DEMI 2', 'MÁY BẾ DEMI 3', 'MÁY BẾ DEMI 4', 'MÁY BẾ DEMI 5', 'MÁY BẾ DEMI 6',
   'MÁY CHẶT ĐỘC LẬP 1', 'MÁY XÉN',
   'MÁY CHIA 00', 'MÁY CHIA 1', 'MÁY CHIA 2', 'MÁY CHIA 3', 'MÁY CHIA 4', 'MÁY CHIA 5', 'MÁY CHIA 6', 'MÁY CHIA 7', 'MÁY CHIA 8',
-  'Bàn kiểm tra 1', 'Bàn kiểm tra 2', 'Bàn kiểm tra 3', 'Bàn kiểm tra 4'
+  'Bàn kiểm tra 1', 'Bàn kiểm tra 2', 'Bàn kiểm tra 3', 'Bàn kiểm tra 4', 'Bàn kiểm tra 1.1', 'Bàn kiểm tra 2.2', 'Bàn kiểm tra 3.3', 'Bàn kiểm tra 4.4'
 ];

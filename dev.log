@@ -360,3 +360,11 @@ Application bundle generation complete. [0.571 seconds] - 2026-06-13T04:07:52.36
 Page reload sent to client(s).
 11:07:53 AM [vite] (client) ✨ new dependencies optimized: @angular/service-worker
 11:07:53 AM [vite] (client) ✨ optimized dependencies changed. reloading
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 578.92 kB | 
+
+Application bundle generation complete. [0.175 seconds] - 2026-06-13T04:22:16.110Z
+
+Page reload sent to client(s).
