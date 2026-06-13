@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import * as XLSX from 'xlsx';
 import { OrderService, OrderImportPreviewRow } from '../../services/order.service';
 import { OrderRecord } from '../../models/order.model';
 import { OrderFormComponent } from '../order-form/order-form';
@@ -48,14 +49,19 @@ import { AuthService } from '../../services/auth.service';
 
           <input type="file" #fileInput style="display:none" (change)="onFileSelected($event)" accept=".xlsx,.xls">
 
-          <button mat-raised-button class="btn-add" (click)="addOrder()">
+          <button mat-raised-button class="btn-add" (click)="addOrder()" *ngIf="authService.isAdmin()">
             <mat-icon>add</mat-icon>
             Thêm Mới
           </button>
 
-          <button mat-stroked-button class="btn-import" (click)="fileInput.click()" matTooltip="Import từ Excel (.xlsx, .xls)">
+          <button mat-stroked-button class="btn-import" (click)="fileInput.click()" matTooltip="Import từ Excel (.xlsx, .xls)" *ngIf="authService.isAdmin()">
             <mat-icon>upload_file</mat-icon>
             Import Excel
+          </button>
+
+          <button mat-stroked-button class="btn-template" (click)="downloadTemplate()" matTooltip="Tải file mẫu Excel" *ngIf="authService.isAdmin()">
+            <mat-icon>download</mat-icon>
+            File Mẫu
           </button>
 
           <button mat-stroked-button class="btn-goto-last" (click)="goToLastPage()" matTooltip="Nhảy đến trang cuối"
@@ -259,6 +265,8 @@ import { AuthService } from '../../services/auth.service';
     .btn-add { background: linear-gradient(135deg, var(--ag-neon), #0369a1)!important; color:white!important; white-space:nowrap; }
     .btn-import { color: #22c55e!important; border-color: rgba(34,197,94,.4)!important; white-space:nowrap; }
     .btn-import:hover { background: rgba(34,197,94,.08)!important; }
+    .btn-template { color: var(--ag-text-secondary)!important; border-color: var(--ag-border)!important; white-space:nowrap; }
+    .btn-template:hover { background: rgba(255,255,255,.05)!important; }
     .btn-clear { color:#ef4444!important; white-space:nowrap; }
     .btn-goto-last { color: var(--ag-neon)!important; border-color: rgba(14,165,233,.3)!important; white-space:nowrap; font-size: 0.85rem; }
     .btn-goto-last:hover { background: rgba(14,165,233,.08)!important; }
@@ -477,6 +485,21 @@ export class OrderTableComponent implements OnInit, AfterViewInit {
     this.orderService.appendRecords(toImport);
     this.closePreview();
     this.snackBar.open(`✅ Đã import ${toImport.length} đơn hàng!`, 'Đóng', { duration: 4000 });
+  }
+
+  downloadTemplate() {
+    const templateData = [
+      ['Lệnh Sản Xuất', 'Ngày Giao', 'Sản Phẩm', 'Số Lượng', 'Đơn Vị Tính'],
+      ['LSX2026-001', '15/06/2026', 'Thùng carton 3 lớp', 1500, 'Cái'],
+      ['LSX2026-002', '18/06/2026', 'Hộp giấy Kraft', 3000, 'Cái'],
+      ['LSX2026-003', '20/06/2026', 'Tờ rơi A5', 5000, 'Tờ'],
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+    ws['!cols'] = [{ wch: 18 }, { wch: 15 }, { wch: 25 }, { wch: 12 }, { wch: 12 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Danh Sach Don Hang');
+    XLSX.writeFile(wb, 'mau_import_don_hang.xlsx');
+    this.snackBar.open('📥 Đã tải file mẫu!', 'Đóng', { duration: 2000 });
   }
 
   // ── Delete ─────────────────────────────────────────────────────────────────

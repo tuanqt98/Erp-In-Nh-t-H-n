@@ -1,0 +1,45 @@
+Vercel CLI 54.13.0 (Node.js 24.14.0)
+Retrieving project…
+> Running Dev Command “ng serve --port $PORT”
+[33m❯[39m Building...
+[32m✔[39m Building...
+Initial chunk files | Names         |  Raw size
+main.js             | main          | 574.46 kB | 
+styles.css          | styles        |  15.83 kB | 
+
+                    | Initial total | 590.29 kB
+
+Application bundle generation complete. [1.504 seconds] - 2026-06-13T03:10:03.046Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+10:10:03 AM [vite] (client) Re-optimizing dependencies because lockfile has changed
+  ➜  Local:   http://localhost:3000/
+  ➜  press h + enter to show help
+> Ready! Available at http://localhost:3000
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 574.43 kB | 
+
+Application bundle generation complete. [1.012 seconds] - 2026-06-13T03:12:28.290Z
+
+Component update sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 577.09 kB | 
+
+Application bundle generation complete. [0.242 seconds] - 2026-06-13T03:13:37.900Z
+
+Page reload sent to client(s).
+[PERF] bootstrapUsers took 2700ms
+[PERF] prisma.user.findUnique took 722ms
+[PERF] comparePassword took 71ms
+[PERF] Total POST auth time: 3494ms
+[PERF] prisma.user.findUnique took 5400ms
+[PERF] comparePassword took 72ms
+[PERF] Total POST auth time: 5472ms
+[PERF] prisma.user.findUnique took 2838ms
+[PERF] comparePassword took 69ms
+[PERF] Total POST auth time: 2908ms

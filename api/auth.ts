@@ -10,27 +10,38 @@ const SEED_USERS = [
   { username: 'staff', password: '1', displayName: 'Nhân Viên In', role: 'staff' },
 ];
 
+// Global cache flag to prevent querying database count on every single request
+let isBootstrapped = false;
+
 async function bootstrapUsers() {
-  const count = await prisma.user.count();
-  if (count === 0) {
-    for (const u of SEED_USERS) {
-      const hashed = await hashPassword(u.password);
-      await prisma.user.create({
-        data: { username: u.username, password: hashed, displayName: u.displayName, role: u.role }
-      });
+  if (isBootstrapped) return false;
+  try {
+    const count = await prisma.user.count();
+    if (count === 0) {
+      for (const u of SEED_USERS) {
+        const hashed = await hashPassword(u.password);
+        await prisma.user.create({
+          data: { username: u.username, password: hashed, displayName: u.displayName, role: u.role }
+        });
+      }
+      // Seed default production stages
+      const stages = ['In', 'Cán Màng', 'Bế', 'Xén', 'Chia', 'Phủ cào', 'Chặt tờ'];
+      for (const name of stages) {
+        await prisma.productionStage.upsert({
+          where: { name },
+          update: {},
+          create: { name }
+        });
+      }
+      isBootstrapped = true;
+      return true;
     }
-    // Seed default production stages
-    const stages = ['In', 'Cán Màng', 'Bế', 'Xén', 'Chia', 'Phủ cào', 'Chặt tờ'];
-    for (const name of stages) {
-      await prisma.productionStage.upsert({
-        where: { name },
-        update: {},
-        create: { name }
-      });
-    }
-    return true;
+    isBootstrapped = true;
+    return false;
+  } catch (err) {
+    console.error('Error during bootstrapping:', err);
+    return false;
   }
-  return false;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -41,23 +52,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // GET: Health check
     if (req.method === 'GET') {
       const userCount = await prisma.user.count();
+      isBootstrapped = userCount > 0;
       return res.status(200).json({ 
         status: 'OK', 
         message: 'Auth Service Active',
-        isBootstrapped: userCount > 0,
+        isBootstrapped,
         userCount 
       });
     }
 
     // POST: Login or actions
     if (req.method === 'POST') {
+      const startTime = Date.now();
       const { action, username, password, newPassword, newDisplayName } = req.body || {};
-
-      // Bootstrap: seed users if DB is empty
-      const seeded = await bootstrapUsers();
-      if (seeded) {
-        console.log('Bootstrapped 3 default users + stages');
-      }
 
       // Action: Change password
       if (action === 'changePassword') {
@@ -95,12 +102,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ message: 'Username and password required' });
       }
 
-      const user = await prisma.user.findUnique({
+      let user = await prisma.user.findUnique({
         where: { username },
         include: { employee: true },
       });
 
-      if (user && (await comparePassword(password, user.password))) {
+      // Lazily bootstrap users only if the requested user is not found
+      // AND we haven't already marked the database as bootstrapped.
+      if (!user && !isBootstrapped) {
+        const seeded = await bootstrapUsers();
+        if (seeded) {
+          console.log('Bootstrapped 3 default users + stages');
+          // Re-fetch the user
+          user = await prisma.user.findUnique({
+            where: { username },
+            include: { employee: true },
+          });
+        }
+      }
+
+      const matches = user ? await comparePassword(password, user.password) : false;
+
+      if (user && matches) {
         const token = signToken({
           userId: user.id,
           username: user.username,

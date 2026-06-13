@@ -305,7 +305,7 @@ import { SupportTimeService } from '../../services/support-time.service';
             </div>
             
             <div class="footer-bottom">
-              <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">Lê Dương</span></p>
+              <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">💔</span></p>
             </div>
           </footer>
         </main>
