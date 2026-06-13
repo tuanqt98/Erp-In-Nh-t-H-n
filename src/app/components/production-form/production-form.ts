@@ -157,36 +157,16 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
           </mat-form-field>
 
           <!-- Thời gian Bắt đầu -->
-          <div class="datetime-group">
-            <mat-form-field appearance="outline" class="date-field">
-              <mat-label>Ngày bắt đầu</mat-label>
-              <input matInput [matDatepicker]="startPicker" formControlName="startDate">
-              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-              <mat-datepicker #startPicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="time-field">
-              <mat-label>Giờ bắt đầu</mat-label>
-              <input matInput [matTimepicker]="startTimePicker" formControlName="startTime">
-              <mat-timepicker-toggle matIconSuffix [for]="startTimePicker"></mat-timepicker-toggle>
-              <mat-timepicker #startTimePicker></mat-timepicker>
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Thời gian bắt đầu</mat-label>
+            <input matInput type="datetime-local" formControlName="thoiGianBatDau">
+          </mat-form-field>
 
           <!-- Thời gian Kết thúc -->
-          <div class="datetime-group">
-            <mat-form-field appearance="outline" class="date-field">
-              <mat-label>Ngày kết thúc</mat-label>
-              <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-              <mat-datepicker #endPicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="time-field">
-              <mat-label>Giờ kết thúc</mat-label>
-              <input matInput [matTimepicker]="endTimePicker" formControlName="endTime">
-              <mat-timepicker-toggle matIconSuffix [for]="endTimePicker"></mat-timepicker-toggle>
-              <mat-timepicker #endTimePicker></mat-timepicker>
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Thời gian kết thúc</mat-label>
+            <input matInput type="datetime-local" formControlName="thoiGianKetThuc">
+          </mat-form-field>
 
           <!-- Tổng thời gian (Tự động) -->
           <div class="duration-display">
@@ -476,10 +456,8 @@ export class ProductionFormComponent implements OnInit {
     sanLuongOK: [0, [Validators.required, Validators.min(0)]],
     sanLuongLoi: [0, [Validators.required, Validators.min(0)]],
     capDoHang: [''],
-    startDate: [new Date(), Validators.required],
-    startTime: [new Date(), Validators.required],
-    endDate: [new Date(), Validators.required],
-    endTime: [new Date(), Validators.required],
+    thoiGianBatDau: ['', Validators.required],
+    thoiGianKetThuc: ['', Validators.required],
     thoiGianSanXuat: [0, [Validators.required, Validators.min(0)]],
     mayHong: [0, [Validators.min(0)]],
     batThuongChatLuong: [0, [Validators.min(0)]],
@@ -494,12 +472,17 @@ export class ProductionFormComponent implements OnInit {
   });
 
   ngOnInit() {
+    // Initialize datetime inputs with local timezone-offset values
+    const nowLocal = this.formatDateTimeLocal(new Date());
+    this.prodForm.patchValue({
+      thoiGianBatDau: nowLocal,
+      thoiGianKetThuc: nowLocal
+    }, { emitEvent: false });
+
     this.filteredMayOptions = this.prodForm.get('tenMay')!.valueChanges.pipe(
       startWith(''),
       map(value => this._filterMay(value || '')),
     );
-
-
 
     this.filteredMaHangOptions = this.prodForm.get('maHang')!.valueChanges.pipe(
       startWith(''),
@@ -513,9 +496,9 @@ export class ProductionFormComponent implements OnInit {
 
     // Auto-calculate duration
     this.prodForm.valueChanges.subscribe(val => {
-      if (val.startDate && val.startTime && val.endDate && val.endTime) {
-        const start = this._combineDateTime(val.startDate, val.startTime);
-        const end = this._combineDateTime(val.endDate, val.endTime);
+      if (val.thoiGianBatDau && val.thoiGianKetThuc) {
+        const start = new Date(val.thoiGianBatDau);
+        const end = new Date(val.thoiGianKetThuc);
         if (end > start) {
           const diffMs = end.getTime() - start.getTime();
           const diffMins = Math.round(diffMs / 60000);
@@ -540,10 +523,9 @@ export class ProductionFormComponent implements OnInit {
     });
   }
 
-  private _combineDateTime(date: Date, time: Date): Date {
-    const combined = new Date(date);
-    combined.setHours(time.getHours(), time.getMinutes(), 0, 0);
-    return combined;
+  private formatDateTimeLocal(date: Date): string {
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
   }
 
   private _filterLSX(value: string): string[] {
@@ -581,8 +563,8 @@ export class ProductionFormComponent implements OnInit {
     const date = formValue.ngaySanXuat as Date;
     const dateStr = date.toISOString().split('T')[0];
 
-    const start = this._combineDateTime(formValue.startDate, formValue.startTime);
-    const end = this._combineDateTime(formValue.endDate, formValue.endTime);
+    const start = new Date(formValue.thoiGianBatDau);
+    const end = new Date(formValue.thoiGianKetThuc);
 
     this.prodService.addRecord({
       ...formValue,
@@ -622,10 +604,8 @@ export class ProductionFormComponent implements OnInit {
       sanLuongOK: 0,
       sanLuongLoi: 0,
       capDoHang: '',
-      startDate: new Date(),
-      startTime: new Date(),
-      endDate: new Date(),
-      endTime: new Date(),
+      thoiGianBatDau: this.formatDateTimeLocal(new Date()),
+      thoiGianKetThuc: this.formatDateTimeLocal(new Date()),
       thoiGianSanXuat: 0,
       mayHong: 0,
       batThuongChatLuong: 0,
