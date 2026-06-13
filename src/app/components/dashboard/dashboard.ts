@@ -311,7 +311,7 @@ import { SupportTimeService } from '../../services/support-time.service';
             </div>
             
             <div class="footer-bottom">
-              <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">💔</span></p>
+              <p>© 2026 In Nhật Hàn ERP | Designed by <span class="neon-text">Ngọc 💔 Dung</span></p>
             </div>
           </footer>
         </main>
@@ -1034,8 +1034,8 @@ export class DashboardComponent implements OnInit {
       });
     } else {
       this.snackBar.open(
-        'Để tải ứng dụng: Nhấp biểu tượng Chia sẻ (Share) dưới trình duyệt ➔ Chọn "Thêm vào MH chính" (Add to Home Screen)', 
-        'Đóng', 
+        'Để tải ứng dụng: Nhấp biểu tượng Chia sẻ (Share) dưới trình duyệt ➔ Chọn "Thêm vào MH chính" (Add to Home Screen)',
+        'Đóng',
         {
           duration: 8000,
           horizontalPosition: 'center',

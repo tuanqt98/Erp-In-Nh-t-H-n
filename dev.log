@@ -368,3 +368,561 @@ main.js             | main  | 578.92 kB |
 Application bundle generation complete. [0.175 seconds] - 2026-06-13T04:22:16.110Z
 
 Page reload sent to client(s).
+prisma:error 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+Orders API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 1)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:27:31) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Order',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+Production API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 0)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:30:39) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionRecord',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:128:29)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.supportTime.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:48
+
+   9 try {
+  10   // GET: List all records
+  11   if (req.method === 'GET') {
+→ 12     const records = await prisma.supportTime.findMany(
+Server has closed the connection.
+SupportTime API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.supportTime.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:48
+
+   9 try {
+  10   // GET: List all records
+  11   if (req.method === 'GET') {
+→ 12     const records = await prisma.supportTime.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:23) {
+  code: 'P1017',
+  meta: {
+    modelName: 'SupportTime',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22)
+        at async Object.singleLoader (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:112:26) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.order.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:28:22
+
+  25 }
+  26 
+  27 const [orders, total] = await Promise.all([
+→ 28   prisma.order.findMany(
+Server has closed the connection.
+Orders API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.order.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:28:22
+
+  25 }
+  26 
+  27 const [orders, total] = await Promise.all([
+→ 28   prisma.order.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 0)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:27:31) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Order',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22)
+        at async Object.singleLoader (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:112:26) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+Production API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 0)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:30:39) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionRecord',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:128:29)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.employee.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:47
+
+  10 try {
+  11   // GET: List all employees
+  12   if (req.method === 'GET') {
+→ 13     const employees = await prisma.employee.findMany(
+Server has closed the connection.
+Employees API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.employee.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:47
+
+  10 try {
+  11   // GET: List all employees
+  12   if (req.method === 'GET') {
+→ 13     const employees = await prisma.employee.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:25) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Employee',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:128:29)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.employee.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:47
+
+  10 try {
+  11   // GET: List all employees
+  12   if (req.method === 'GET') {
+→ 13     const employees = await prisma.employee.findMany(
+Server has closed the connection.
+Employees API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.employee.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:47
+
+  10 try {
+  11   // GET: List all employees
+  12   if (req.method === 'GET') {
+→ 13     const employees = await prisma.employee.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/employees.ts:13:25) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Employee',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:128:29)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+Orders API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 1)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:27:31) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Order',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.productionStage.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:51
+
+   9 try {
+  10   // GET: List all stages
+  11   if (req.method === 'GET') {
+→ 12     const stages = await prisma.productionStage.findMany(
+Server has closed the connection.
+Stages API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionStage.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:51
+
+   9 try {
+  10   // GET: List all stages
+  11   if (req.method === 'GET') {
+→ 12     const stages = await prisma.productionStage.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:22) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionStage',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22)
+        at async Object.singleLoader (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:112:26) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.order.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:28:22
+
+  25 }
+  26 
+  27 const [orders, total] = await Promise.all([
+→ 28   prisma.order.findMany(
+Server has closed the connection.
+Orders API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.order.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:34:22
+
+  31   skip: page * pageSize,
+  32   take: pageSize,
+  33 }),
+→ 34 prisma.order.count(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 1)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:27:31) {
+  code: 'P1017',
+  meta: {
+    modelName: 'Order',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.order.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/orders.ts:28:22
+
+  25 }
+  26 
+  27 const [orders, total] = await Promise.all([
+→ 28   prisma.order.findMany(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.productionStage.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:51
+
+   9 try {
+  10   // GET: List all stages
+  11   if (req.method === 'GET') {
+→ 12     const stages = await prisma.productionStage.findMany(
+Server has closed the connection.
+Stages API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionStage.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:51
+
+   9 try {
+  10   // GET: List all stages
+  11   if (req.method === 'GET') {
+→ 12     const stages = await prisma.productionStage.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/stages.ts:12:22) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionStage',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22)
+        at async Object.singleLoader (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:112:26) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.supportTime.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:48
+
+   9 try {
+  10   // GET: List all records
+  11   if (req.method === 'GET') {
+→ 12     const records = await prisma.supportTime.findMany(
+Server has closed the connection.
+SupportTime API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.supportTime.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:48
+
+   9 try {
+  10   // GET: List all records
+  11   if (req.method === 'GET') {
+→ 12     const records = await prisma.supportTime.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/support-time.ts:12:23) {
+  code: 'P1017',
+  meta: {
+    modelName: 'SupportTime',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22)
+        at async Object.singleLoader (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:112:26) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 578.95 kB | 
+
+Application bundle generation complete. [0.213 seconds] - 2026-06-13T04:58:44.491Z
+
+Page reload sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names         |  Raw size
+main.js             | main          | 578.95 kB | 
+styles.css          | styles        |  15.83 kB | 
+
+                    | Initial total | 594.78 kB
+
+Application bundle generation complete. [0.531 seconds] - 2026-06-13T04:59:40.591Z
+
