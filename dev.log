@@ -43,3 +43,288 @@ Page reload sent to client(s).
 [PERF] prisma.user.findUnique took 2838ms
 [PERF] comparePassword took 69ms
 [PERF] Total POST auth time: 2908ms
+prisma:error 
+Invalid `prisma.productionRecord.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:38:33
+
+  35   take: pageSize,
+  36   include: { employee: { select: { tenNhanVien: true, maNhanVien: true } } }
+  37 }),
+→ 38 prisma.productionRecord.count(
+Server has closed the connection.
+Production API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionRecord.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:38:33
+
+  35   take: pageSize,
+  36   include: { employee: { select: { tenNhanVien: true, maNhanVien: true } } }
+  37 }),
+→ 38 prisma.productionRecord.count(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 1)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:30:39) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionRecord',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:213:41)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+Production API Error: PrismaClientKnownRequestError: 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+    at Gr.handleRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+    at Gr.handleAndLogRequestError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+    at Gr.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:938:24)
+    at async Promise.all (index 0)
+    at async handler (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:30:39) {
+  code: 'P1017',
+  meta: {
+    modelName: 'ProductionRecord',
+    driverAdapterError: DriverAdapterError: ConnectionClosed
+        at PrismaPgAdapter.onError (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:678:11)
+        at PrismaPgAdapter.performIO (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:673:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async PrismaPgAdapter.queryRaw (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/adapter-pg/dist/index.js:604:30)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:186:26)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:128:29)
+        at async e.interpretNode (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:272:41)
+        at async e.run (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:94:23)
+        at async e.execute (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async jt.request (/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:503:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.7.0'
+}
+prisma:error 
+Invalid `prisma.productionRecord.findMany()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:31:33
+
+  28 const today = new Date().toISOString().split('T')[0];
+  29 
+  30 const [records, total, stats] = await Promise.all([
+→ 31   prisma.productionRecord.findMany(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.productionRecord.count()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:38:33
+
+  35   take: pageSize,
+  36   include: { employee: { select: { tenNhanVien: true, maNhanVien: true } } }
+  37 }),
+→ 38 prisma.productionRecord.count(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.productionRecord.aggregate()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:40:33
+
+  37 }),
+  38 prisma.productionRecord.count({ where }),
+  39 // Calculate global stats for the dashboard (not affected by search/pagination)
+→ 40 prisma.productionRecord.aggregate(
+Server has closed the connection.
+prisma:error 
+Invalid `prisma.productionRecord.aggregate()` invocation in
+/Users/quoctuan8386/Documents/Nhập sản lượng/san-luong-app/api/production.ts:40:33
+
+  37 }),
+  38 prisma.productionRecord.count({ where }),
+  39 // Calculate global stats for the dashboard (not affected by search/pagination)
+→ 40 prisma.productionRecord.aggregate(
+Server has closed the connection.
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.405 seconds] - 2026-06-13T03:33:49.585Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:84:22:
+      84 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:85:22:
+      85 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.239 seconds] - 2026-06-13T03:33:56.669Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:84:22:
+      84 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:85:22:
+      85 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.124 seconds] - 2026-06-13T03:34:08.342Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:52:22:
+      52 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:53:22:
+      53 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:84:22:
+      84 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:85:22:
+      85 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.220 seconds] - 2026-06-13T03:34:18.354Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:52:22:
+      52 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:53:22:
+      53 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:86:22:
+      86 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:87:22:
+      87 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.186 seconds] - 2026-06-13T03:34:23.295Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:54:22:
+      54 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:55:22:
+      55 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:86:22:
+      86 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/production-form/production-form.ts:87:22:
+      87 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.226 seconds] - 2026-06-13T03:34:30.575Z
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMinRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:54:22:
+      54 │                       [matAutosizeMinRows]="1"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] NG8002: Can't bind to 'matAutosizeMaxRows' since it isn't a known property of 'textarea'. [plugin angular-compiler]
+
+    src/app/components/order-form/order-form.ts:55:22:
+      55 │                       [matAutosizeMaxRows]="4"
+         ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+Initial chunk files | Names         |  Raw size
+main.js             | main          | 578.55 kB | 
+styles.css          | styles        |  15.83 kB | 
+
+                    | Initial total | 594.38 kB
+
+Application bundle generation complete. [0.189 seconds] - 2026-06-13T03:34:34.920Z
+
+Page reload sent to client(s).

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { OrderService } from '../../services/order.service';
 
 @Component({
@@ -20,7 +21,8 @@ import { OrderService } from '../../services/order.service';
     MatInputModule,
     MatDatepickerModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TextFieldModule
   ],
   template: `
     <h2 mat-dialog-title class="dialog-title neon-text">
@@ -45,7 +47,13 @@ import { OrderService } from '../../services/order.service';
 
           <mat-form-field appearance="outline">
             <mat-label>Sản phẩm</mat-label>
-            <input matInput formControlName="tenHang" placeholder="Nhập mã và tên sản phẩm...">
+            <textarea matInput 
+                      formControlName="tenHang" 
+                      placeholder="Nhập mã và tên sản phẩm..."
+                      cdkTextareaAutosize
+                      [cdkAutosizeMinRows]="1"
+                      [cdkAutosizeMaxRows]="4"
+                      class="product-textarea"></textarea>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -106,6 +114,10 @@ import { OrderService } from '../../services/order.service';
       .dialog-actions button { width: 100%; }
     }
     mat-form-field { width: 100%; }
+    .product-textarea {
+      resize: none;
+      line-height: 1.4;
+    }
     :host ::ng-deep .mat-datepicker-toggle {
       color: var(--ag-neon) !important;
     }

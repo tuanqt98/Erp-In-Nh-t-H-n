@@ -12,6 +12,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { ProductionService } from '../../services/production.service';
 import { OrderService } from '../../services/order.service';
 import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../models/production.model';
@@ -31,7 +32,8 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
     MatTimepickerModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TextFieldModule
   ],
   template: `
     <div class="form-container glass-panel">
@@ -77,7 +79,13 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
           <!-- Sản phẩm (Auto-filled) -->
           <mat-form-field appearance="outline">
             <mat-label>Sản phẩm</mat-label>
-            <input matInput formControlName="tenHang" placeholder="Tự động điền khi nhập LSX...">
+            <textarea matInput 
+                      formControlName="tenHang" 
+                      placeholder="Tự động điền khi nhập LSX..."
+                      cdkTextareaAutosize
+                      [cdkAutosizeMinRows]="1"
+                      [cdkAutosizeMaxRows]="4"
+                      class="product-textarea"></textarea>
           </mat-form-field>
 
           <!-- Công đoạn -->
@@ -312,6 +320,10 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
     :host ::ng-deep .mat-datepicker-toggle, 
     :host ::ng-deep .mat-timepicker-toggle {
       color: var(--ag-neon) !important;
+    }
+    .product-textarea {
+      resize: none;
+      line-height: 1.4;
     }
 
     .form-grid {
