@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, inject, OnInit, OnDestroy } from '@an
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, Subject, Subscription, of, map, startWith, debounceTime, distinctUntilChanged, switchMap, from } from 'rxjs';
+import { Observable, Subscription, map, startWith, debounceTime } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -490,19 +490,16 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
       map(value => this._filterMaHang(value || '')),
     );
 
-    // ★ LSX Autocomplete: Search ALL orders via API with debounce
+    // ★ LSX Autocomplete: Search from ALL orders (pre-loaded in orderService.allOrders)
     this.filteredLsxOptions = this.prodForm.get('lenhSanXuat')!.valueChanges.pipe(
       startWith(''),
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(value => {
-        if (!value || value.length < 2) {
-          // Show local LSX options if query is too short
-          const localLsx = [...new Set(this.orderService.orders.map(o => o.lenhSanXuat))];
-          return of(localLsx);
-        }
-        // Search via API to get ALL matching LSX (not limited to current page)
-        return from(this.orderService.searchLSXOptions(value));
+      debounceTime(200),
+      map(value => {
+        const filterValue = (value || '').toLowerCase();
+        const allOrders = this.orderService.allOrders;
+        const uniqueLSX = [...new Set(allOrders.map(o => o.lenhSanXuat))];
+        if (!filterValue) return uniqueLSX;
+        return uniqueLSX.filter(lsx => lsx.toLowerCase().includes(filterValue));
       })
     );
 
@@ -523,26 +520,34 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(durationSub);
 
     // ★ Auto-fill product info when Lệnh SX changes
-    // Uses API search to find matching order across ALL orders (not just current page)
+    // Uses allOrders (pre-loaded full list) with case-insensitive matching
     const lsxSub = this.prodForm.get('lenhSanXuat')!.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    ).subscribe(async (lsx: string) => {
+      debounceTime(300)
+    ).subscribe((lsx: string) => {
       if (!lsx || lsx.length < 3) return;
       
-      try {
-        const match = await this.orderService.findByLSX(lsx);
-        if (match) {
-          console.log(`✅ LSX "${lsx}" matched order:`, match.lenhSanXuat, '→', match.tenHang);
-          this.prodForm.patchValue({
-            maHang: match.tenHang || match.maHang || '',
-            tenHang: match.tenHang || match.maHang || ''
-          }, { emitEvent: false });
-        } else {
-          console.log(`⚠️ LSX "${lsx}" - no matching order found`);
-        }
-      } catch (err) {
-        console.error('Error auto-filling from LSX:', err);
+      const allOrders = this.orderService.allOrders;
+      const lsxLower = lsx.trim().toLowerCase();
+      
+      // Try exact match first (case-insensitive)
+      let match = allOrders.find(o => o.lenhSanXuat?.trim().toLowerCase() === lsxLower);
+      
+      // Fallback: partial match
+      if (!match) {
+        match = allOrders.find(o => 
+          o.lenhSanXuat?.trim().toLowerCase().includes(lsxLower) ||
+          lsxLower.includes(o.lenhSanXuat?.trim().toLowerCase())
+        );
+      }
+      
+      if (match) {
+        console.log(`✅ LSX "${lsx}" → ${match.lenhSanXuat}: ${match.tenHang}`);
+        this.prodForm.patchValue({
+          maHang: match.tenHang || match.maHang || '',
+          tenHang: match.tenHang || match.maHang || ''
+        }, { emitEvent: false });
+      } else {
+        console.log(`⚠️ LSX "${lsx}" - không tìm thấy (allOrders: ${allOrders.length} records)`);
       }
     });
     this.subscriptions.push(lsxSub);

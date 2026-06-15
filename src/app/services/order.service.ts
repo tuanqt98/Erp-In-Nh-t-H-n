@@ -15,6 +15,10 @@ export class OrderService {
   private _orders$ = new BehaviorSubject<OrderRecord[]>([]);
   private _totalOrders$ = new BehaviorSubject<number>(0);
 
+  /** Full list of ALL orders (loaded once for LSX autocomplete/lookup) */
+  private _allOrders: OrderRecord[] = [];
+  get allOrders(): OrderRecord[] { return this._allOrders; }
+
   get orders$(): Observable<OrderRecord[]> {
     return this._orders$.asObservable();
   }
@@ -29,6 +33,19 @@ export class OrderService {
 
   constructor() {
     this.refresh();
+    this.loadAllOrders(); // Load ALL orders for LSX lookup
+  }
+
+  /** Load ALL orders (no pagination) for autocomplete/lookup */
+  async loadAllOrders(): Promise<void> {
+    try {
+      const url = `/api/orders?page=0&pageSize=99999&search=`;
+      const res = await firstValueFrom(this.http.get<any>(url));
+      this._allOrders = res.orders || [];
+      console.log(`📦 Loaded ${this._allOrders.length} orders for LSX lookup`);
+    } catch (err) {
+      console.error('Failed to load all orders:', err);
+    }
   }
 
   async refresh(page = 0, pageSize = 25, search = ''): Promise<void> {
