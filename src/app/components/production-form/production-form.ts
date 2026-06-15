@@ -1,8 +1,8 @@
-import { Component, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, Subject, Subscription, of, map, startWith, debounceTime, distinctUntilChanged, switchMap, from } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -427,7 +427,7 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
     }
   `]
 })
-export class ProductionFormComponent implements OnInit {
+export class ProductionFormComponent implements OnInit, OnDestroy {
   public fb = inject(FormBuilder);
   public prodService = inject(ProductionService);
   private snackBar = inject(MatSnackBar);
@@ -444,6 +444,7 @@ export class ProductionFormComponent implements OnInit {
   filteredMayOptions!: Observable<string[]>;
   filteredMaHangOptions!: Observable<string[]>;
   filteredLsxOptions!: Observable<string[]>;
+  private subscriptions: Subscription[] = [];
 
   prodForm: FormGroup = this.fb.group({
     ngaySanXuat: [new Date(), Validators.required],
@@ -489,13 +490,24 @@ export class ProductionFormComponent implements OnInit {
       map(value => this._filterMaHang(value || '')),
     );
 
+    // ★ LSX Autocomplete: Search ALL orders via API with debounce
     this.filteredLsxOptions = this.prodForm.get('lenhSanXuat')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filterLSX(value || '')),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(value => {
+        if (!value || value.length < 2) {
+          // Show local LSX options if query is too short
+          const localLsx = [...new Set(this.orderService.orders.map(o => o.lenhSanXuat))];
+          return of(localLsx);
+        }
+        // Search via API to get ALL matching LSX (not limited to current page)
+        return from(this.orderService.searchLSXOptions(value));
+      })
     );
 
     // Auto-calculate duration
-    this.prodForm.valueChanges.subscribe(val => {
+    const durationSub = this.prodForm.valueChanges.subscribe(val => {
       if (val.thoiGianBatDau && val.thoiGianKetThuc) {
         const start = new Date(val.thoiGianBatDau);
         const end = new Date(val.thoiGianKetThuc);
@@ -508,19 +520,36 @@ export class ProductionFormComponent implements OnInit {
         }
       }
     });
+    this.subscriptions.push(durationSub);
 
-    // Auto-fill fields when Lệnh SX is selected
-    this.prodForm.get('lenhSanXuat')!.valueChanges.subscribe(lsx => {
-      if (lsx) {
-        const match = this.orderService.orders.find(o => o.lenhSanXuat === lsx);
+    // ★ Auto-fill product info when Lệnh SX changes
+    // Uses API search to find matching order across ALL orders (not just current page)
+    const lsxSub = this.prodForm.get('lenhSanXuat')!.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(async (lsx: string) => {
+      if (!lsx || lsx.length < 3) return;
+      
+      try {
+        const match = await this.orderService.findByLSX(lsx);
         if (match) {
+          console.log(`✅ LSX "${lsx}" matched order:`, match.lenhSanXuat, '→', match.tenHang);
           this.prodForm.patchValue({
-            maHang: match.tenHang,
-            tenHang: match.tenHang
+            maHang: match.tenHang || match.maHang || '',
+            tenHang: match.tenHang || match.maHang || ''
           }, { emitEvent: false });
+        } else {
+          console.log(`⚠️ LSX "${lsx}" - no matching order found`);
         }
+      } catch (err) {
+        console.error('Error auto-filling from LSX:', err);
       }
     });
+    this.subscriptions.push(lsxSub);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   private formatDateTimeLocal(date: Date): string {

@@ -215,4 +215,49 @@ export class OrderService {
       await this.refresh();
     }
   }
+
+  /**
+   * Search orders by lenhSanXuat via API (not limited to current page).
+   * Returns the first matching order or null.
+   */
+  async findByLSX(lsx: string): Promise<OrderRecord | null> {
+    if (!lsx || !lsx.trim()) return null;
+    try {
+      const url = `/api/orders?page=0&pageSize=50&search=${encodeURIComponent(lsx.trim())}`;
+      const res = await firstValueFrom(this.http.get<any>(url));
+      const orders: OrderRecord[] = res.orders || [];
+      // Try exact match first
+      const exact = orders.find(o => o.lenhSanXuat?.trim().toLowerCase() === lsx.trim().toLowerCase());
+      if (exact) return exact;
+      // Fallback: find order whose LSX contains the search value or vice versa
+      const partial = orders.find(o =>
+        o.lenhSanXuat?.trim().toLowerCase().includes(lsx.trim().toLowerCase()) ||
+        lsx.trim().toLowerCase().includes(o.lenhSanXuat?.trim().toLowerCase())
+      );
+      return partial || null;
+    } catch (err) {
+      console.error('findByLSX error:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Get LSX options for autocomplete by searching the API.
+   * Returns unique lenhSanXuat values matching the query.
+   */
+  async searchLSXOptions(query: string): Promise<string[]> {
+    if (!query || !query.trim()) {
+      // Return LSX from current local orders if no query
+      return [...new Set(this.orders.map(o => o.lenhSanXuat))];
+    }
+    try {
+      const url = `/api/orders?page=0&pageSize=50&search=${encodeURIComponent(query.trim())}`;
+      const res = await firstValueFrom(this.http.get<any>(url));
+      const orders: OrderRecord[] = res.orders || [];
+      return [...new Set(orders.map(o => o.lenhSanXuat))];
+    } catch (err) {
+      console.error('searchLSXOptions error:', err);
+      return [];
+    }
+  }
 }
