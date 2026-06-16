@@ -16,6 +16,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { ProductionService } from '../../services/production.service';
 import { OrderService } from '../../services/order.service';
 import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../models/production.model';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
 
 @Component({
   selector: 'app-production-form',
@@ -34,6 +35,25 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
     MatIconModule,
     MatSnackBarModule,
     TextFieldModule
+  ],
+  providers: [
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'input',
+          timeInput: 'input',
+        },
+        display: {
+          dateInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
+          monthYearLabel: { year: 'numeric', month: 'short' },
+          dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+          monthYearA11yLabel: { year: 'numeric', month: 'long' },
+          timeInput: { hour: '2-digit', minute: '2-digit', hour12: false },
+          timeOptionLabel: { hour: '2-digit', minute: '2-digit', hour12: false },
+        },
+      },
+    },
   ],
   template: `
     <div class="form-container glass-panel">
@@ -159,13 +179,17 @@ import { CONG_DOAN_OPTIONS, MAY_OPTIONS, CAP_DO_HANG_OPTIONS } from '../../model
           <!-- Thời gian Bắt đầu -->
           <mat-form-field appearance="outline">
             <mat-label>Thời gian bắt đầu</mat-label>
-            <input matInput type="datetime-local" formControlName="thoiGianBatDau">
+            <input matInput [matTimepicker]="pickerStart" formControlName="thoiGianBatDau">
+            <mat-timepicker-toggle matIconSuffix [for]="pickerStart"></mat-timepicker-toggle>
+            <mat-timepicker #pickerStart></mat-timepicker>
           </mat-form-field>
 
           <!-- Thời gian Kết thúc -->
           <mat-form-field appearance="outline">
             <mat-label>Thời gian kết thúc</mat-label>
-            <input matInput type="datetime-local" formControlName="thoiGianKetThuc">
+            <input matInput [matTimepicker]="pickerEnd" formControlName="thoiGianKetThuc">
+            <mat-timepicker-toggle matIconSuffix [for]="pickerEnd"></mat-timepicker-toggle>
+            <mat-timepicker #pickerEnd></mat-timepicker>
           </mat-form-field>
 
           <!-- Tổng thời gian (Tự động) -->
@@ -473,11 +497,11 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    // Initialize datetime inputs with local timezone-offset values
-    const nowLocal = this.formatDateTimeLocal(new Date());
+    // Initialize datetime inputs with current Date object
+    const now = new Date();
     this.prodForm.patchValue({
-      thoiGianBatDau: nowLocal,
-      thoiGianKetThuc: nowLocal
+      thoiGianBatDau: now,
+      thoiGianKetThuc: now
     }, { emitEvent: false });
 
     this.filteredMayOptions = this.prodForm.get('tenMay')!.valueChanges.pipe(
@@ -507,14 +531,16 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
     const durationSub = this.prodForm.valueChanges.subscribe(val => {
       if (val.thoiGianBatDau && val.thoiGianKetThuc) {
         const start = new Date(val.thoiGianBatDau);
-        const end = new Date(val.thoiGianKetThuc);
-        if (end > start) {
-          const diffMs = end.getTime() - start.getTime();
-          const diffMins = Math.round(diffMs / 60000);
-          this.prodForm.get('thoiGianSanXuat')!.patchValue(diffMins, { emitEvent: false });
-        } else {
-          this.prodForm.get('thoiGianSanXuat')!.patchValue(0, { emitEvent: false });
+        let end = new Date(val.thoiGianKetThuc);
+        
+        // Handle night shifts where end time is the next day (e.g. start 22:00, end 06:00)
+        if (end < start) {
+          end = new Date(end.getTime() + 24 * 60 * 60 * 1000);
         }
+
+        const diffMs = end.getTime() - start.getTime();
+        const diffMins = Math.round(diffMs / 60000);
+        this.prodForm.get('thoiGianSanXuat')!.patchValue(diffMins, { emitEvent: false });
       }
     });
     this.subscriptions.push(durationSub);
@@ -589,6 +615,16 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  private combineDateAndTime(dateVal: any, timeVal: any): Date {
+    const d = new Date(dateVal);
+    const t = new Date(timeVal);
+    d.setHours(t.getHours());
+    d.setMinutes(t.getMinutes());
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    return d;
+  }
+
   doConfirmSave() {
     this.showSaveConfirm = false;
     const formValue = this.prodForm.value;
@@ -597,8 +633,12 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
     const date = formValue.ngaySanXuat as Date;
     const dateStr = date.toISOString().split('T')[0];
 
-    const start = new Date(formValue.thoiGianBatDau);
-    const end = new Date(formValue.thoiGianKetThuc);
+    const start = this.combineDateAndTime(date, formValue.thoiGianBatDau);
+    let end = this.combineDateAndTime(date, formValue.thoiGianKetThuc);
+
+    if (end < start) {
+      end = new Date(end.getTime() + 24 * 60 * 60 * 1000);
+    }
 
     this.prodService.addRecord({
       ...formValue,
@@ -633,13 +673,14 @@ export class ProductionFormComponent implements OnInit, OnDestroy {
   }
 
   onReset() {
+    const now = new Date();
     this.prodForm.reset({
-      ngaySanXuat: new Date(),
+      ngaySanXuat: now,
       sanLuongOK: 0,
       sanLuongLoi: 0,
       capDoHang: '',
-      thoiGianBatDau: this.formatDateTimeLocal(new Date()),
-      thoiGianKetThuc: this.formatDateTimeLocal(new Date()),
+      thoiGianBatDau: now,
+      thoiGianKetThuc: now,
       thoiGianSanXuat: 0,
       mayHong: 0,
       batThuongChatLuong: 0,
